@@ -2,19 +2,8 @@
   "name": "morpheus",
   "version": "1.0.0",
   "description": "A Headless CMS that adapts to any framework",
+  "type": "module",
   "main": "index.ts",
-  "scripts": {
-    "postinstall": "npx simple-git-hooks",
-    "type-check": "tsc --noEmit",
-    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write"
-  },
-  "lint-staged": {
-    "*.{ts,mjs,json}": "pnpm prettier"
-  },
-  "simple-git-hooks": {
-    "commit-msg": "commitlint --edit $1",
-    "pre-commit": "npx lint-staged && pnpm type-check"
-  },
   "keywords": [
     "headless cms",
     "postgres",
@@ -23,6 +12,24 @@
   ],
   "author": "haz3",
   "license": "ISC",
+  "scripts": {
+    "postinstall": "npx simple-git-hooks",
+    "type-check": "tsc --noEmit",
+    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
+    "dev": "node --experimental-strip-types src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "lint-staged": {
+    "*.{ts,mjs,json}": "pnpm prettier"
+  },
+  "simple-git-hooks": {
+    "commit-msg": "commitlint --edit $1",
+    "pre-commit": "npx lint-staged && pnpm type-check"
+  },
+  "imports": {
+    "#routes/*": "./src/routes/*"
+  },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
@@ -37,5 +44,10 @@
     "simple-git-hooks": "^2.12.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1"
+  },
+  "dependencies": {
+    "@fastify/postgres": "^6.0.2",
+    "fastify": "^5.3.0",
+    "pg": "^8.14.1"
   }
 }

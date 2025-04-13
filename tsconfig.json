@@ -3,8 +3,16 @@
     "target": "es2016",
     "module": "preserve",
     "moduleDetection": "force",
+    "rootDir": "./",
+    "baseUrl": "./src",
+    "outDir": "dist",
+    "paths": {
+      "@routes/*": ["routes/*"]
+    },
+    "sourceMap": true,
     "resolveJsonModule": true,
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,5 +23,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true
   },
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }
