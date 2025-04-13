@@ -14,5 +14,6 @@
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": ["node_modules"]
 }
