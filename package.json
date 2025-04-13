@@ -1,0 +1,22 @@
+{
+  "name": "morpheus",
+  "version": "1.0.0",
+  "description": "A Headless CMS that adapts to any framework",
+  "main": "index.ts",
+  "scripts": {
+    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write"
+  },
+  "keywords": [
+    "headless cms",
+    "postgres",
+    "graphql",
+    "rest api"
+  ],
+  "author": "haz3",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.1",
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0"
+  }
+}
