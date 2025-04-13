@@ -1,18 +1,22 @@
 import type { AddressInfo } from 'node:net'
 
-import 'dotenv/config'
 import Fastify from 'fastify'
-import authRoutes from '#routes/auth.ts'
+import 'dotenv/config'
+import migrate from '#migrations/init.ts'
 
 const fastify = Fastify({
   logger: true,
 })
 
-fastify.register(import('@fastify/postgres'), {
-  connectionString: process.env.POSTGRES_CONNECTION_STRING,
-})
+fastify.register(migrate)
 
-fastify.register(authRoutes)
+fastify.ready(async () => {
+  try {
+    await fastify.runMigrations()
+  } catch (err) {
+    fastify.log.error('Failed to initialize database tables:', err)
+  }
+})
 
 const start = async () => {
   try {

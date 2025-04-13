@@ -28,7 +28,9 @@
     "pre-commit": "npx lint-staged && pnpm type-check"
   },
   "imports": {
-    "#routes/*": "./src/routes/*"
+    "#routes/*": "./src/routes/*",
+    "#migrations/*": "./src/migrations/*",
+    "#queries/*": "./src/queries/*"
   },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@fastify/postgres": "^6.0.2",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.0",
+    "fastify-plugin": "^5.0.1",
     "pg": "^8.14.1"
   }
 }

@@ -7,7 +7,9 @@
     "baseUrl": "./src",
     "outDir": "dist",
     "paths": {
-      "@routes/*": ["routes/*"]
+      "@routes/*": ["routes/*"],
+      "@migrations/*": ["migrations/*"],
+      "@queries/*": ["queries/*"]
     },
     "sourceMap": true,
     "resolveJsonModule": true,
