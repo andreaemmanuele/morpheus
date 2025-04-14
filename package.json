@@ -9,7 +9,10 @@
     "graphql",
     "rest api"
   ],
-  "author": "haz3",
+  "author": {
+    "name": "haz3",
+    "url": "https://www.linkedin.com/in/andreaemmanuele/"
+  },
   "license": "ISC",
   "scripts": {
     "api": "pnpm --filter api",
@@ -44,5 +47,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1",
     "zod": "^3.24.2"
+  },
+  "engines": {
+    "node": ">=22.14.0"
   }
 }

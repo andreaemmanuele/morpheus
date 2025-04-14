@@ -2,7 +2,9 @@
   "name": "cli",
   "version": "1.0.0",
   "type": "module",
-  "bin": "./dist/index.js",
+  "bin": {
+    "morpheus": "./dist/index.js"
+  },
   "scripts": {
     "build": "tsup",
     "start": "node --env-file-if-exists=../../.env dist/index.js"
