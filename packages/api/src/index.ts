@@ -2,7 +2,7 @@ import type { AddressInfo } from 'node:net'
 
 import Fastify from 'fastify'
 import 'dotenv/config'
-import migrate from '#migrations/init.ts'
+import migrate from '@/src/migrations/init.js'
 
 const fastify = Fastify({
   logger: true,

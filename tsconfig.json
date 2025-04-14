@@ -1,29 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "preserve",
-    "moduleDetection": "force",
-    "rootDir": "./",
-    "baseUrl": "./src",
-    "outDir": "dist",
-    "paths": {
-      "@routes/*": ["routes/*"],
-      "@migrations/*": ["migrations/*"],
-      "@queries/*": ["queries/*"]
-    },
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "allowJs": true,
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
-    "noUnusedParameters": true,
-    "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true
   },
-  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }

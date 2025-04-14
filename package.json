@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A Headless CMS that adapts to any framework",
   "type": "module",
-  "main": "index.ts",
   "keywords": [
     "headless cms",
     "postgres",
@@ -13,24 +12,19 @@
   "author": "haz3",
   "license": "ISC",
   "scripts": {
+    "api": "pnpm --filter api",
+    "cli": "pnpm --filter cli",
     "postinstall": "npx simple-git-hooks",
     "type-check": "tsc --noEmit",
-    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
-    "dev": "node --experimental-strip-types src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write"
   },
   "lint-staged": {
-    "*.{ts,mjs,json}": "pnpm prettier"
+    "**/*.{ts,mjs,json}": "pnpm prettier",
+    "**/*.{ts,mjs}": "eslint --fix"
   },
   "simple-git-hooks": {
     "commit-msg": "commitlint --edit $1",
     "pre-commit": "npx lint-staged && pnpm type-check"
-  },
-  "imports": {
-    "#routes/*": "./src/routes/*",
-    "#migrations/*": "./src/migrations/*",
-    "#queries/*": "./src/queries/*"
   },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
@@ -38,20 +32,17 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.24.0",
     "@types/node": "^22.14.1",
+    "@types/pg": "^8.11.12",
     "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
     "globals": "^16.0.0",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "simple-git-hooks": "^2.12.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.1"
-  },
-  "dependencies": {
-    "@fastify/postgres": "^6.0.2",
-    "dotenv": "^16.5.0",
-    "fastify": "^5.3.0",
-    "fastify-plugin": "^5.0.1",
-    "pg": "^8.14.1"
+    "typescript-eslint": "^8.29.1",
+    "zod": "^3.24.2"
   }
 }

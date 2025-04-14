@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import postgres from '@fastify/postgres'
-import { queries } from '#queries/index.ts'
+import { queries } from '@/src/queries/index.js'
 
 export default fp(async (fastify) => {
   await fastify.register(postgres, {

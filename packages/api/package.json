@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "type": "module",
+  "description": "",
+  "version": "1.0.0",
+  "author": "haz3",
+  "main": "index.ts",
+  "license": "ISC",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "node dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./queries": {
+      "import": "./dist/queries/index.js",
+      "require": "./dist/queries/index.js",
+      "types": "./dist/queries/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@fastify/postgres": "^6.0.2",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.0",
+    "fastify-plugin": "^5.0.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0"
+  }
+}
