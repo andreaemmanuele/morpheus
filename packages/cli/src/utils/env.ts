@@ -1,9 +1,13 @@
 import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-export const loadEnv = (path = '../../.env') => {
+export const loadEnv = (path = '../../../.env') => {
   try {
-    const envPath = resolve(process.cwd(), path)
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = dirname(__filename)
+
+    const envPath = resolve(__dirname, path)
     const content = readFileSync(envPath, 'utf8')
 
     content.split('\n').forEach((line) => {
