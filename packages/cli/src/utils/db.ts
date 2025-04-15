@@ -1,6 +1,8 @@
 import postgres from 'postgres'
+import { loadEnv } from '@/src/utils/env.js'
 
-if (!process.env.POSTGRES_DB_URL) throw new Error('Missing POSTGRES_DB_URL')
+loadEnv()
+
 const sql = postgres(process.env.POSTGRES_DB_URL as string)
 
 export default {
