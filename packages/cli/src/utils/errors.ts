@@ -15,6 +15,7 @@ type PostgresError = {
 export const handleError = (error: unknown) => {
   const e = error as PostgresError
   const errorCodes = {
+    ECONNREFUSED: 'Failed to connect to the database',
     '23505': `Record already exists in ${e.table_name} table`,
   }
   console.error(errorCodes[e.code as keyof typeof errorCodes])

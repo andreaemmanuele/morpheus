@@ -12,7 +12,7 @@ const createUserSchema = z.object({
 })
 
 export const createUser = new Command()
-  .name('create-user')
+  .name('create:user')
   .description('Create a user')
   .option('--email <email>', 'Email to register')
   .option('--psw <password>', 'Password for user')
@@ -22,7 +22,7 @@ export const createUser = new Command()
       const { data, error } = createUserSchema.safeParse(options)
 
       if (error) {
-        console.error(error.message)
+        console.error('Error:', error.message)
         return
       }
 
