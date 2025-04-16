@@ -26,14 +26,22 @@ export const createUser = new Command()
         return
       }
 
+      const roles = {
+        admin: { id: 1, type: 'admin user', permissions: 'all' },
+        user: { id: 2, type: 'user', permissions: 'basic' },
+      }
+
+      const role = roles[data?.role || 'user']
       const passwordHash = await bcryptjs.hash(data?.psw, 10)
       await db.query(queries.auth.createUser, [
         data?.email,
         passwordHash,
-        data?.role,
+        role.id,
+        true,
+        'active',
       ])
 
-      console.log('Successfully created user')
+      console.log(`Successfully created ${role.type}`)
     } catch (error) {
       handleError(error)
     } finally {

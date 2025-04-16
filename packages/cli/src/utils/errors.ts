@@ -18,5 +18,6 @@ export const handleError = (error: unknown) => {
     ECONNREFUSED: 'Failed to connect to the database',
     '23505': `Record already exists in ${e.table_name} table`,
   }
-  console.error(errorCodes[e.code as keyof typeof errorCodes])
+  const _e = errorCodes[e.code as keyof typeof errorCodes]
+  console.error(_e ? _e : e)
 }

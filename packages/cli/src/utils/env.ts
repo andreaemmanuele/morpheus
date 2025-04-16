@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-export const loadEnv = (path = '../../../.env') => {
+export const loadEnv = (path = '.env') => {
   try {
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(__filename)
