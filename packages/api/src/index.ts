@@ -1,14 +1,34 @@
 import type { AddressInfo } from 'node:net'
 
 import Fastify from 'fastify'
-import 'dotenv/config'
-import migrate from '@/src/migrations/init.js'
+import { configDotenv } from 'dotenv'
+import migrate from '@/src/plugins/migrate.js'
+import jwt from '@/src/plugins/jwt.js'
+import authRoutes from '@/src/routes/auth.js'
+import { authenticate } from '@/src/utils/auth.js'
+
+configDotenv()
 
 const fastify = Fastify({
   logger: true,
 })
 
+// PLUGINS
 fastify.register(migrate)
+fastify.register(jwt)
+
+// ROUTES
+fastify.register(authRoutes, { prefix: '/api' })
+
+fastify.get(
+  '/api/protected',
+  {
+    onRequest: [authenticate],
+  },
+  async (request) => {
+    return { message: 'This is a protected route', user: request.user }
+  }
+)
 
 fastify.ready(async () => {
   try {
