@@ -17,9 +17,10 @@
   "scripts": {
     "api": "pnpm --filter api",
     "cli": "pnpm --filter cli",
-    "postinstall": "npx simple-git-hooks",
+    "postinstall": "npx simple-git-hooks && pnpm sync-env",
     "type-check": "tsc --noEmit",
-    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write"
+    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
+    "sync-env": "./scripts/sync-env.bash"
   },
   "lint-staged": {
     "**/*.{ts,mjs,json}": "pnpm prettier",
