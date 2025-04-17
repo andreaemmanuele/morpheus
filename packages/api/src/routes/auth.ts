@@ -5,18 +5,19 @@ import {
   incrementLoginAttempts,
   updateLastLogin,
   validatePassword,
-} from '@/src/services/user.js'
+} from '@/src/services/user'
 
 import {
   createRefreshToken,
   findRefreshToken,
   revokeRefreshToken,
-} from '@/src/services/refresh-token.js'
-import { authenticate } from '@/src/utils/auth.js'
+} from '@/src/services/refresh-token'
+import { authenticate } from '@/src/utils/auth'
+import { loginBodySchema, refreshTokenSchema } from '@/src/schemas/auth'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post('/auth/login', async (request, reply) => {
-    const { email, password } = request.body
+    const { email, password } = loginBodySchema.parse(request.body)
 
     const user = await findUserByEmail(email)
     if (!user) {
@@ -51,7 +52,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
   })
 
   fastify.post('/auth/refresh', async (request, reply) => {
-    const { refreshToken } = request.body
+    const { refreshToken } = refreshTokenSchema.parse(request.body)
 
     if (!refreshToken) {
       reply.code(400).send({ error: 'Refresh token is required' })
@@ -83,7 +84,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
     '/auth/logout',
     { onRequest: [authenticate] },
     async (request, reply) => {
-      const { refreshToken } = request.body
+      const { refreshToken } = refreshTokenSchema.parse(request.body)
 
       if (!refreshToken) {
         reply.code(400).send({ error: 'Refresh token is required' })

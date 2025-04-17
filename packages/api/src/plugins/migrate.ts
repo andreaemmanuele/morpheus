@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
-import { queries } from '@/src/queries/index.js'
-import { connect } from '@/src/utils/db.js'
+import { queries } from '@/src/queries'
+import { connect } from '@/src/utils/db'
 
 export default fp(async (fastify) => {
   fastify.decorate('runMigrations', async () => {
@@ -10,7 +10,7 @@ export default fp(async (fastify) => {
       await client.query('BEGIN')
       await Promise.all(
         queries.migrations.map(
-          async (migration) => await client.query(migration)
+          async (migration: string) => await client.query(migration)
         )
       )
       await client.query('COMMIT')

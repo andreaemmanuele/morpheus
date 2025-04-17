@@ -2,10 +2,10 @@ import type { AddressInfo } from 'node:net'
 
 import Fastify from 'fastify'
 import { configDotenv } from 'dotenv'
-import migrate from '@/src/plugins/migrate.js'
-import jwt from '@/src/plugins/jwt.js'
-import authRoutes from '@/src/routes/auth.js'
-import { authenticate } from '@/src/utils/auth.js'
+import migrate from '@/src/plugins/migrate'
+import jwt from '@/src/plugins/jwt'
+import authRoutes from '@/src/routes/auth'
+import { authenticate } from '@/src/utils/auth'
 
 configDotenv()
 

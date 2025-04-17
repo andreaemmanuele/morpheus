@@ -1,6 +1,6 @@
 import crypto from 'crypto'
-import { connect } from '@/src/utils/db.js'
-import { queries } from '@/src/queries/index.js'
+import { connect } from '@/src/utils/db'
+import { queries } from '@/src/queries'
 
 const { client } = await connect()
 

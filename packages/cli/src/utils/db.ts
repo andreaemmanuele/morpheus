@@ -1,5 +1,5 @@
 import postgres from 'postgres'
-import { loadEnv } from '@/src/utils/env.js'
+import { loadEnv } from '@/src/utils/env'
 
 loadEnv('../.env')
 
