@@ -19,14 +19,19 @@ declare module '@/src/utils/db' {
   ) => QueryResult<unknown>
 }
 
+declare module '@/src/types' {
+  export { UserStatus } from './src/types'
+}
+
 declare module '@/src/*' {
   export {
     findUserByEmail,
     findUserById,
-    generatePasswordHash,
-    validatePassword,
+    updateUserStatus,
     updateLastLogin,
     incrementLoginAttempts,
+    generatePasswordHash,
+    validatePassword,
   } from './src/services/user'
 
   export {

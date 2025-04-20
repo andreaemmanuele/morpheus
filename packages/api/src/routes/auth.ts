@@ -3,6 +3,7 @@ import {
   findUserByEmail,
   findUserById,
   incrementLoginAttempts,
+  updateUserStatus,
   updateLastLogin,
   validatePassword,
 } from '@/src/services/user'
@@ -20,6 +21,13 @@ export default async function authRoutes(fastify: FastifyInstance) {
     const { email, password } = loginBodySchema.parse(request.body)
 
     const user = await findUserByEmail(email)
+    if (!!user && user.login_attempts === 5) {
+      reply.code(401).send({
+        error: 'Account suspended. An email has been sent to unlock it.',
+      })
+      return
+    }
+
     if (!user) {
       reply.code(401).send({ error: 'Invalid credentials' })
       return
@@ -27,7 +35,15 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
     const isPasswordValid = await validatePassword(password, user.password_hash)
     if (!isPasswordValid) {
-      await incrementLoginAttempts(user.id)
+      const { login_attempts } = await incrementLoginAttempts(user.id)
+      if (login_attempts === 5) {
+        await updateUserStatus('suspended', user.id)
+        // send email to unlock
+        return reply.code(401).send({
+          error:
+            'You have reached maximum login attempts. An email has been sent to unlock your account.',
+        })
+      }
       reply.code(401).send({ error: 'Invalid credentials' })
       return
     }

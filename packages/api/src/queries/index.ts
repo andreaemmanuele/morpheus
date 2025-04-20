@@ -3,6 +3,7 @@ import createRefreshTokensTable from '@/src/queries/migrations/create-refresh-to
 import createUser from '@/src/queries/users/create-user'
 import findUserByEmail from '@/src/queries/users/find-user-by-email'
 import findUserById from '@/src/queries/users/find-user-by-id'
+import updateUserStatus from '@/src/queries/users/update-user-status'
 import updateLastLogin from '@/src/queries/users/update-last-login'
 import incrementLoginAttempts from '@/src/queries/users/increment-login-attempts'
 import createRefreshToken from '@/src/queries/refresh-tokens/create-refresh-token'
@@ -26,6 +27,7 @@ export const queries = {
     createUser,
     findUserByEmail,
     findUserById,
+    updateUserStatus,
     updateLastLogin,
     incrementLoginAttempts,
     createRefreshToken,
