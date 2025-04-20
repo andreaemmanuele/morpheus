@@ -14,18 +14,26 @@ import {
 } from '@/src/services/refresh-token'
 import { authenticate } from '@/src/utils/auth'
 import { loginBodySchema, refreshTokenSchema } from '@/src/schemas/auth'
+import { connect } from '@/src/utils/db'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post('/auth/login', async (request, reply) => {
     const { email, password } = loginBodySchema.parse(request.body)
 
+    const { client } = await connect()
+
+    const users = await client.query(`SELECT * FROM users`)
+    fastify.log.info({ users })
+    fastify.log.info(`${email}`)
     const user = await findUserByEmail(email)
+    fastify.log.info(`${JSON.stringify(user)}`)
     if (!user) {
       reply.code(401).send({ error: 'Invalid credentials' })
       return
     }
 
     const isPasswordValid = await validatePassword(password, user.password_hash)
+    fastify.log.info(`User ${password}, ${isPasswordValid}`)
     if (!isPasswordValid) {
       await incrementLoginAttempts(user.id)
       reply.code(401).send({ error: 'Invalid credentials' })
