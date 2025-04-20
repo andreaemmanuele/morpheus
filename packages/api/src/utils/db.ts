@@ -10,3 +10,8 @@ export const connect = async () => {
   const client = await fs.pg.connect()
   return { client }
 }
+
+export const executeQuery = async <T>(query: string, values: T[]) => {
+  const { client } = await connect()
+  return client.query(query, values)
+}

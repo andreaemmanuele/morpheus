@@ -1,24 +1,22 @@
 import bcryptjs from 'bcryptjs'
-import { connect } from '@/src/utils/db'
+import { executeQuery } from '@/src/utils/db'
 import { queries } from '@/src/queries'
 
-const { client } = await connect()
-
 export const findUserByEmail = async (email: string) => {
-  const result = await client.query(queries.auth.findUserByEmail, [email])
+  const result = await executeQuery(queries.auth.findUserByEmail, [email])
   return result.rows[0]
 }
 
 export const findUserById = async (id: string) => {
-  const result = await client.query(queries.auth.findUserById, [id])
+  const result = await executeQuery(queries.auth.findUserById, [id])
   return result.rows[0]
 }
 
 export const updateLastLogin = async (userId: string) =>
-  await client.query(queries.auth.updateLastLogin, [userId])
+  await executeQuery(queries.auth.updateLastLogin, [userId])
 
 export const incrementLoginAttempts = async (userId: string) =>
-  await client.query(queries.auth.incrementLoginAttempts, [userId])
+  await executeQuery(queries.auth.incrementLoginAttempts, [userId])
 
 export const validatePassword = async (
   plainPassword: string,

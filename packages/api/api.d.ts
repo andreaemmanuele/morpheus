@@ -11,8 +11,12 @@ declare module '@/src/routes/auth' {
 }
 
 declare module '@/src/utils/db' {
-  import { PoolClient } from 'pg'
+  import { PoolClient, QueryResult } from 'pg'
   export const connect: () => Promise<{ client: PoolClient }>
+  export const executeQuery: <T>(
+    query: string,
+    params: T[]
+  ) => QueryResult<unknown>
 }
 
 declare module '@/src/*' {
