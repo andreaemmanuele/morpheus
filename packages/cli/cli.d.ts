@@ -1,5 +1,5 @@
-declare module 'api/src/queries' {
-  export { queries } from 'api/src/queries'
+declare module 'api/queries' {
+  export { queries } from 'api/queries'
 }
 
 declare module '@/src/utils/db' {

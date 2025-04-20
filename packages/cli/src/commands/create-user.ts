@@ -1,9 +1,9 @@
 import bcryptjs from 'bcryptjs'
 import { Command } from 'commander'
-import { z } from 'zod'
-import { queries } from 'api/src/queries'
+import { queries } from 'api/queries'
 import db from '@/src/utils/db'
 import { handleError } from '@/src/utils/errors'
+import { z } from 'zod'
 
 const createUserSchema = z.object({
   email: z.string(),
