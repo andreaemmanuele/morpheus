@@ -3,6 +3,7 @@ import type { AddressInfo } from 'node:net'
 import Fastify from 'fastify'
 import { configDotenv } from 'dotenv'
 import migrate from '@/src/plugins/migrate'
+import cors from '@/src/plugins/cors'
 import jwt from '@/src/plugins/jwt'
 import authRoutes from '@/src/routes/auth'
 import { authenticate } from '@/src/utils/auth'
@@ -15,6 +16,7 @@ const fastify = Fastify({
 
 // PLUGINS
 fastify.register(migrate)
+fastify.register(cors)
 fastify.register(jwt)
 
 // ROUTES
