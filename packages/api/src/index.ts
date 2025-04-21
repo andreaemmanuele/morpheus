@@ -7,7 +7,7 @@ import cors from '@/src/plugins/cors'
 import rateLimit from '@/src/plugins/rate-limit'
 import jwt from '@/src/plugins/jwt'
 import authRoutes from '@/src/routes/auth'
-import { authenticate } from '@/src/utils/auth'
+import { authenticate, isAdmin } from '@/src/utils/auth'
 
 configDotenv()
 
@@ -31,6 +31,16 @@ fastify.get(
   },
   async (request) => {
     return { message: 'This is a protected route', user: request.user }
+  }
+)
+
+fastify.get(
+  '/api/admin/protected',
+  {
+    onRequest: [isAdmin],
+  },
+  async (request) => {
+    return { message: 'This is a admin protected route', user: request.user }
   }
 )
 

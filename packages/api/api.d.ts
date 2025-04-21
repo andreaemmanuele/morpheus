@@ -43,6 +43,6 @@ declare module '@/src/*' {
   export * from './src/plugins/migrate'
   export { queries } from './src/queries'
   export { loginBodySchema, refreshTokenSchema } from './src/schemas/auth'
-  export { authenticate } from './src/utils/auth'
+  export { authenticate, isAdmin } from './src/utils/auth'
   export { sendEmail } from './src/emails'
 }
