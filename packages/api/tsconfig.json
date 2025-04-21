@@ -6,6 +6,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["src/**/*.ts", "fastify-decorators.d.ts"],
+  "include": ["src/**/*.ts", "fastify-decorators.d.ts", "fastify-jwt.d.ts"],
   "exclude": ["node_modules", "api.d.ts"]
 }
