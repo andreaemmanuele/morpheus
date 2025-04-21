@@ -10,6 +10,7 @@ export default `
     INSERT INTO roles (name, description) 
     VALUES 
         ('admin', 'user with all permissions'), 
-        ('user', 'user with basic permissions')
+        ('editor', 'user with permissions to create, edit and delete content'),
+        ('user', 'user with no permissions at all')
     ON CONFLICT (name) DO NOTHING;
     `
