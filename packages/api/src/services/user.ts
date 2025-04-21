@@ -1,33 +1,29 @@
+import { LoginAttempts, User, UserStatus } from '@/src/types'
 import bcryptjs from 'bcryptjs'
-import { UserStatus } from '@/src/types'
 import { executeQuery } from '@/src/utils/db'
 import { queries } from '@/src/queries'
 
 export const findUserByEmail = async (email: string) => {
-  const result = await executeQuery(queries.auth.findUserByEmail, [email])
+  const result = await executeQuery<User>(queries.auth.findUserByEmail, [email])
   return result.rows[0]
 }
 
-export const findUserById = async (id: string) => {
-  const result = await executeQuery(queries.auth.findUserById, [id])
+export const findUserById = async (id: number) => {
+  const result = await executeQuery<User>(queries.auth.findUserById, [id])
   return result.rows[0]
 }
 
-export const updateUserStatus = async (status: UserStatus, userId: string) => {
-  const result = await executeQuery(queries.auth.updateUserStatus, [
-    status,
-    userId,
-  ])
-  return result.rows[0]
-}
+export const updateUserStatus = async (status: UserStatus, userId: number) =>
+  await executeQuery(queries.auth.updateUserStatus, [status, userId])
 
-export const updateLastLogin = async (userId: string) =>
+export const updateLastLogin = async (userId: number) =>
   await executeQuery(queries.auth.updateLastLogin, [userId])
 
-export const incrementLoginAttempts = async (userId: string) => {
-  const result = await executeQuery(queries.auth.incrementLoginAttempts, [
-    userId,
-  ])
+export const incrementLoginAttempts = async (userId: number) => {
+  const result = await executeQuery<LoginAttempts>(
+    queries.auth.incrementLoginAttempts,
+    [userId]
+  )
   return result.rows[0]
 }
 

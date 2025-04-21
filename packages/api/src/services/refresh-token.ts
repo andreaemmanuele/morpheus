@@ -1,8 +1,9 @@
+import type { Token } from '@/src/types'
 import crypto from 'crypto'
 import { executeQuery } from '@/src/utils/db'
 import { queries } from '@/src/queries'
 
-export const createRefreshToken = async (userId: string) => {
+export const createRefreshToken = async (userId: number) => {
   const token = crypto.randomBytes(40).toString('hex')
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
@@ -16,7 +17,9 @@ export const createRefreshToken = async (userId: string) => {
 }
 
 export const findRefreshToken = async (token: string) => {
-  const result = await executeQuery(queries.auth.findRefreshToken, [token])
+  const result = await executeQuery<Token>(queries.auth.findRefreshToken, [
+    token,
+  ])
   return result.rows[0]
 }
 

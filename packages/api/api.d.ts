@@ -20,7 +20,7 @@ declare module '@/src/utils/db' {
 }
 
 declare module '@/src/types' {
-  export { UserStatus } from './src/types'
+  export { User, UserRole, UserStatus, LoginAttempts, Token } from './src/types'
 }
 
 declare module '@/src/*' {

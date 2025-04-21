@@ -1,5 +1,6 @@
 import postgres from '@fastify/postgres'
 import fastify from 'fastify'
+import { QueryResult } from 'pg'
 
 export const connect = async () => {
   const fs = fastify()
@@ -11,7 +12,10 @@ export const connect = async () => {
   return { client }
 }
 
-export const executeQuery = async <T>(query: string, values: T[]) => {
+export const executeQuery = async <T extends object>(
+  query: string,
+  values: unknown[]
+) => {
   const { client } = await connect()
-  return client.query(query, values)
+  return client.query(query, values) as Promise<QueryResult<T>>
 }
