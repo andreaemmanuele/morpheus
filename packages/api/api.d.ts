@@ -44,4 +44,5 @@ declare module '@/src/*' {
   export { queries } from './src/queries'
   export { loginBodySchema, refreshTokenSchema } from './src/schemas/auth'
   export { authenticate } from './src/utils/auth'
+  export { sendEmail } from './src/emails'
 }
