@@ -3,9 +3,12 @@ import createRefreshTokensTable from '@/src/queries/migrations/create-refresh-to
 import createUser from '@/src/queries/users/create-user'
 import findUserByEmail from '@/src/queries/users/find-user-by-email'
 import findUserById from '@/src/queries/users/find-user-by-id'
-import updateUserStatus from '@/src/queries/users/update-user-status'
+import findUserBySuspendedToken from '@/src/queries/users/find-user-by-suspended-token'
+import updateStatus from '@/src/queries/users/update-status'
+import updateSuspendedToken from '@/src/queries/users/update-suspended-token'
 import updateLastLogin from '@/src/queries/users/update-last-login'
 import incrementLoginAttempts from '@/src/queries/users/increment-login-attempts'
+import resetLoginAttempts from '@/src/queries/users/reset-login-attempts'
 import createRefreshToken from '@/src/queries/refresh-tokens/create-refresh-token'
 import findRefreshToken from '@/src/queries/refresh-tokens/find-refresh-token'
 import revokeRefreshToken from '@/src/queries/refresh-tokens/revoke-refresh-token'
@@ -27,9 +30,12 @@ export const queries = {
     createUser,
     findUserByEmail,
     findUserById,
-    updateUserStatus,
+    findUserBySuspendedToken,
+    updateStatus,
+    updateSuspendedToken,
     updateLastLogin,
     incrementLoginAttempts,
+    resetLoginAttempts,
     createRefreshToken,
     findRefreshToken,
     revokeRefreshToken,

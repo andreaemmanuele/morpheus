@@ -27,9 +27,12 @@ declare module '@/src/*' {
   export {
     findUserByEmail,
     findUserById,
+    findUserBySuspendedToken,
     updateUserStatus,
     updateLastLogin,
+    updateSuspendedToken,
     incrementLoginAttempts,
+    resetLoginAttempts,
     generatePasswordHash,
     validatePassword,
   } from './src/services/user'
@@ -42,7 +45,13 @@ declare module '@/src/*' {
 
   export * from './src/plugins/migrate'
   export { queries } from './src/queries'
-  export { loginBodySchema, refreshTokenSchema } from './src/schemas/auth'
+  export {
+    loginBodySchema,
+    refreshTokenSchema,
+    unlockAccountSchema,
+  } from './src/schemas/auth'
   export { authenticate, isAdmin } from './src/utils/auth'
+  export { generateRandomToken } from './src/utils/tokens'
   export { sendEmail } from './src/emails'
+  export { AccountLocked } from './src/emails/templates/AccountLocked'
 }

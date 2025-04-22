@@ -8,3 +8,7 @@ export const loginBodySchema = z.object({
 export const refreshTokenSchema = z.object({
   refreshToken: z.string(),
 })
+
+export const unlockAccountSchema = z.object({
+  token: z.string(),
+})

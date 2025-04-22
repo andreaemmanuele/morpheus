@@ -2,14 +2,12 @@ import type { FastifyInstance } from 'fastify'
 import type Mail from 'nodemailer/lib/mailer'
 import nodemailer from 'nodemailer'
 import juice from 'juice'
-
-export const templates = {
-  unlockAccount: '',
-}
+import { renderToStaticMarkup } from 'react-dom/server'
+import { ReactNode } from 'react'
 
 export const sendEmail = async (
   fastify: FastifyInstance,
-  htmlContent: string,
+  content: ReactNode,
   options: Mail.Options
 ) => {
   const transporter = nodemailer.createTransport({
@@ -24,6 +22,7 @@ export const sendEmail = async (
 
   try {
     await transporter.verify()
+    const htmlContent = renderToStaticMarkup(content)
     const { messageId, accepted, rejected } = await transporter.sendMail({
       ...options,
       from: `"${process.env.APP_NAME}" <${process.env.SMTP_USER}>`,

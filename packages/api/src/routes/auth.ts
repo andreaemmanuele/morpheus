@@ -1,11 +1,15 @@
 import type { FastifyInstance } from 'fastify'
+import React from 'react'
 import {
   findUserByEmail,
   findUserById,
-  incrementLoginAttempts,
   updateUserStatus,
+  updateSuspendedToken,
   updateLastLogin,
+  incrementLoginAttempts,
   validatePassword,
+  findUserBySuspendedToken,
+  resetLoginAttempts,
 } from '@/src/services/user'
 
 import {
@@ -13,9 +17,15 @@ import {
   findRefreshToken,
   revokeRefreshToken,
 } from '@/src/services/refresh-token'
-import { authenticate } from '@/src/utils/auth'
-import { loginBodySchema, refreshTokenSchema } from '@/src/schemas/auth'
 import { sendEmail } from '@/src/emails'
+import { AccountLocked } from '@/src/emails/templates/AccountLocked'
+import { authenticate } from '@/src/utils/auth'
+import { generateRandomToken } from '@/src/utils/tokens'
+import {
+  loginBodySchema,
+  refreshTokenSchema,
+  unlockAccountSchema,
+} from '@/src/schemas/auth'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -52,12 +62,20 @@ export default async function authRoutes(fastify: FastifyInstance) {
       if (!isPasswordValid) {
         const { login_attempts } = await incrementLoginAttempts(user.id)
         if (login_attempts >= 5) {
+          const token = generateRandomToken()
           await Promise.all([
             updateUserStatus('suspended', user.id),
-            sendEmail(fastify, '', {
-              subject: 'Your account has been suspended',
-              to: email,
-            }),
+            updateSuspendedToken(token, user.id),
+            sendEmail(
+              fastify,
+              React.createElement(AccountLocked, {
+                token,
+              }),
+              {
+                subject: 'Your account has been suspended',
+                to: email,
+              }
+            ),
           ])
           reply.code(403).send({
             error:
@@ -127,6 +145,32 @@ export default async function authRoutes(fastify: FastifyInstance) {
       })
 
       return { accessToken }
+    }
+  )
+
+  fastify.get(
+    '/auth/unlock-account/:token',
+    {
+      config: {
+        rateLimit: {
+          max: 3,
+          timeWindow: '15 minutes',
+        },
+      },
+    },
+    async (request, reply) => {
+      const { token } = unlockAccountSchema.parse(request.params)
+      const user = await findUserBySuspendedToken(token)
+      if (!user) {
+        reply.code(401).send({ error: 'Invalid token' })
+        return
+      }
+      await Promise.all([
+        updateSuspendedToken(null, user.id),
+        updateUserStatus('active', user.id),
+        resetLoginAttempts(user.id),
+      ])
+      reply.redirect(process.env.BASE_URL || '/')
     }
   )
 

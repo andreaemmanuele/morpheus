@@ -1,10 +1,10 @@
 import type { Token } from '@/src/types'
-import crypto from 'crypto'
-import { executeQuery } from '@/src/utils/db'
 import { queries } from '@/src/queries'
+import { executeQuery } from '@/src/utils/db'
+import { generateRandomToken } from '@/src/utils/tokens'
 
 export const createRefreshToken = async (userId: number) => {
-  const token = crypto.randomBytes(40).toString('hex')
+  const token = generateRandomToken()
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
   await executeQuery(queries.auth.createRefreshToken, [

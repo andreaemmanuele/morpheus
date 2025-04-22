@@ -6,6 +6,7 @@ export default `
         password_hash VARCHAR(60) NOT NULL,
         password_reset_token VARCHAR(100),
         password_reset_expires TIMESTAMP,
+        suspended_token VARCHAR(100),
         role_id INTEGER references roles(id) NOT NULL,
         email_verified BOOLEAN NOT NULL DEFAULT false,
         status user_status DEFAULT 'pending',

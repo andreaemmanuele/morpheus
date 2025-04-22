@@ -1,4 +1,4 @@
-import { LoginAttempts, User, UserStatus } from '@/src/types'
+import type { LoginAttempts, User, UserStatus } from '@/src/types'
 import bcryptjs from 'bcryptjs'
 import { executeQuery } from '@/src/utils/db'
 import { queries } from '@/src/queries'
@@ -13,8 +13,21 @@ export const findUserById = async (id: number) => {
   return result.rows[0]
 }
 
+export const findUserBySuspendedToken = async (token: string) => {
+  const result = await executeQuery<User>(
+    queries.auth.findUserBySuspendedToken,
+    [token]
+  )
+  return result.rows[0]
+}
+
 export const updateUserStatus = async (status: UserStatus, userId: number) =>
-  await executeQuery(queries.auth.updateUserStatus, [status, userId])
+  await executeQuery(queries.auth.updateStatus, [status, userId])
+
+export const updateSuspendedToken = async (
+  token: string | null,
+  userId: number
+) => await executeQuery(queries.auth.updateSuspendedToken, [token, userId])
 
 export const updateLastLogin = async (userId: number) =>
   await executeQuery(queries.auth.updateLastLogin, [userId])
@@ -26,6 +39,9 @@ export const incrementLoginAttempts = async (userId: number) => {
   )
   return result.rows[0]
 }
+
+export const resetLoginAttempts = async (userId: number) =>
+  await executeQuery(queries.auth.resetLoginAttempts, [userId])
 
 export const validatePassword = async (
   plainPassword: string,
