@@ -1,9 +1,11 @@
 {
   "name": "morpheus",
   "version": "1.0.0",
+  "private": true,
   "description": "A Headless CMS that adapts to any framework",
   "type": "module",
   "keywords": [
+    "fastify",
     "headless cms",
     "postgres",
     "graphql",
@@ -16,11 +18,15 @@
   "license": "ISC",
   "scripts": {
     "api": "pnpm --filter api",
+    "app": "pnpm --filter app",
     "cli": "pnpm --filter cli",
     "postinstall": "npx simple-git-hooks && pnpm sync-env",
     "type-check": "tsc --noEmit",
     "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
-    "sync-env": "./scripts/sync-env.bash"
+    "sync-env": "./scripts/sync-env.bash",
+    "dev": "concurrently \"pnpm api dev\" \"pnpm app dev\"",
+    "build": "pnpm api build && pnpm app build",
+    "start": "pnpm api start"
   },
   "lint-staged": {
     "**/*.{ts,mjs,json}": "pnpm prettier",
@@ -37,6 +43,7 @@
     "@eslint/js": "^9.24.0",
     "@types/node": "^22.14.1",
     "@types/pg": "^8.11.12",
+    "concurrently": "^9.1.2",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",

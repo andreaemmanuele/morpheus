@@ -6,6 +6,8 @@ import migrate from '@/src/plugins/migrate'
 import cors from '@/src/plugins/cors'
 import rateLimit from '@/src/plugins/rate-limit'
 import jwt from '@/src/plugins/jwt'
+import proxy from '@/src/plugins/proxy'
+import serveStatic from '@/src/plugins/serve-static'
 import authRoutes from '@/src/routes/auth'
 import { authenticate, isAdmin } from '@/src/utils/auth'
 
@@ -15,13 +17,11 @@ const fastify = Fastify({
   logger: true,
 })
 
-// PLUGINS
 fastify.register(migrate)
 fastify.register(cors)
 fastify.register(rateLimit)
 fastify.register(jwt)
 
-// ROUTES
 fastify.register(authRoutes, { prefix: '/api' })
 
 fastify.get(
@@ -43,6 +43,9 @@ fastify.get(
     return { message: 'This is a admin protected route', user: request.user }
   }
 )
+
+fastify.register(proxy)
+fastify.register(serveStatic)
 
 fastify.ready(async () => {
   try {
