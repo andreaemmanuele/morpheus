@@ -3,6 +3,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "node",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "sourceMap": true,
     "resolveJsonModule": true,
@@ -11,7 +12,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
-    "jsx": "react"
+    "allowImportingTsExtensions": true
   },
   "exclude": ["node_modules"]
 }
