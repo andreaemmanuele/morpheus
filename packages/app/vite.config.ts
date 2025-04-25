@@ -1,25 +1,23 @@
-import path from 'path'
+import { vitePlugin as remix } from '@remix-run/dev'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+declare module '@remix-run/server-runtime' {
+  interface Future {
+    unstable_singleFetch: true
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
+  plugins: [
+    remix({
+      appDirectory: './src',
+      future: {
+        unstable_singleFetch: true,
       },
-    },
-  },
-  build: {
-    outDir: '../api/public',
-  },
+    }),
+    tsconfigPaths(),
+    tailwindcss(),
+  ],
 })

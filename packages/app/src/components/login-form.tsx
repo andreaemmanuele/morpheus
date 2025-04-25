@@ -1,9 +1,10 @@
 import type { ComponentPropsWithoutRef } from 'react'
+import { Form } from '@remix-run/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
 import { Logo } from '@/components/ui/logo'
+import { cn } from '@/lib/utils'
 
 export function LoginForm({
   className,
@@ -11,7 +12,7 @@ export function LoginForm({
 }: ComponentPropsWithoutRef<'div'>) {
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <form>
+      <Form method="post">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <a
@@ -36,19 +37,20 @@ export function LoginForm({
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
               />
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
               Login
             </Button>
           </div>
         </div>
-      </form>
+      </Form>
     </div>
   )
 }

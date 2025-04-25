@@ -39,7 +39,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { email, password } = loginBodySchema.parse(request.body)
+      const { email, password } = loginBodySchema.parse(
+        JSON.parse(request.body as string)
+      )
 
       const user = await findUserByEmail(email)
       if (!!user && user.login_attempts === 5) {

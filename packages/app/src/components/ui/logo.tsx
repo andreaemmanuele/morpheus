@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 
 export function Logo({ width, height, ...props }: ComponentProps<'svg'>) {
   return (
@@ -13,9 +13,9 @@ export function Logo({ width, height, ...props }: ComponentProps<'svg'>) {
       <path
         d="M6 6L66 86L126 6M6 126L66 46L126 126"
         stroke="currentColor"
-        stroke-width="12"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="12"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

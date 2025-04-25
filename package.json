@@ -17,7 +17,6 @@
   },
   "license": "ISC",
   "scripts": {
-    "api": "pnpm --filter api",
     "app": "pnpm --filter app",
     "cli": "pnpm --filter cli",
     "postinstall": "npx simple-git-hooks && pnpm sync-env",
@@ -26,7 +25,7 @@
     "sync-env": "./scripts/sync-env.bash",
     "dev": "concurrently \"pnpm api dev\" \"pnpm app dev\"",
     "build": "pnpm api build && pnpm app build",
-    "start": "pnpm api start"
+    "start": "concurrently \"pnpm api start\" \"pnpm app start\""
   },
   "lint-staged": {
     "**/*.{ts,mjs,json}": "pnpm prettier",
