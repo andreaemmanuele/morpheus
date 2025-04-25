@@ -1,0 +1,18 @@
+{
+  "name": "shared",
+  "version": "0.1.0",
+  "description": "Shared utilities among packages",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.1"
+}

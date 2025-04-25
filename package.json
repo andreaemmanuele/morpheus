@@ -1,41 +1,69 @@
 {
   "name": "morpheus",
   "version": "1.0.0",
+  "private": true,
   "description": "A Headless CMS that adapts to any framework",
-  "main": "index.ts",
-  "scripts": {
-    "postinstall": "npx simple-git-hooks",
-    "type-check": "tsc --noEmit",
-    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write"
-  },
-  "lint-staged": {
-    "*.{ts,mjs,json}": "pnpm prettier"
-  },
-  "simple-git-hooks": {
-    "commit-msg": "commitlint --edit $1",
-    "pre-commit": "npx lint-staged && pnpm type-check"
-  },
+  "type": "module",
   "keywords": [
+    "fastify",
     "headless cms",
     "postgres",
     "graphql",
     "rest api"
   ],
-  "author": "haz3",
+  "author": {
+    "name": "haz3",
+    "url": "https://www.linkedin.com/in/andreaemmanuele/"
+  },
   "license": "ISC",
+  "scripts": {
+    "app": "pnpm --filter app",
+    "cli": "pnpm --filter cli",
+    "shared": "pnpm --filter shared",
+    "postinstall": "npx simple-git-hooks && pnpm sync-env",
+    "typecheck": "concurrently \"pnpm --filter=\"./packages/*\" typecheck\"",
+    "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
+    "dev": "pnpm app dev",
+    "build": "pnpm clean-all && concurrently \"pnpm --filter=\"./packages/*\" build\"",
+    "start": "pnpm app start",
+    "clean-all": "concurrently \"pnpm --filter=\"./packages/*\" clean\"",
+    "sync-env": "./scripts/sync-env.bash"
+  },
+  "lint-staged": {
+    "**/*.{ts,mjs,json}": "pnpm prettier",
+    "**/*.{ts,mjs}": "eslint --fix"
+  },
+  "simple-git-hooks": {
+    "commit-msg": "commitlint --edit $1",
+    "pre-commit": "npx lint-staged && pnpm typecheck"
+  },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.24.0",
     "@types/node": "^22.14.1",
+    "@types/pg": "^8.11.12",
+    "concurrently": "^9.1.2",
     "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
     "globals": "^16.0.0",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "simple-git-hooks": "^2.12.1",
+    "tsup": "^8.4.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.1"
+    "typescript-eslint": "^8.29.1",
+    "zod": "^3.24.2"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "dependencies": {
+    "add": "^2.0.6",
+    "bcryptjs": "^3.0.2",
+    "ora": "^8.2.0"
   }
 }
