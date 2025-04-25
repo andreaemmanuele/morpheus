@@ -1,12 +1,15 @@
 import fp from 'fastify-plugin'
 import { queries } from '../queries/index.js'
 import { connect } from '../utils/db.js'
+import chalk from 'chalk'
+import ora from 'ora'
 
 export default fp(async (fastify) => {
   fastify.decorate('runMigrations', async () => {
     const { client } = await connect()
     try {
-      fastify.log.info('Initializing database tables...')
+      const loader = ora('Running migrations').start()
+      loader.color = 'blue'
       await client.query('BEGIN')
       await Promise.all(
         queries.migrations.map(
@@ -14,7 +17,8 @@ export default fp(async (fastify) => {
         )
       )
       await client.query('COMMIT')
-      fastify.log.info('Database initialized successfully')
+      loader.stop()
+      console.log(chalk.blue('Database ready 🗿'))
     } catch (err) {
       await client.query('ROLLBACK')
       console.log({ err })

@@ -51,7 +51,7 @@ app.ready(async () => {
   }
 })
 
-const host = process.env.HOST === 'true' ? '0.0.0.0' : '127.0.0.1'
+const host = process.env.HOST === 'true' ? '0.0.0.0' : 'localhost'
 const desiredPort = Number(process.env.PORT) || 3000
 const portToUse = await getPort({
   port: portNumbers(desiredPort, desiredPort + 100),
@@ -67,4 +67,8 @@ if (portToUse !== desiredPort) {
   )
 }
 
-console.log(chalk.green(`✅ app ready: ${address}`))
+if (address.match(/http:\/\/\[::1\]/)) {
+  address = address.replace(/http:\/\/\[::1\]/, 'http://localhost')
+}
+
+console.log(chalk.green(`App up and running at ${address}`))

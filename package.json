@@ -24,7 +24,7 @@
     "typecheck": "concurrently \"pnpm --filter=\"./packages/*\" typecheck\"",
     "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
     "dev": "pnpm app dev",
-    "build": "concurrently \"pnpm --filter=\"./packages/*\" build\"",
+    "build": "pnpm clean-all && concurrently \"pnpm --filter=\"./packages/*\" build\"",
     "start": "pnpm app start",
     "clean-all": "concurrently \"pnpm --filter=\"./packages/*\" clean\"",
     "sync-env": "./scripts/sync-env.bash"
@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "add": "^2.0.6",
-    "bcryptjs": "^3.0.2"
+    "bcryptjs": "^3.0.2",
+    "ora": "^8.2.0"
   }
 }

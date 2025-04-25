@@ -3,4 +3,4 @@ export default `
       id SERIAL PRIMARY KEY,
       role_id INTEGER references roles(id) NOT NULL,
       permission_id INTEGER references permissions(id) NOT NULL
-    );`;
+    );`

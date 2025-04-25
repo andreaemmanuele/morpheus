@@ -1,1 +1,1 @@
-export default `UPDATE refresh_tokens SET revoked = true WHERE token = $1`;
+export default `UPDATE refresh_tokens SET revoked = true WHERE token = $1`
