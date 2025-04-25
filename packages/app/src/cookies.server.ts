@@ -5,5 +5,5 @@ export const authCookie = createCookie('auth', {
   sameSite: 'lax',
   httpOnly: true,
   maxAge: 60 * 60 * 24 * 30, // 1 month
-  secure: process.env.NODE_ENV === 'production',
+  secure: process.env.IS_PRODUCTION === 'true',
 })

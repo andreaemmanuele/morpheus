@@ -2,9 +2,14 @@ import { useActionData, useNavigation } from '@remix-run/react'
 import { guestRouteGuard } from '@/loaders/auth'
 import { login } from '@/actions/login'
 import { LoginForm } from '@/components/login-form'
+import type { MetaFunction } from '@remix-run/node'
 
 export const loader = guestRouteGuard
 export const action = login
+
+export const meta: MetaFunction = () => {
+  return [{ name: 'description', content: 'Welcome to Morpheus' }]
+}
 
 export default function LoginPage() {
   const data = useActionData<typeof action>()
