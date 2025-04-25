@@ -8,4 +8,5 @@ dist
 build
 
 packages/api/public
+packages/app/server/index.js
 
