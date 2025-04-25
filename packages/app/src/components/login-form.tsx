@@ -6,10 +6,9 @@ import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/utils'
 
-export function LoginForm({
-  className,
-  ...props
-}: ComponentPropsWithoutRef<'div'>) {
+type LoginFormProps = { submitting: boolean } & ComponentPropsWithoutRef<'div'>
+
+export function LoginForm({ className, submitting, ...props }: LoginFormProps) {
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Form method="post">
@@ -45,8 +44,8 @@ export function LoginForm({
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? 'loading...' : 'Login'}
             </Button>
           </div>
         </div>

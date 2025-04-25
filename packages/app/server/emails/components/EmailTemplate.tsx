@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react'
 import { Header } from './Header.js'
-import { Container } from './Container'
-import { Content } from './Content'
+import { Container } from './Container.js'
+import { Content } from './Content.js'
 
 type EmailTemplateProps = {
   title: string

@@ -1,6 +1,6 @@
 import type { FC } from 'react'
-import { Container } from './Container'
-import { Content } from './Content'
+import { Container } from './Container.js'
+import { Content } from './Content.js'
 
 type HeaderProps = { title: string }
 

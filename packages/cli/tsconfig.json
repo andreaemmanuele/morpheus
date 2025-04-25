@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "cli.d.ts"],
   "exclude": ["node_modules"]

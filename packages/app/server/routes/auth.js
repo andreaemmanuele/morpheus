@@ -40,12 +40,6 @@ export default async function authRoutes(fastify) {
         JSON.parse(request.body)
       )
       const user = await findUserByEmail(email)
-      if (!!user && user.login_attempts === 5) {
-        reply.code(403).send({
-          error: 'Account suspended. An email has been sent to unlock it.',
-        })
-        return
-      }
       if (!user) {
         reply.code(401).send({ error: 'Invalid credentials' })
         return
@@ -56,22 +50,25 @@ export default async function authRoutes(fastify) {
       )
       if (!isPasswordValid) {
         const query = await incrementLoginAttempts(user.id)
-        if (query && query.login_attempts >= 5) {
+        if (query && query.login_attempts >= 5 && user.status === 'active') {
           const token = generateRandomToken()
-          await Promise.all([
-            updateUserStatus('suspended', user.id),
-            updateSuspendedToken(token, user.id),
-            sendEmail(
-              fastify,
-              React.createElement(AccountLocked, {
-                token,
-              }),
-              {
-                subject: 'Your account has been suspended',
-                to: email,
-              }
-            ),
-          ])
+          try {
+            await Promise.all([
+              updateUserStatus('suspended', user.id),
+              updateSuspendedToken(token, user.id),
+              sendEmail(
+                React.createElement(AccountLocked, {
+                  token,
+                }),
+                {
+                  subject: 'Your account has been suspended',
+                  to: email,
+                }
+              ),
+            ])
+          } catch (error) {
+            console.log({ error })
+          }
           reply.code(403).send({
             error:
               'You have reached maximum login attempts. An email has been sent to unlock your account.',
@@ -79,6 +76,12 @@ export default async function authRoutes(fastify) {
           return
         }
         reply.code(401).send({ error: 'Invalid credentials' })
+        return
+      }
+      if (!!user && user.status === 'suspended') {
+        reply.code(403).send({
+          error: 'Account suspended. An email has been sent to unlock it.',
+        })
         return
       }
       const accessToken = fastify.jwt.sign({

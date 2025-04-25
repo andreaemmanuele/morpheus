@@ -4,8 +4,8 @@ import { authCookie } from '@/cookies.server'
 
 export const login = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const email = formData.get('email')
+  const password = formData.get('password')
 
   const response = await fetch(`${process.env.BASE_URL}/api/auth/login`, {
     method: 'POST',
@@ -16,10 +16,7 @@ export const login = async ({ request }: ActionFunctionArgs) => {
   })
 
   const result = await response.json()
-  if (!response.ok) {
-    console.log({ result })
-    return { error: result.error }
-  }
+  if (!response.ok) return { error: result.error }
 
   return redirect('/', {
     headers: { 'Set-Cookie': await authCookie.serialize(result.accessToken) },

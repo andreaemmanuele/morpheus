@@ -20,12 +20,12 @@
     "app": "pnpm --filter app",
     "cli": "pnpm --filter cli",
     "postinstall": "npx simple-git-hooks && pnpm sync-env",
-    "type-check": "tsc --noEmit",
+    "typecheck": "concurrently \"pnpm cli typecheck\" \"pnpm app typecheck\"",
     "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
-    "sync-env": "./scripts/sync-env.bash",
-    "dev": "concurrently \"pnpm api dev\" \"pnpm app dev\"",
-    "build": "pnpm api build && pnpm app build",
-    "start": "concurrently \"pnpm api start\" \"pnpm app start\""
+    "dev": "pnpm app dev",
+    "build": "concurrently \"pnpm cli build\" \"pnpm app build\"",
+    "start": "pnpm app start",
+    "sync-env": "./scripts/sync-env.bash"
   },
   "lint-staged": {
     "**/*.{ts,mjs,json}": "pnpm prettier",
@@ -33,7 +33,7 @@
   },
   "simple-git-hooks": {
     "commit-msg": "commitlint --edit $1",
-    "pre-commit": "npx lint-staged && pnpm type-check"
+    "pre-commit": "npx lint-staged && pnpm typecheck"
   },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
