@@ -5,4 +5,4 @@ export default `
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENt_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENt_TIMESTAMP
-    );`;
+    );`

@@ -4,4 +4,4 @@ export default `DO $$
                         CREATE TYPE user_status AS ENUM ('pending', 'active', 'suspended', 'deleted');
                     END IF;
                 END
-                $$;`;
+                $$;`
