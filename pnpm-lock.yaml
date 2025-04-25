@@ -57,6 +57,9 @@ importers:
       simple-git-hooks:
         specifier: ^2.12.1
         version: 2.12.1
+      tsup:
+        specifier: ^8.4.0
+        version: 8.4.0(@swc/core@1.11.21)(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -66,64 +69,6 @@ importers:
       zod:
         specifier: ^3.24.2
         version: 3.24.2
-
-  packages/api:
-    dependencies:
-      '@fastify/cors':
-        specifier: ^11.0.1
-        version: 11.0.1
-      '@fastify/http-proxy':
-        specifier: ^11.1.2
-        version: 11.1.2
-      '@fastify/jwt':
-        specifier: ^9.1.0
-        version: 9.1.0
-      '@fastify/postgres':
-        specifier: ^6.0.2
-        version: 6.0.2(pg@8.15.5)
-      '@fastify/rate-limit':
-        specifier: ^10.2.2
-        version: 10.2.2
-      '@fastify/static':
-        specifier: ^8.1.1
-        version: 8.1.1
-      dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
-      fastify:
-        specifier: ^5.3.0
-        version: 5.3.0
-      fastify-plugin:
-        specifier: ^5.0.1
-        version: 5.0.1
-      juice:
-        specifier: ^11.0.1
-        version: 11.0.1
-      nodemailer:
-        specifier: ^6.10.1
-        version: 6.10.1
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-    devDependencies:
-      '@types/nodemailer':
-        specifier: ^6.4.17
-        version: 6.4.17
-      '@types/react':
-        specifier: ^19.1.2
-        version: 19.1.2
-      '@types/react-dom':
-        specifier: ^19.1.2
-        version: 19.1.2(@types/react@19.1.2)
-      tsup:
-        specifier: ^8.4.0
-        version: 8.4.0(@swc/core@1.11.21)(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1)
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
 
   packages/app:
     dependencies:
@@ -214,6 +159,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      shared:
+        specifier: workspace:*
+        version: link:../shared
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -272,167 +220,17 @@ importers:
 
   packages/cli:
     dependencies:
-      api:
-        specifier: workspace:*
-        version: link:../api
       commander:
         specifier: ^11.0.0
         version: 11.1.0
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
-    devDependencies:
-      tsup:
-        specifier: ^7.2.0
-        version: 7.3.0(@swc/core@1.11.21)(postcss@8.5.3)(ts-node@10.9.2(@swc/core@1.11.21)(@types/node@22.14.1)(typescript@5.8.3))(typescript@5.8.3)
+      shared:
+        specifier: workspace:*
+        version: link:../shared
 
-  packages/test:
-    dependencies:
-      '@fastify/cors':
-        specifier: ^11.0.1
-        version: 11.0.1
-      '@fastify/jwt':
-        specifier: ^9.1.0
-        version: 9.1.0
-      '@fastify/middie':
-        specifier: ^9.0.3
-        version: 9.0.3
-      '@fastify/postgres':
-        specifier: ^6.0.2
-        version: 6.0.2(pg@8.15.5)
-      '@fastify/rate-limit':
-        specifier: ^10.2.2
-        version: 10.2.2
-      '@fastify/static':
-        specifier: ^8.1.1
-        version: 8.1.1
-      '@mcansh/remix-fastify':
-        specifier: 4.0.8
-        version: 4.0.8(@remix-run/node@2.16.5(typescript@5.8.3))(fastify@5.3.0)(react-router@7.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1))
-      '@radix-ui/react-label':
-        specifier: ^2.1.4
-        version: 2.1.4(@types/react-dom@18.3.6(@types/react@18.3.20))(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-slot':
-        specifier: ^1.2.0
-        version: 1.2.0(@types/react@18.3.20)(react@18.3.1)
-      '@remix-run/node':
-        specifier: ^2.16.5
-        version: 2.16.5(typescript@5.8.3)
-      '@remix-run/react':
-        specifier: ^2.16.5
-        version: 2.16.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
-      '@remix-run/server-runtime':
-        specifier: ^2.16.5
-        version: 2.16.5(typescript@5.8.3)
-      '@tailwindcss/vite':
-        specifier: ^4.1.4
-        version: 4.1.4(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1))
-      bcryptjs:
-        specifier: ^3.0.2
-        version: 3.0.2
-      chalk:
-        specifier: ^5.3.0
-        version: 5.4.1
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
-      fastify:
-        specifier: ^5.2.1
-        version: 5.3.0
-      fastify-plugin:
-        specifier: ^5.0.1
-        version: 5.0.1
-      get-port:
-        specifier: ^7.1.0
-        version: 7.1.0
-      isbot:
-        specifier: ^5.1.21
-        version: 5.1.26
-      juice:
-        specifier: ^11.0.1
-        version: 11.0.1
-      lucide-react:
-        specifier: ^0.503.0
-        version: 0.503.0(react@18.3.1)
-      nodemailer:
-        specifier: ^6.10.1
-        version: 6.10.1
-      pg:
-        specifier: ^8.15.5
-        version: 8.15.5
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      source-map-support:
-        specifier: ^0.5.21
-        version: 0.5.21
-      tailwind-merge:
-        specifier: ^3.2.0
-        version: 3.2.0
-      tailwindcss:
-        specifier: ^4.1.4
-        version: 4.1.4
-      zod:
-        specifier: ^3.24.3
-        version: 3.24.3
-    devDependencies:
-      '@remix-run/dev':
-        specifier: ^2.16.5
-        version: 2.16.5(@remix-run/react@2.16.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3))(@types/node@22.14.1)(babel-plugin-macros@3.1.0)(jiti@2.4.2)(lightningcss@1.29.2)(ts-node@10.9.2(@swc/core@1.11.21)(@types/node@22.14.1)(typescript@5.8.3))(tsx@4.19.3)(typescript@5.8.3)(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1))(yaml@2.7.1)
-      '@remix-run/eslint-config':
-        specifier: ^2.16.5
-        version: 2.16.5(eslint@8.57.1)(react@18.3.1)(typescript@5.8.3)
-      '@total-typescript/tsconfig':
-        specifier: ^1.0.4
-        version: 1.0.4
-      '@types/nodemailer':
-        specifier: ^6.4.17
-        version: 6.4.17
-      '@types/pg':
-        specifier: ^8.11.14
-        version: 8.11.14
-      '@types/react':
-        specifier: ^18.3.20
-        version: 18.3.20
-      '@types/react-dom':
-        specifier: ^18.3.6
-        version: 18.3.6(@types/react@18.3.20)
-      '@types/source-map-support':
-        specifier: ^0.5.10
-        version: 0.5.10
-      eslint:
-        specifier: ^8.57.0
-        version: 8.57.1
-      prettier:
-        specifier: ^3.3.3
-        version: 3.5.3
-      tsx:
-        specifier: ^4.19.2
-        version: 4.19.3
-      tw-animate-css:
-        specifier: ^1.2.8
-        version: 1.2.8
-      typescript:
-        specifier: ^5.7.2
-        version: 5.8.3
-      vite:
-        specifier: ^6.2.4
-        version: 6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1)
-      vite-tsconfig-paths:
-        specifier: ^5.1.3
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1))
+  packages/shared: {}
 
 packages:
 
@@ -1323,9 +1121,6 @@ packages:
   '@fastify/forwarded@3.0.0':
     resolution: {integrity: sha512-kJExsp4JCms7ipzg7SJ3y8DwmePaELHxKYtg+tZow+k0znUTf3cb+npgyqm8+ATZOdmfgfydIebPDWM172wfyA==}
 
-  '@fastify/http-proxy@11.1.2':
-    resolution: {integrity: sha512-DDceCz1DIEa4vUsQ0DhMqwiZdZUCG0RByY51k0BndBLo7bWpO3QuzLpZTS7Hr6Bp6r82SRmAinM0uPpQse1zqA==}
-
   '@fastify/jwt@9.1.0':
     resolution: {integrity: sha512-CiGHCnS5cPMdb004c70sUWhQTfzrJHAeTywt7nVw6dAiI0z1o4WRvU94xfijhkaId4bIxTCOjFgn4sU+Gvk43w==}
 
@@ -1345,9 +1140,6 @@ packages:
 
   '@fastify/rate-limit@10.2.2':
     resolution: {integrity: sha512-45vXZImiYthKlMohF4XoHXYiBXCyRYY+zmtjLZuQrGraW0Zj9hYPYNOIa47012+5A65M0KJQxIVbzYCNP90hcg==}
-
-  '@fastify/reply-from@12.1.0':
-    resolution: {integrity: sha512-5SvMj0NnAAhno/MIv+bErCfzYxcqTueqUxCyub/i+68/CqYWroYg0/p8D0ZhrSQcDigowaKk+MEQSoLjbGwZ+g==}
 
   '@fastify/send@3.3.1':
     resolution: {integrity: sha512-6pofeVwaHN+E/MAofCwDqkWUliE3i++jlD0VH/LOfU8TJlCkMUSgKvA9bawDdVXxjve7XrdYMyDmkiYaoGWEtA==}
@@ -1960,16 +1752,8 @@ packages:
     peerDependencies:
       '@types/react': ^18.0.0
 
-  '@types/react-dom@19.1.2':
-    resolution: {integrity: sha512-XGJkWF41Qq305SKWEILa1O8vzhb3aOo3ogBlSmiqNko/WmRb6QIaweuZCXjKygVDXpzXb5wyxKTSOsmkuqj+Qw==}
-    peerDependencies:
-      '@types/react': ^19.0.0
-
   '@types/react@18.3.20':
     resolution: {integrity: sha512-IPaCZN7PShZK/3t6Q87pfTkRm6oLTd4vztyoj+cbHUF1g3FfVb2tFIL79uCRKEfv16AhqDMBywP2VW3KIZUvcg==}
-
-  '@types/react@19.1.2':
-    resolution: {integrity: sha512-oxLPMytKchWGbnQM9O7D67uPa9paTNxO7jVoNMXgkkErULBPhPARCfkKL9ytcIJJRGjbsVwW4ugJzyFFvm/Tiw==}
 
   '@types/semver@7.7.0':
     resolution: {integrity: sha512-k107IF4+Xr7UHjwDc7Cfd6PRQfbdkiRabXGRjo07b4WyPahFBZCZ1sE+BNxYIJPPg73UkfOsVOLwqVc/6ETrIA==}
@@ -2424,12 +2208,6 @@ packages:
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
-
-  bundle-require@4.2.1:
-    resolution: {integrity: sha512-7Q/6vkyYAwOmQNRw75x+4yRtZCZJXUDmHHlFdkiV0wgv/reNjtJwpu1jPJ0w2kbEpIM0uoKI3S4/f39dU7AjSA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    peerDependencies:
-      esbuild: '>=0.17'
 
   bundle-require@5.1.0:
     resolution: {integrity: sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA==}
@@ -3258,9 +3036,6 @@ packages:
 
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
-
-  fast-content-type-parse@2.0.1:
-    resolution: {integrity: sha512-nGqtvLrj5w0naR6tDPfB4cUmYCqouzyQiz6C5y/LtcDllJdrcc6WaWW6iXyIIOErTa/XRybj28aasdn4LkVk6Q==}
 
   fast-decode-uri-component@1.0.1:
     resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
@@ -4976,11 +4751,6 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-dom@19.1.0:
-    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
-    peerDependencies:
-      react: ^19.1.0
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -5016,10 +4786,6 @@ packages:
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
-    engines: {node: '>=0.10.0'}
-
-  react@19.1.0:
-    resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
 
   readable-stream@2.3.8:
@@ -5184,9 +4950,6 @@ packages:
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
-
-  scheduler@0.26.0:
-    resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
   secure-json-parse@4.0.0:
     resolution: {integrity: sha512-dxtLJO6sc35jWidmLxo7ij+Eg48PM/kleBsxpC8QJE0qJICe+KawkDQmvCMZUr9u7WKVHgMW6vy3fQ7zMiFZMA==}
@@ -5574,23 +5337,6 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsup@7.3.0:
-    resolution: {integrity: sha512-Ja1eaSRrE+QarmATlNO5fse2aOACYMBX+IZRKy1T+gpyH+jXgRrl5l4nHIQJQ1DoDgEjHDTw8cpE085UdBZuWQ==}
-    engines: {node: '>=18'}
-    deprecated: Breaking node 16
-    hasBin: true
-    peerDependencies:
-      '@swc/core': ^1
-      postcss: ^8.4.12
-      typescript: '>=4.5.0'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      postcss:
-        optional: true
-      typescript:
-        optional: true
-
   tsup@8.4.0:
     resolution: {integrity: sha512-b+eZbPCjz10fRryaAA7C8xlIHnf8VnsaRqydheLIqwG/Mcpfk8Z5zp3HayX7GaTygkigHl5cBUs+IhcySiIexQ==}
     engines: {node: '>=18'}
@@ -5680,10 +5426,6 @@ packages:
   undici@6.21.2:
     resolution: {integrity: sha512-uROZWze0R0itiAKVPsYhFov9LxrPMHLMEQFszeI2gCN6bnIIZ8twzBCJcN2LJrBBLfrP0t1FW0g+JmKVl8Vk1g==}
     engines: {node: '>=18.17'}
-
-  undici@7.8.0:
-    resolution: {integrity: sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA==}
-    engines: {node: '>=20.18.1'}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -5959,18 +5701,6 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
-  ws@8.18.1:
-    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
     peerDependenciesMeta:
       bufferutil:
         optional: true
@@ -6780,16 +6510,6 @@ snapshots:
 
   '@fastify/forwarded@3.0.0': {}
 
-  '@fastify/http-proxy@11.1.2':
-    dependencies:
-      '@fastify/reply-from': 12.1.0
-      fast-querystring: 1.1.2
-      fastify-plugin: 5.0.1
-      ws: 8.18.1
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
   '@fastify/jwt@9.1.0':
     dependencies:
       '@fastify/error': 4.1.0
@@ -6824,16 +6544,6 @@ snapshots:
       '@lukeed/ms': 2.0.2
       fastify-plugin: 5.0.1
       toad-cache: 3.7.0
-
-  '@fastify/reply-from@12.1.0':
-    dependencies:
-      '@fastify/error': 4.1.0
-      end-of-stream: 1.4.4
-      fast-content-type-parse: 2.0.1
-      fast-querystring: 1.1.2
-      fastify-plugin: 5.0.1
-      toad-cache: 3.7.0
-      undici: 7.8.0
 
   '@fastify/send@3.3.1':
     dependencies:
@@ -7495,17 +7205,9 @@ snapshots:
     dependencies:
       '@types/react': 18.3.20
 
-  '@types/react-dom@19.1.2(@types/react@19.1.2)':
-    dependencies:
-      '@types/react': 19.1.2
-
   '@types/react@18.3.20':
     dependencies:
       '@types/prop-types': 15.7.14
-      csstype: 3.1.3
-
-  '@types/react@19.1.2':
-    dependencies:
       csstype: 3.1.3
 
   '@types/semver@7.7.0': {}
@@ -8052,11 +7754,6 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
-
-  bundle-require@4.2.1(esbuild@0.19.12):
-    dependencies:
-      esbuild: 0.19.12
-      load-tsconfig: 0.2.5
 
   bundle-require@5.1.0(esbuild@0.25.2):
     dependencies:
@@ -9190,8 +8887,6 @@ snapshots:
   exsolve@1.0.5: {}
 
   extend@3.0.2: {}
-
-  fast-content-type-parse@2.0.1: {}
 
   fast-decode-uri-component@1.0.1: {}
 
@@ -11058,11 +10753,6 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@19.1.0(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-      scheduler: 0.26.0
-
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
@@ -11094,8 +10784,6 @@ snapshots:
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
-
-  react@19.1.0: {}
 
   readable-stream@2.3.8:
     dependencies:
@@ -11303,8 +10991,6 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
-
-  scheduler@0.26.0: {}
 
   secure-json-parse@4.0.0: {}
 
@@ -11744,30 +11430,6 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@7.3.0(@swc/core@1.11.21)(postcss@8.5.3)(ts-node@10.9.2(@swc/core@1.11.21)(@types/node@22.14.1)(typescript@5.8.3))(typescript@5.8.3):
-    dependencies:
-      bundle-require: 4.2.1(esbuild@0.19.12)
-      cac: 6.7.14
-      chokidar: 3.6.0
-      debug: 4.4.0
-      esbuild: 0.19.12
-      execa: 5.1.1
-      globby: 11.1.0
-      joycon: 3.1.1
-      postcss-load-config: 4.0.2(postcss@8.5.3)(ts-node@10.9.2(@swc/core@1.11.21)(@types/node@22.14.1)(typescript@5.8.3))
-      resolve-from: 5.0.0
-      rollup: 4.40.0
-      source-map: 0.8.0-beta.0
-      sucrase: 3.35.0
-      tree-kill: 1.2.2
-    optionalDependencies:
-      '@swc/core': 1.11.21
-      postcss: 8.5.3
-      typescript: 5.8.3
-    transitivePeerDependencies:
-      - supports-color
-      - ts-node
-
   tsup@8.4.0(@swc/core@1.11.21)(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.2)
@@ -11784,7 +11446,7 @@ snapshots:
       source-map: 0.8.0-beta.0
       sucrase: 3.35.0
       tinyexec: 0.3.2
-      tinyglobby: 0.2.12
+      tinyglobby: 0.2.13
       tree-kill: 1.2.2
     optionalDependencies:
       '@swc/core': 1.11.21
@@ -11880,8 +11542,6 @@ snapshots:
   undici-types@6.21.0: {}
 
   undici@6.21.2: {}
-
-  undici@7.8.0: {}
 
   unicorn-magic@0.1.0: {}
 
@@ -12204,8 +11864,6 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@7.5.10: {}
-
-  ws@8.18.1: {}
 
   xtend@4.0.2: {}
 

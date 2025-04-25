@@ -13,4 +13,4 @@ export default `
         ('editor', 'user with permissions to create, edit and delete content'),
         ('user', 'user with no permissions at all')
     ON CONFLICT (name) DO NOTHING;
-    `
+    `;

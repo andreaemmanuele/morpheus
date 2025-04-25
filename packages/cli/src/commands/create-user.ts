@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs'
 import { Command } from 'commander'
-import { queries } from 'api/queries'
+import { queries } from 'shared'
 import db from '@/src/utils/db'
 import { handleError } from '@/src/utils/errors'
 import { z } from 'zod'
@@ -8,7 +8,7 @@ import { z } from 'zod'
 const createUserSchema = z.object({
   email: z.string(),
   psw: z.string(),
-  role: z.enum(['user', 'admin']).optional(),
+  role: z.enum(['user', 'editor', 'admin']).optional(),
 })
 
 export const createUser = new Command()
@@ -28,12 +28,13 @@ export const createUser = new Command()
 
       const roles = {
         admin: { id: 1, type: 'admin user', permissions: 'all' },
-        user: { id: 2, type: 'user', permissions: 'basic' },
+        editor: { id: 2, type: 'editor user', permissions: 'editorial' },
+        user: { id: 3, type: 'user', permissions: 'basic' },
       }
 
       const role = roles[data?.role || 'user']
       const passwordHash = await bcryptjs.hash(data?.psw, 10)
-      await db.query(queries.auth.createUser, [
+      await db.query(queries.user.createUser, [
         data?.email,
         passwordHash,
         role.id,

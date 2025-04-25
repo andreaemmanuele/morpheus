@@ -19,12 +19,14 @@
   "scripts": {
     "app": "pnpm --filter app",
     "cli": "pnpm --filter cli",
+    "shared": "pnpm --filter shared",
     "postinstall": "npx simple-git-hooks && pnpm sync-env",
-    "typecheck": "concurrently \"pnpm cli typecheck\" \"pnpm app typecheck\"",
+    "typecheck": "concurrently \"pnpm --filter=\"./packages/*\" typecheck\"",
     "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
     "dev": "pnpm app dev",
-    "build": "concurrently \"pnpm cli build\" \"pnpm app build\"",
+    "build": "concurrently \"pnpm --filter=\"./packages/*\" build\"",
     "start": "pnpm app start",
+    "clean-all": "concurrently \"pnpm --filter=\"./packages/*\" clean\"",
     "sync-env": "./scripts/sync-env.bash"
   },
   "lint-staged": {
@@ -51,6 +53,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "simple-git-hooks": "^2.12.1",
+    "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1",
     "zod": "^3.24.2"
