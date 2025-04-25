@@ -1,0 +1,1 @@
+export default `UPDATE users SET PASSWORD_RESET_TOKEN = $1, PASSWORD_RESET_EXPIRES = NOW() + INTERVAL '24 hours' WHERE id = $2`

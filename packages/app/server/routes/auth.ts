@@ -1,15 +1,19 @@
 import type { FastifyInstance } from 'fastify'
 import React from 'react'
+import bcryptjs from 'bcryptjs'
 import {
   findUserByEmail,
   findUserById,
+  findUserByResetToken,
+  findUserBySuspendedToken,
+  updatePassword,
   updateUserStatus,
   updateSuspendedToken,
   updateLastLogin,
+  updateResetTokenAndExpiration,
   incrementLoginAttempts,
-  validatePassword,
-  findUserBySuspendedToken,
   resetLoginAttempts,
+  validatePassword,
 } from '../services/user.js'
 
 import {
@@ -17,13 +21,17 @@ import {
   findRefreshToken,
   revokeRefreshToken,
 } from '../services/refresh-token.js'
+
 import { sendEmail } from '../emails/index.js'
 import { AccountLocked } from '../emails/templates/AccountLocked.js'
+import { RecoverPassword } from '../emails/templates/RecoverPassword.js'
 import { authenticate } from '../utils/auth.js'
 import { generateRandomToken } from '../utils/tokens.js'
 import {
   loginBodySchema,
+  recoveryPasswordSchema,
   refreshTokenSchema,
+  resetPasswordSchema,
   unlockAccountSchema,
 } from '../schemas/auth.js'
 
@@ -114,6 +122,118 @@ export default async function authRoutes(fastify: FastifyInstance) {
   )
 
   fastify.post(
+    '/auth/recovery-password',
+    {
+      config: {
+        rateLimit: {
+          max: 3,
+          timeWindow: '15 minutes',
+        },
+      },
+    },
+    async (request, reply) => {
+      const { email } = recoveryPasswordSchema.parse(
+        JSON.parse(request.body as string)
+      )
+      const user = await findUserByEmail(email)
+
+      if (!user) {
+        reply.code(200).send({
+          message:
+            'If your account exists, you will get a recovery link for resetting your password',
+        })
+        return
+      }
+
+      const token = generateRandomToken()
+      try {
+        await Promise.all([
+          updateResetTokenAndExpiration(token, user.id),
+          sendEmail(
+            React.createElement(RecoverPassword, {
+              token,
+            }),
+            {
+              subject: 'Your recovery password link',
+              to: email,
+            }
+          ),
+        ])
+      } catch (error) {
+        console.error(error)
+      }
+
+      reply.code(200).send({
+        message:
+          'If your account exists, you will get a recovery link for resetting your password',
+      })
+    }
+  )
+
+  fastify.post(
+    '/auth/reset-password',
+    {
+      config: {
+        rateLimit: {
+          max: 3,
+          timeWindow: '15 minutes',
+        },
+      },
+    },
+    async (request, reply) => {
+      const { token, newPassword } = resetPasswordSchema.parse(request.params)
+
+      const user = await findUserByResetToken(token)
+      if (!user) {
+        reply.code(401).send({ error: 'Token expired' })
+        return
+      }
+
+      try {
+        const passwordHash = await bcryptjs.hash(newPassword, 10)
+        await Promise.all([
+          updatePassword(passwordHash, user.id),
+          updateResetTokenAndExpiration(null, user.id),
+        ])
+      } catch (e) {
+        console.error(e)
+        reply
+          .code(500)
+          .send({ error: 'Something went wrong. Please try again.' })
+        return
+      }
+
+      reply.code(200).send({ message: 'Password reset successfully' })
+    }
+  )
+
+  fastify.get(
+    '/auth/unlock-account/:token',
+    {
+      config: {
+        rateLimit: {
+          max: 3,
+          timeWindow: '15 minutes',
+        },
+      },
+    },
+    async (request, reply) => {
+      const { token } = unlockAccountSchema.parse(request.params)
+      const user = await findUserBySuspendedToken(token)
+      if (!user) {
+        reply.code(401).send({ error: 'Invalid token' })
+        return
+      }
+      await Promise.all([
+        updateSuspendedToken(null, user.id),
+        updateUserStatus('active', user.id),
+        resetLoginAttempts(user.id),
+      ])
+      reply.redirect(process.env.BASE_URL || '/')
+    }
+  )
+
+  fastify.post(
     '/auth/refresh',
     {
       config: {
@@ -150,32 +270,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
       })
 
       return { accessToken }
-    }
-  )
-
-  fastify.get(
-    '/auth/unlock-account/:token',
-    {
-      config: {
-        rateLimit: {
-          max: 3,
-          timeWindow: '15 minutes',
-        },
-      },
-    },
-    async (request, reply) => {
-      const { token } = unlockAccountSchema.parse(request.params)
-      const user = await findUserBySuspendedToken(token)
-      if (!user) {
-        reply.code(401).send({ error: 'Invalid token' })
-        return
-      }
-      await Promise.all([
-        updateSuspendedToken(null, user.id),
-        updateUserStatus('active', user.id),
-        resetLoginAttempts(user.id),
-      ])
-      reply.redirect(process.env.BASE_URL || '/')
     }
   )
 
