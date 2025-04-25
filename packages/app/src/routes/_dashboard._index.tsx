@@ -1,9 +1,9 @@
 import type { MetaFunction } from '@remix-run/node'
 import { authRouteGuard } from '@/loaders/auth'
 
-export const meta: MetaFunction = () => {
-  return [{ name: 'description', content: 'Morpheus dashboard' }]
-}
+export const meta: MetaFunction = () => [
+  { name: 'description', content: 'Morpheus dashboard' },
+]
 
 export const loader = authRouteGuard
 
