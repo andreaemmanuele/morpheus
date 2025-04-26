@@ -223,16 +223,23 @@ export default async function authRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       const { token } = unlockAccountSchema.parse(request.params)
       const user = await findUserBySuspendedToken(token)
+
+      const url = new URL(`${process.env.BASE_URL}/login`)
+
       if (!user) {
-        reply.code(401).send({ error: 'Invalid token' })
+        url.searchParams.set('message', 'token-invalid')
+        reply.redirect(url.toString())
         return
       }
+
       await Promise.all([
         updateSuspendedToken(null, user.id),
         updateUserStatus('active', user.id),
         resetLoginAttempts(user.id),
       ])
-      reply.redirect(process.env.BASE_URL || '/')
+
+      url.searchParams.set('message', 'account-unlocked')
+      reply.redirect(url.toString())
     }
   )
 

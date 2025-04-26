@@ -15,3 +15,9 @@ export const guestRouteGuard = async ({ request }: LoaderFunctionArgs) => {
   if (cookie) return redirect('/')
   return null
 }
+
+export const softGuestRouteGuard = async ({ request }: LoaderFunctionArgs) => {
+  const headers = request.headers.get('Cookie')
+  const cookie = await authCookie.parse(headers)
+  return !!cookie
+}

@@ -1,12 +1,23 @@
 import type { MetaFunction } from '@remix-run/node'
-import { useActionData, useNavigation } from '@remix-run/react'
-import { guestRouteGuard } from '@/loaders/auth'
+import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
+import { redirect } from '@remix-run/server-runtime'
+import { useActionData, useLoaderData, useNavigation } from '@remix-run/react'
+import { softGuestRouteGuard } from '@/loaders/auth'
 import { login } from '@/actions/auth/login'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, MessageSquareText } from 'lucide-react'
 import { LoginForm } from '@/components/forms/login-form'
 import { Alert } from '@/components/atoms/alert'
+import { renderAlertMessage } from '@/lib/alert'
 
-export const loader = guestRouteGuard
+export const loader = async (data: LoaderFunctionArgs) => {
+  const isLoggedIn = await softGuestRouteGuard(data)
+  if (isLoggedIn) return redirect('/')
+  const url = new URL(data.request.url)
+  const message = url.searchParams.get('message')
+  if (!message) return null
+  return renderAlertMessage(message)
+}
+
 export const action = login
 
 export const meta: MetaFunction = () => [
@@ -14,6 +25,7 @@ export const meta: MetaFunction = () => [
 ]
 
 export default function LoginPage() {
+  const message = useLoaderData<typeof loader>()
   const data = useActionData<typeof action>()
   const navigation = useNavigation()
 
@@ -21,6 +33,13 @@ export default function LoginPage() {
 
   return (
     <>
+      {!data && message && (
+        <Alert
+          title="Message"
+          description={message}
+          icon={<MessageSquareText className="h-4 w-4" />}
+        />
+      )}
       {data && !isSubmitting && (
         <Alert
           title="Error"
