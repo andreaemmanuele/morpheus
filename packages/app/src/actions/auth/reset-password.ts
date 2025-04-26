@@ -1,9 +1,19 @@
 import type { ActionFunctionArgs } from '@remix-run/server-runtime'
+import { changePasswordSchema } from '@morpheus/shared/schemas'
 
 export const resetPassword = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const newPassword = formData.get('password')
   const confirmPassword = formData.get('confirm-password')
+
+  const { error: validationError } = changePasswordSchema.safeParse({
+    password: newPassword,
+    confirmPassword,
+  })
+
+  if (validationError) {
+    return { error: validationError.errors[0]?.message, message: null }
+  }
 
   const url = new URL(request.url)
   const token = url.searchParams.get('token')

@@ -16,6 +16,7 @@ export const recoveryPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
   token: z.string(),
   newPassword: z.string(),
+  confirmPassword: z.string(),
 })
 
 export const unlockAccountSchema = z.object({

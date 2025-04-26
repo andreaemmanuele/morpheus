@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import React from 'react'
 import bcryptjs from 'bcryptjs'
+import { changePasswordSchema } from '@morpheus/shared/schemas'
 import {
   findUserByEmail,
   findUserById,
@@ -182,9 +183,18 @@ export default async function authRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { token, newPassword } = resetPasswordSchema.parse(
+      const { token, newPassword, confirmPassword } = resetPasswordSchema.parse(
         JSON.parse(request.body as string)
       )
+
+      const { error: validationError } = changePasswordSchema.safeParse({
+        password: newPassword,
+        confirmPassword,
+      })
+
+      if (validationError) {
+        reply.code(400).send({ error: validationError.errors[0]?.message })
+      }
 
       const user = await findUserByResetToken(token)
       if (!user) {
