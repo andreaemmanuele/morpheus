@@ -3,7 +3,7 @@ import { Form, NavLink } from '@remix-run/react'
 import { LoaderCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Logo } from '@/components/ui/logo'
+import { Logo } from '@/components/atoms/logo'
 import { Password } from '@/components/atoms/password'
 import { cn } from '@/lib/utils'
 

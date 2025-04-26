@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Logo } from '@/components/ui/logo'
+import { Logo } from '@/components/atoms/logo'
 import { cn } from '@/lib/utils'
 
 type LoginFormProps = { submitting: boolean } & ComponentPropsWithoutRef<'div'>

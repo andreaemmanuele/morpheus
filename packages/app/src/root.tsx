@@ -42,7 +42,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           dark: currentTheme === 'dark',
         })}
       >
-        <ThemeSwitcher current={currentTheme} />
+        <div className="flex justify-end">
+          <ThemeSwitcher current={currentTheme} />
+        </div>
         {children}
         <ScrollRestoration />
         <Scripts />
