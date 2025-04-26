@@ -64,6 +64,7 @@
   "dependencies": {
     "add": "^2.0.6",
     "bcryptjs": "^3.0.2",
+    "chalk": "^5.4.1",
     "ora": "^8.2.0"
   }
 }

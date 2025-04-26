@@ -1,9 +1,11 @@
 import bcryptjs from 'bcryptjs'
+import chalk from 'chalk'
+import { z } from 'zod'
 import { Command } from 'commander'
-import { queries } from 'shared'
+import { queries } from '@morpheus/shared/queries'
+import { passwordSchema } from '@morpheus/shared/schemas'
 import db from '@/src/utils/db'
 import { handleError } from '@/src/utils/errors'
-import { z } from 'zod'
 
 const createUserSchema = z.object({
   email: z.string(),
@@ -19,10 +21,15 @@ export const createUser = new Command()
   .option('--role [role]', 'Role to assign to the user', 'user')
   .action(async (options) => {
     try {
-      const { data, error } = createUserSchema.safeParse(options)
+      const { data, error: createError } = createUserSchema.safeParse(options)
+      if (createError) {
+        console.error('Error:', createError.errors[0].message)
+        return
+      }
 
+      const { error } = passwordSchema.safeParse({ password: data?.psw })
       if (error) {
-        console.error('Error:', error.message)
+        console.log(chalk.red(`‼️${error.errors[0].message}`))
         return
       }
 
@@ -42,7 +49,7 @@ export const createUser = new Command()
         'active',
       ])
 
-      console.log(`Successfully created ${role.type}`)
+      console.log(chalk.green(`🚀 Successfully created ${role.type}`))
     } catch (error) {
       handleError(error)
     } finally {

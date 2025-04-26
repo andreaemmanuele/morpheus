@@ -14,6 +14,9 @@ importers:
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
+      chalk:
+        specifier: ^5.4.1
+        version: 5.4.1
       ora:
         specifier: ^8.2.0
         version: 8.2.0
@@ -96,6 +99,9 @@ importers:
       '@mcansh/remix-fastify':
         specifier: 4.0.8
         version: 4.0.8(@remix-run/node@2.16.5(typescript@5.8.3))(fastify@5.3.2)(react-router@7.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1))
+      '@morpheus/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@radix-ui/react-label':
         specifier: ^2.1.4
         version: 2.1.4(@types/react-dom@18.3.6(@types/react@18.3.20))(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -117,9 +123,6 @@ importers:
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
-      chalk:
-        specifier: ^5.3.0
-        version: 5.4.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -162,9 +165,6 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      shared:
-        specifier: workspace:*
-        version: link:../shared
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -223,15 +223,15 @@ importers:
 
   packages/cli:
     dependencies:
+      '@morpheus/shared':
+        specifier: workspace:*
+        version: link:../shared
       commander:
         specifier: ^11.0.0
         version: 11.1.0
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
-      shared:
-        specifier: workspace:*
-        version: link:../shared
 
   packages/shared: {}
 
