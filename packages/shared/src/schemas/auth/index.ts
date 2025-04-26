@@ -21,5 +21,5 @@ export const changePasswordSchema = validatePasswordStrength(
     confirmPassword: z.string(),
   })
 ).refine(({ password, confirmPassword }) => password === confirmPassword, {
-  message: "Passwords doesn't match",
+  message: "Passwords don't match",
 })
