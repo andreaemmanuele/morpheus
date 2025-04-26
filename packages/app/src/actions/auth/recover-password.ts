@@ -15,7 +15,7 @@ export const recoverPassword = async ({ request }: ActionFunctionArgs) => {
   )
 
   const result = await response.json()
-  if (!response.ok) return { error: result.error }
+  if (!response.ok) return { error: result.error, message: null }
 
-  return { message: result.message }
+  return { error: null, message: result.message }
 }

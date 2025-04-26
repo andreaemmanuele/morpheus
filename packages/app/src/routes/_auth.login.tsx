@@ -1,7 +1,7 @@
 import type { MetaFunction } from '@remix-run/node'
 import { useActionData, useNavigation } from '@remix-run/react'
 import { guestRouteGuard } from '@/loaders/auth'
-import { login } from '@/actions/login'
+import { login } from '@/actions/auth/login'
 import { AlertCircle } from 'lucide-react'
 import { LoginForm } from '@/components/forms/login-form'
 import { Alert } from '@/components/atoms/alert'
@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   return (
     <>
-      {data && (
+      {data && !isSubmitting && (
         <Alert
           title="Error"
           description={data.error}

@@ -135,13 +135,17 @@ export default async function authRoutes(fastify: FastifyInstance) {
       const { email } = recoveryPasswordSchema.parse(
         JSON.parse(request.body as string)
       )
-      const user = await findUserByEmail(email)
 
-      if (!user) {
+      const user = await findUserByEmail(email)
+      const sendResponse = () => {
         reply.code(200).send({
           message:
             'If your account exists, you will get a recovery link for resetting your password',
         })
+      }
+
+      if (!user) {
+        sendResponse()
         return
       }
 
@@ -163,10 +167,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         console.error(error)
       }
 
-      reply.code(200).send({
-        message:
-          'If your account exists, you will get a recovery link for resetting your password',
-      })
+      sendResponse()
     }
   )
 
@@ -181,7 +182,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { token, newPassword } = resetPasswordSchema.parse(request.params)
+      const { token, newPassword } = resetPasswordSchema.parse(
+        JSON.parse(request.body as string)
+      )
 
       const user = await findUserByResetToken(token)
       if (!user) {

@@ -1,8 +1,8 @@
 import type { MetaFunction } from '@remix-run/node'
 import { useActionData, useNavigation } from '@remix-run/react'
 import { guestRouteGuard } from '@/loaders/auth'
-import { recoverPassword } from '@/actions/recover-password'
-import { AlertCircle } from 'lucide-react'
+import { recoverPassword } from '@/actions/auth/recover-password'
+import { MailCheck } from 'lucide-react'
 import { ForgotPasswordForm } from '@/components/forms/forgot-password-form'
 import { Alert } from '@/components/atoms/alert'
 
@@ -21,11 +21,11 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      {data && (
+      {data && !isSubmitting && (
         <Alert
           title="Success"
           description={data.message}
-          icon={<AlertCircle className="h-4 w-4" />}
+          icon={<MailCheck className="h-4 w-4" />}
         />
       )}
       <ForgotPasswordForm submitting={isSubmitting} />
