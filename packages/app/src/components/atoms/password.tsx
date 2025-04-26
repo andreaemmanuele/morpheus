@@ -1,10 +1,13 @@
-import type { ComponentProps } from 'react'
+import type { ComponentProps, FC } from 'react'
 import { useState } from 'react'
 import { Eye, EyeClosed } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-export function Password({ type: _, ...props }: ComponentProps<'input'>) {
+export const Password: FC<ComponentProps<'input'>> = ({
+  type: _,
+  ...props
+}) => {
   const [type, setType] = useState<'password' | 'text'>('password')
 
   const toggleType = () => {

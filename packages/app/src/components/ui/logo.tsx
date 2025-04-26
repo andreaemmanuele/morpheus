@@ -1,8 +1,15 @@
 import type { ComponentProps } from 'react'
+import { cn } from '@/lib/utils'
 
-export function Logo({ width, height, ...props }: ComponentProps<'svg'>) {
+export function Logo({
+  width,
+  height,
+  className,
+  ...props
+}: ComponentProps<'svg'>) {
   return (
     <svg
+      className={cn('light:text-primary dark:text-white', className)}
       width={width}
       height={height}
       viewBox="0 0 132 132"
