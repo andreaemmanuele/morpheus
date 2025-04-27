@@ -7,7 +7,7 @@ type MoonProps = {
 
 export const Moon: FC<MoonProps> = ({ active }) => (
   <svg
-    className="size-6 [&_.ray]:transition-all [&_.ray]:duration-500 [&_.ray]:ease-[linear(0_0%,-0.21_38.45%,_1.3_62.81%,_1_100%)]"
+    className="size-5 [&_.ray]:transition-all [&_.ray]:duration-500 [&_.ray]:ease-[linear(0_0%,-0.21_38.45%,_1.3_62.81%,_1_100%)]"
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"

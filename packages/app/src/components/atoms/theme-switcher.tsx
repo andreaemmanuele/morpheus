@@ -22,7 +22,6 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
   }
 
   const handleMouseMove = (e: MouseEvent) => {
-    console.log(e.clientY, e.clientY, window.innerWidth, window.innerHeight)
     setPosition((prev) => ({
       ...prev,
       x: Math.min(window.innerWidth - e.clientX, 15),
@@ -36,7 +35,7 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
 
   return (
     <Button
-      className="relative text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent"
+      className="relative text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent after:absolute after:-inset-20 after:md:hidden"
       onClick={toggleTheme}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -44,7 +43,7 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
       <Moon active={current === 'dark'} />
       <div
         style={{ transform: `translate(-${position.x}px, ${position.y}px)` }}
-        className="absolute top-0 right-0 w-8 h-8 bg-lime-100 blur-xl -z-10 transition-transform duration-100 ease-linear"
+        className="absolute top-0 right-2 w-8 h-8 bg-lime-100 blur-2xl transition-transform duration-100 ease-linear"
       />
     </Button>
   )

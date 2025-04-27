@@ -11,7 +11,6 @@ import {
 import '@/assets/css/index.css'
 import { useMemo } from 'react'
 import { themeCookie } from '@/cookies.server'
-import { ThemeSwitcher } from '@/components/atoms/theme-switcher'
 import { cn, getSystemPreferredTheme } from '@/lib/utils'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -42,9 +41,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           dark: currentTheme === 'dark',
         })}
       >
-        <div className="flex justify-end">
-          <ThemeSwitcher current={currentTheme} />
-        </div>
         {children}
         <ScrollRestoration />
         <Scripts />

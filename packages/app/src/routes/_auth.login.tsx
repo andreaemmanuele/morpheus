@@ -2,7 +2,7 @@ import type { MetaFunction } from '@remix-run/node'
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { useActionData, useLoaderData, useNavigation } from '@remix-run/react'
-import { softGuestRouteGuard } from '@/loaders/auth'
+import { softRouteGuard } from '@/loaders/auth'
 import { login } from '@/actions/auth/login'
 import { AlertCircle, MessageSquareText } from 'lucide-react'
 import { LoginForm } from '@/components/forms/login-form'
@@ -10,7 +10,7 @@ import { Alert } from '@/components/atoms/alert'
 import { renderAlertMessage } from '@/lib/alert'
 
 export const loader = async (data: LoaderFunctionArgs) => {
-  const isLoggedIn = await softGuestRouteGuard(data)
+  const isLoggedIn = await softRouteGuard(data)
   if (isLoggedIn) return redirect('/')
   const url = new URL(data.request.url)
   const message = url.searchParams.get('message')
