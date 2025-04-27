@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
-import { authCookie } from '@/cookies.server'
+import { authCookie, projectCookie } from '@/cookies.server'
 
 export const login = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
@@ -18,7 +18,12 @@ export const login = async ({ request }: ActionFunctionArgs) => {
   const result = await response.json()
   if (!response.ok) return { error: result.error }
 
-  return redirect('/', {
-    headers: { 'Set-Cookie': await authCookie.serialize(result.accessToken) },
+  const { defaultProject } = result.user
+
+  return redirect(`/${defaultProject}`, {
+    headers: [
+      ['Set-Cookie', await authCookie.serialize(result.accessToken)],
+      ['Set-Cookie', await projectCookie.serialize(defaultProject)],
+    ],
   })
 }

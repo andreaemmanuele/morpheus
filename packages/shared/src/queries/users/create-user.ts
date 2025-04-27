@@ -1,5 +1,5 @@
 export default `
-    INSERT INTO users (email, password_hash, role_id, email_verified, status)
+    INSERT INTO users (email, username, password_hash, email_verified, status)
     VALUES ($1, $2, $3, $4, $5)
-    RETURNING id, email, role_id, email_verified, status
+    RETURNING id, email, username, email_verified, status
 `

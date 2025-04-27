@@ -4,24 +4,21 @@ import * as React from 'react'
 import {
   AudioWaveform,
   BarChartIcon,
-  CameraIcon,
   ClipboardListIcon,
   Command,
   DatabaseIcon,
-  FileCodeIcon,
   FileIcon,
-  FileTextIcon,
   FolderIcon,
   GalleryVerticalEnd,
   HelpCircleIcon,
   LayoutDashboardIcon,
   ListIcon,
-  SearchIcon,
   SettingsIcon,
   UsersIcon,
+  BookOpen,
+  SquareTerminal,
 } from 'lucide-react'
 
-import { NavUser } from '@/components/molecules/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -29,13 +26,11 @@ import {
   SidebarHeader,
 } from '@/components/ui/sidebar'
 import { ProjectSwitcher } from '@/components/molecules/project-switcher'
+import { NavSecondary } from '@/components/molecules/nav-secondary'
+import { NavUser } from '@/components/molecules/nav-user'
+import { sessionStore } from '@/stores/session'
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   projects: [
     {
       name: 'Acme Inc',
@@ -77,91 +72,27 @@ const data = {
       icon: UsersIcon,
     },
   ],
-  navClouds: [
-    {
-      title: 'Capture',
-      icon: CameraIcon,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Proposal',
-      icon: FileTextIcon,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Prompts',
-      icon: FileCodeIcon,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-  ],
   navSecondary: [
+    {
+      title: 'Playground',
+      url: '#',
+      icon: SquareTerminal,
+    },
+    {
+      title: 'Documentation',
+      url: '#',
+      icon: BookOpen,
+    },
     {
       title: 'Settings',
       url: '#',
       icon: SettingsIcon,
     },
-    {
-      title: 'Get Help',
-      url: '#',
-      icon: HelpCircleIcon,
-    },
-    {
-      title: 'Search',
-      url: '#',
-      icon: SearchIcon,
-    },
-  ],
-  documents: [
-    {
-      name: 'Data Library',
-      url: '#',
-      icon: DatabaseIcon,
-    },
-    {
-      name: 'Reports',
-      url: '#',
-      icon: ClipboardListIcon,
-    },
-    {
-      name: 'Word Assistant',
-      url: '#',
-      icon: FileIcon,
-    },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { session } = sessionStore()
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -169,11 +100,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/*<NavMain items={data.navMain} />*/}
-        {/*<NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />*/}
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            email: session?.email ?? '',
+            name: session?.username ?? '',
+            avatar: '',
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   )

@@ -19,5 +19,5 @@ export const guestRouteGuard = async ({ request }: LoaderFunctionArgs) => {
 export const softRouteGuard = async ({ request }: LoaderFunctionArgs) => {
   const headers = request.headers.get('Cookie')
   const cookie = await authCookie.parse(headers)
-  return !!cookie
+  return { isLoggedIn: !!cookie, authCookie: cookie }
 }

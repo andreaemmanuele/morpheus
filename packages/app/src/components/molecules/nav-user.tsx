@@ -1,13 +1,7 @@
 'use client'
 
-import {
-  BellIcon,
-  CreditCardIcon,
-  LogOutIcon,
-  MoreVerticalIcon,
-  UserCircleIcon,
-} from 'lucide-react'
-
+import { useFetcher } from '@remix-run/react'
+import { LogOutIcon, MoreVerticalIcon, UserCircleIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -24,17 +18,33 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { sessionStore } from '@/stores/session'
+import { getRandomLetters } from '@/lib/utils'
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+type User = {
+  name: string
+  email: string
+  avatar: string
+}
+
+type NavUserProps = {
+  user: User
+}
+
+export function NavUser({ user }: NavUserProps) {
+  const fetcher = useFetcher()
   const { isMobile } = useSidebar()
+  const { session } = sessionStore()
+
+  const logout = () => {
+    fetcher.submit(
+      { refreshToken: session?.refreshToken ?? '' },
+      {
+        method: 'post',
+        action: '/action/logout',
+      }
+    )
+  }
 
   return (
     <SidebarMenu>
@@ -47,7 +57,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg uppercase">
+                  {getRandomLetters(user.name)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -84,17 +96,9 @@ export function NavUser({
                 <UserCircleIcon />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

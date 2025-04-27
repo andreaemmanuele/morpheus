@@ -20,11 +20,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme } = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
 
   const currentTheme = useMemo(
-    () => (!theme ? getSystemPreferredTheme() : theme),
-    [theme]
+    () => (!data?.theme ? getSystemPreferredTheme() : data?.theme),
+    [data?.theme]
   )
 
   return (

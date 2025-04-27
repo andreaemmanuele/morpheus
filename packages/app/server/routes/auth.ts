@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import type { Session } from '../types'
 import React from 'react'
 import bcryptjs from 'bcryptjs'
 import { changePasswordSchema } from '@morpheus/shared/schemas'
@@ -33,7 +34,7 @@ import {
   recoveryPasswordSchema,
   refreshTokenSchema,
   resetPasswordSchema,
-  unlockAccountSchema,
+  tokenRequiredSchema,
 } from '../schemas/auth.js'
 
 export default async function authRoutes(fastify: FastifyInstance) {
@@ -101,14 +102,16 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return
       }
 
+      const refreshToken = await createRefreshToken(user.id)
+      await updateLastLogin(user.id)
+
       const accessToken = fastify.jwt.sign({
         id: user.id,
         email: user.email,
-        role: user.role_id,
+        username: user.username ?? '',
+        defaultProject: 'my-project',
+        refreshToken,
       })
-
-      const refreshToken = await createRefreshToken(user.id)
-      await updateLastLogin(user.id)
 
       return {
         accessToken,
@@ -116,11 +119,24 @@ export default async function authRoutes(fastify: FastifyInstance) {
         user: {
           id: user.id,
           email: user.email,
-          role: user.role_id,
+          username: user.username ?? '',
+          defaultProject: 'my-project',
         },
       }
     }
   )
+
+  fastify.get('/auth/session', async (request, reply) => {
+    const token = fastify.jwt.lookupToken(request)
+    const data = fastify.jwt.decode<Session>(token)
+
+    if (!data) {
+      reply.code(401).send({ error: 'Token invalid' })
+      return
+    }
+
+    reply.code(200).send(data)
+  })
 
   fastify.post(
     '/auth/recovery-password',
@@ -231,7 +247,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { token } = unlockAccountSchema.parse(request.params)
+      const { token } = tokenRequiredSchema.parse(request.params)
       const user = await findUserBySuspendedToken(token)
 
       const url = new URL(`${process.env.BASE_URL}/login`)

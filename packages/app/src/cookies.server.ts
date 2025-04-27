@@ -12,3 +12,9 @@ export const authCookie = createCookie('auth', {
   secrets: [process.env.COOKIE_SECRET_KEY as string],
   secure: process.env.IS_PRODUCTION === 'true',
 })
+
+export const projectCookie = createCookie('project', {
+  path: '/',
+  sameSite: 'lax',
+  httpOnly: true,
+})

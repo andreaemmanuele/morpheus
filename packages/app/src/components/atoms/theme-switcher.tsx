@@ -35,7 +35,7 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
 
   return (
     <Button
-      className="relative text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent after:absolute after:-inset-20 after:md:hidden"
+      className="relative text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent"
       onClick={toggleTheme}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
