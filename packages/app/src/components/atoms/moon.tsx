@@ -7,7 +7,7 @@ type MoonProps = {
 
 export const Moon: FC<MoonProps> = ({ active }) => (
   <svg
-    className="size-6 [&_.ray]:transition-all duration-300"
+    className="size-6 [&_.ray]:transition-all [&_.ray]:duration-500 [&_.ray]:ease-[linear(0_0%,-0.21_38.45%,_1.3_62.81%,_1_100%)]"
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
@@ -19,9 +19,12 @@ export const Moon: FC<MoonProps> = ({ active }) => (
     strokeLinejoin="round"
   >
     <path
-      className={cn('origin-center transition-transform duration-300', {
-        'scale-[2.5]': active,
-      })}
+      className={cn(
+        'origin-center transition-transform duration-300 ease-[linear(0_0%,-0.21_38.45%,_1.3_62.81%,_1_100%)]',
+        {
+          'scale-[2.5]': active,
+        }
+      )}
       d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4"
       strokeWidth="1"
     />
