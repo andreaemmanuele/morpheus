@@ -1,5 +1,6 @@
 import type { Project } from '../types'
 import React from 'react'
+import { z } from 'zod'
 import { queries } from '../queries/index.js'
 import { sendEmail } from '../emails/index.js'
 import { JoinProject } from '../emails/templates/JoinProject.js'
@@ -58,15 +59,30 @@ export const createProjectsUsersRolesRelation = async (
 export const createInvites = async (emails: string[], projectIds: string[]) =>
   await executeQuery(queries.project.createInvites, [emails, projectIds])
 
-export const sendInvites = async (invites: string | undefined) => {
+export const sendInvites = async (
+  invites: string | undefined,
+  projectName: string,
+  token: string
+) => {
   if (!invites) throw new Error('Invites undefined')
-  const emails = invites ? invites.split(',') : []
-  if (!emails.length && invites) emails.push(invites) // single email
 
-  await sendEmail(React.createElement(JoinProject), {
-    subject: 'Join project',
-    to: emails,
+  let emails = invites?.split(',').map((email) => email.trim()) ?? []
+  emails = emails.length ? emails : [invites]
+  emails = [...new Set(emails)] // removes duplicate emails
+  emails = emails.filter((email) => {
+    const { success } = z.string().email().safeParse(email)
+    return success
   })
+
+  if (!emails.length) return []
+
+  await sendEmail(
+    React.createElement(JoinProject, { name: projectName, token }),
+    {
+      subject: 'Join project',
+      to: emails,
+    }
+  )
 
   return emails
 }

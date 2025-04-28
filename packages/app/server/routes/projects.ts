@@ -68,13 +68,16 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       if (!invites) return project
 
       try {
-        const emails = await sendInvites(invites)
+        const token = '' // add access token to invite
+        const emails = await sendInvites(invites, project?.name ?? '', token)
+        if (!emails.length) return project
         await createInvites(emails, Array(emails.length).fill(project?.id))
       } catch (error) {
         console.error(error)
         reply
           .code(500)
           .send({ error: 'Project created but cannot send invites' })
+        return project
       }
 
       return project
@@ -95,10 +98,11 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       const { invites, projectId } = invitesSchema.parse(
         JSON.parse(request.body as string)
-      )
+      ) // adds project name
 
       try {
-        const emails = await sendInvites(invites)
+        const token = ''
+        const emails = await sendInvites(invites, '', token)
         await createInvites(emails, Array(emails.length).fill(projectId))
       } catch (error) {
         console.error(error)
