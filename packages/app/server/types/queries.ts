@@ -45,3 +45,12 @@ export type Token = {
   revoked: boolean
   created_at: string
 }
+
+export type Project = {
+  id: number
+  name: string
+  slug: string
+  created_at: string
+  updated_at: string
+  deleted_at: string
+}

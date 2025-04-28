@@ -20,6 +20,14 @@ export const login = async ({ request }: ActionFunctionArgs) => {
 
   const { defaultProject } = result.user
 
+  if (!defaultProject) {
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': await authCookie.serialize(result.accessToken),
+      },
+    })
+  }
+
   return redirect(`/${defaultProject}`, {
     headers: [
       ['Set-Cookie', await authCookie.serialize(result.accessToken)],

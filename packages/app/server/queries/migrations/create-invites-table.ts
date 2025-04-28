@@ -1,5 +1,5 @@
 export default `
-    CREATE TABLE IF NOT EXISTS invitations (
+    CREATE TABLE IF NOT EXISTS invites (
         id SERIAL PRIMARY KEY,
         email VARCHAR(100) UNIQUE NOT NULL,
         status invite_status DEFAULT 'pending',

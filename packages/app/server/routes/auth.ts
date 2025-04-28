@@ -36,6 +36,7 @@ import {
   resetPasswordSchema,
   tokenRequiredSchema,
 } from '../schemas/auth.js'
+import { getAllProjects } from '../services/project'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -102,14 +103,18 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return
       }
 
-      const refreshToken = await createRefreshToken(user.id)
-      await updateLastLogin(user.id)
+      const [refreshToken, projects] = await Promise.all([
+        createRefreshToken(user.id),
+        getAllProjects(user.id),
+        updateLastLogin(user.id),
+      ])
 
+      const defaultProject = projects[0]?.slug ?? null
       const accessToken = fastify.jwt.sign({
         id: user.id,
         email: user.email,
         username: user.username ?? '',
-        defaultProject: 'my-project',
+        defaultProject,
         refreshToken,
       })
 
@@ -120,7 +125,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
           id: user.id,
           email: user.email,
           username: user.username ?? '',
-          defaultProject: 'my-project',
+          defaultProject,
         },
       }
     }

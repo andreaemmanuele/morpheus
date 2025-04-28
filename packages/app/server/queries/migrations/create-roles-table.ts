@@ -9,8 +9,8 @@ export default `
     
     INSERT INTO roles (name, description) 
     VALUES 
+        ('owner', 'owner of the project'), 
         ('admin', 'user with all permissions'), 
-        ('editor', 'user with permissions to create, edit and delete content'),
-        ('user', 'user with no permissions at all')
+        ('editor', 'user with permissions to create, edit and delete content')
     ON CONFLICT (name) DO NOTHING;
     `

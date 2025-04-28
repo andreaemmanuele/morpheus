@@ -32,4 +32,7 @@ export const queries = {
     findRefreshToken,
     revokeRefreshToken,
   },
+  project: {
+    ...sharedQueries.project,
+  },
 }

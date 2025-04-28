@@ -10,6 +10,10 @@ import updateSuspendedToken from '../queries/users/update-suspended-token.js'
 import updateLastLogin from '../queries/users/update-last-login.js'
 import incrementLoginAttempts from '../queries/users/increment-login-attempts.js'
 import resetLoginAttempts from '../queries/users/reset-login-attempts.js'
+import findAllByUserId from '../queries/projects/find-all-by-user-id.js'
+import createProject from '../queries/projects/create-project.js'
+import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
+import createInvites from '../queries/projects/create-invites.js'
 
 export const queries = {
   user: {
@@ -25,5 +29,11 @@ export const queries = {
     updateLastLogin,
     incrementLoginAttempts,
     resetLoginAttempts,
+  },
+  project: {
+    findAllByUserId,
+    createProject,
+    createProjectsUsersRolesRelation,
+    createInvites,
   },
 }
