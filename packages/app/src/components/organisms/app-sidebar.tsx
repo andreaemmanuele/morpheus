@@ -4,13 +4,9 @@ import * as React from 'react'
 import {
   AudioWaveform,
   BarChartIcon,
-  ClipboardListIcon,
   Command,
-  DatabaseIcon,
-  FileIcon,
   FolderIcon,
   GalleryVerticalEnd,
-  HelpCircleIcon,
   LayoutDashboardIcon,
   ListIcon,
   SettingsIcon,

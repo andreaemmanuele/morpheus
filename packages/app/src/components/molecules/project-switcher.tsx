@@ -19,6 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { NavLink } from '@remix-run/react'
 
 type Project = {
   name: string
@@ -78,13 +79,15 @@ export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">
-                Add project
-              </div>
+            <DropdownMenuItem className="p-2">
+              <NavLink className="flex items-center gap-2" to="/create/project">
+                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                  <Plus className="size-4" />
+                </div>
+                <div className="font-medium text-muted-foreground">
+                  Add project
+                </div>
+              </NavLink>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

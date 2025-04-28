@@ -43,13 +43,7 @@ export const CreateProjectForm = () => {
           </div>
         </div>
         <Label htmlFor="slug">Slug</Label>
-        <Input
-          id="slug"
-          name="slug"
-          value={slug}
-          className="pointer-events-none"
-          required
-        />
+        <Input id="slug" name="slug" value={slug} readOnly required />
         <Label htmlFor="invites">Invites members</Label>
         <Textarea
           placeholder="m@example.com, m1@example.com, ..."

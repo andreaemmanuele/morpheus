@@ -6,6 +6,7 @@ import {
   createProject,
   createProjectsUsersRolesRelation,
   getAllProjects,
+  getUniqueSlug,
   sendInvites,
 } from '../services/project'
 import { createProjectSchema, invitesSchema } from '../schemas/project'
@@ -52,7 +53,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
 
       let project
       try {
-        project = await createProject(icon, name, slug)
+        const _slug = await getUniqueSlug(slug)
+        project = await createProject(icon, name, _slug!)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
           return

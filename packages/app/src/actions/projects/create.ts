@@ -11,6 +11,7 @@ export const createProject = async ({ request }: ActionFunctionArgs) => {
 
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
+  const defaultProject = await projectCookie.parse(headers)
 
   const response = await fetch(`${process.env.BASE_URL}/api/projects/create`, {
     method: 'POST',
@@ -27,6 +28,7 @@ export const createProject = async ({ request }: ActionFunctionArgs) => {
 
   const result = await response.json()
   if (!response.ok) return { error: result.error, message: null }
+  if (defaultProject) return redirect(`/${result.slug}`)
 
   return redirect(`/${result.slug}`, {
     headers: {
