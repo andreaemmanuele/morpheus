@@ -8,8 +8,8 @@ import {
   getAllProjects,
   getUniqueSlug,
   sendInvites,
-} from '../services/project'
-import { createProjectSchema, invitesSchema } from '../schemas/project'
+} from '../services/project.js'
+import { createProjectSchema, invitesSchema } from '../schemas/project.js'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
