@@ -19,6 +19,7 @@ export const loader = async (data: LoaderFunctionArgs) => {
   if (!isLoggedIn) return redirect('/login')
 
   return await sessionLoader(data, async ({ session, token, headers }) => {
+    console.log({ session, token, headers })
     const theme = await getTheme(data.request)
     const projects = await getAllProjects(token)
     return Response.json(

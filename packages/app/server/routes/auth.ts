@@ -143,41 +143,40 @@ export default async function authRoutes(fastify: FastifyInstance) {
       return
     }
 
-    const tokenExpDate = new Date(data.exp * 1000)
-    const currentDate = new Date()
-
-    if (tokenExpDate.getTime() > currentDate.getTime()) {
-      reply.code(200).send({
-        accessToken: token,
-        refreshToken: data.refreshToken,
-        user: {
-          id: data.id,
-          email: data.email,
-          username: data.username,
-          defaultProject: '', //get from user
-        },
-      })
-      return
-    }
+    const refreshTokenData = await findRefreshToken(data.refreshToken)
 
     if (!data.refreshToken) {
       reply.code(400).send({ error: 'Refresh token is required' })
       return
     }
 
-    const refreshTokenData = await findRefreshToken(data.refreshToken)
     if (!refreshTokenData) {
       reply.code(401).send({ error: 'Invalid refresh token' })
       return
     }
 
-    const refreshTokenExp = new Date(refreshTokenData.expires_at)
+    const currentDate = new Date()
+    const accessTokenExpDate = new Date(data.exp * 1000)
+    const refreshTokenExpDate = new Date(refreshTokenData.expires_at)
 
-    if (
-      refreshTokenData.revoked ||
-      refreshTokenExp.getTime() <= currentDate.getTime()
-    ) {
-      reply.code(403).send({ error: 'Refresh token expired' })
+    const isAccessTokenStillValid =
+      accessTokenExpDate.getTime() > currentDate.getTime()
+
+    const isRefreshTokenExpired =
+      refreshTokenExpDate.getTime() <= currentDate.getTime()
+
+    if (isAccessTokenStillValid) {
+      reply.code(200).send({
+        accessToken: token,
+        refreshToken: data.refreshToken,
+        refreshTokenExpired: isRefreshTokenExpired,
+        user: {
+          id: data.id,
+          email: data.email,
+          username: data.username,
+          defaultProject: '', //get from user
+        },
+      } satisfies Session)
       return
     }
 
@@ -199,6 +198,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
     reply.code(200).send({
       accessToken,
       refreshToken: data.refreshToken,
+      refreshTokenExpired: isRefreshTokenExpired,
       user: {
         id: user.id,
         email: user.email,
