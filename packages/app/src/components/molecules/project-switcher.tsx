@@ -1,5 +1,7 @@
 'use client'
 
+import type { Icons } from '@/lib/icons'
+import { renderIcon } from '@/lib/icons'
 import * as React from 'react'
 import { ChevronsUpDown, Plus } from 'lucide-react'
 
@@ -21,9 +23,10 @@ import {
 } from '@/components/ui/sidebar'
 import { NavLink } from '@remix-run/react'
 
-type Project = {
+export type Project = {
   name: string
-  logo: React.ElementType
+  logo: Icons
+  url: string
 }
 
 type ProjectSwitcherProps = {
@@ -32,9 +35,9 @@ type ProjectSwitcherProps = {
 
 export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(items[0])
+  const [activeProject, setActiveProject] = React.useState(items[0])
 
-  if (!activeTeam) return null
+  if (!activeProject) return null
 
   return (
     <SidebarMenu>
@@ -45,12 +48,12 @@ export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                {renderIcon(activeProject.logo)}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {activeProject.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -68,19 +71,30 @@ export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
             {items.map((project, index) => (
               <DropdownMenuItem
                 key={project.name}
-                onClick={() => setActiveTeam(project)}
-                className="gap-2 p-2"
+                onClick={() => setActiveProject(project)}
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <project.logo className="size-4 shrink-0" />
-                </div>
-                {project.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <NavLink
+                  className="flex items-center gap-2 p-2 w-full"
+                  to={project.url}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                    <div className="size-4 shrink-0">
+                      {renderIcon(activeProject.logo)}
+                    </div>
+                  </div>
+                  {project.name}
+                  <DropdownMenuShortcut className="ml-auto">
+                    ⌘{index + 1}
+                  </DropdownMenuShortcut>
+                </NavLink>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="p-2">
-              <NavLink className="flex items-center gap-2" to="/create/project">
+            <DropdownMenuItem>
+              <NavLink
+                className="flex items-center p-2 gap-2 w-full h-full"
+                to="/create/project"
+              >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus className="size-4" />
                 </div>

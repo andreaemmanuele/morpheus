@@ -1,12 +1,10 @@
 'use client'
 
+import type { Project } from '@/components/molecules/project-switcher'
 import * as React from 'react'
 import {
-  AudioWaveform,
   BarChartIcon,
-  Command,
   FolderIcon,
-  GalleryVerticalEnd,
   LayoutDashboardIcon,
   ListIcon,
   SettingsIcon,
@@ -27,20 +25,6 @@ import { NavUser } from '@/components/molecules/nav-user'
 import { sessionStore } from '@/stores/session'
 
 const data = {
-  projects: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-    },
-  ],
   navMain: [
     {
       title: 'Dashboard',
@@ -87,12 +71,16 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = {
+  projects: Project[]
+} & React.ComponentProps<typeof Sidebar>
+
+export function AppSidebar({ projects, ...props }: AppSidebarProps) {
   const { session } = sessionStore()
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <ProjectSwitcher items={data.projects} />
+        <ProjectSwitcher items={projects} />
       </SidebarHeader>
       <SidebarContent>
         {/*<NavMain items={data.navMain} />*/}

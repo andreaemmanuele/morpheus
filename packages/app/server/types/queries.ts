@@ -1,3 +1,5 @@
+import type { Icons } from '@/lib/icons'
+
 export type AdminRole = {
   id: 1
   type: 'admin'
@@ -48,6 +50,7 @@ export type Token = {
 
 export type Project = {
   id: number
+  icon: Icons
   name: string
   slug: string
   created_at: string
