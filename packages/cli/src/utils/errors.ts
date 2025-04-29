@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+
 type PostgresError = {
   code: string
   message: string
@@ -19,5 +21,5 @@ export const handleError = (error: unknown) => {
     '23505': `Record already exists in ${e.table_name} table`,
   }
   const _e = errorCodes[e.code as keyof typeof errorCodes]
-  console.error(_e ? _e : e)
+  console.log(chalk.red(`‼️${_e ? _e : e.message}`))
 }

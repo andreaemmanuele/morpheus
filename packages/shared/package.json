@@ -1,10 +1,27 @@
 {
-  "name": "shared",
+  "name": "@morpheus/shared",
   "version": "0.1.0",
   "description": "Shared utilities among packages",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "./queries": {
+      "types": "./dist/queries/index.d.ts",
+      "import": "./dist/queries/index.mjs",
+      "require": "./dist/queries/index.js",
+      "default": "./dist/queries/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "import": "./dist/schemas/index.mjs",
+      "require": "./dist/schemas/index.js",
+      "default": "./dist/schemas/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js"
+    }
+  },
   "files": [
     "dist"
   ],

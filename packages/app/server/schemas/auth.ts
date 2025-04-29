@@ -5,10 +5,16 @@ export const loginBodySchema = z.object({
   password: z.string(),
 })
 
-export const refreshTokenSchema = z.object({
-  refreshToken: z.string(),
+export const recoveryPasswordSchema = z.object({
+  email: z.string(),
 })
 
-export const unlockAccountSchema = z.object({
+export const resetPasswordSchema = z.object({
+  token: z.string(),
+  newPassword: z.string(),
+  confirmPassword: z.string(),
+})
+
+export const tokenRequiredSchema = z.object({
   token: z.string(),
 })

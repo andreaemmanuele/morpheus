@@ -1,0 +1,19 @@
+import { z } from 'zod'
+import slugify from 'slugify'
+
+export const createProjectSchema = z
+  .object({
+    icon: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    invites: z.string().optional(),
+  })
+  .refine(({ name, slug }) => slugify(name, { lower: true }) === slug, {
+    message: "Name and slug don't match the pattern",
+    path: ['slug'],
+  })
+
+export const invitesSchema = z.object({
+  invites: z.string(),
+  projectId: z.number(),
+})

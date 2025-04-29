@@ -9,7 +9,8 @@ import migrate from './plugins/migrate.js'
 import rateLimit from './plugins/rate-limit.js'
 import jwt from './plugins/jwt.js'
 import authRoutes from './routes/auth.js'
-import { authenticate, isAdmin } from './utils/auth.js'
+import projectRoutes from './routes/projects.js'
+/*import { authenticate, isAdmin } from './utils/auth.js'*/
 
 configDotenv()
 sourceMapSupport.install()
@@ -22,8 +23,9 @@ app.register(jwt)
 app.register(rateLimit)
 
 app.register(authRoutes, { prefix: '/api' })
+app.register(projectRoutes, { prefix: '/api' })
 
-app.get(
+/*app.get(
   '/api/protected',
   {
     onRequest: [authenticate],
@@ -41,7 +43,7 @@ app.get(
   async (request) => {
     return { message: 'This is a admin protected route', user: request.user }
   }
-)
+)*/
 
 app.ready(async () => {
   try {

@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "@morpheus/cli",
   "version": "1.0.0",
   "type": "module",
   "bin": {
@@ -13,7 +13,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "shared": "workspace:*",
+    "@morpheus/shared": "workspace:*",
     "commander": "^11.0.0",
     "postgres": "^3.4.5"
   }
