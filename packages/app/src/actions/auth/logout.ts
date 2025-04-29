@@ -1,11 +1,10 @@
-import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
-import { deleteSession, logout } from '@/lib/session'
+import { deleteSession } from '@/lib/session'
 
-export const logoutAction = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData()
-  const refreshToken = formData.get('refreshToken') as string
-  await logout(refreshToken)
+export const logoutAction = async () => {
+  await fetch(`${process.env.BASE_URL}/api/auth/logout`, {
+    method: 'POST',
+  })
 
   return redirect('/login', {
     headers: {

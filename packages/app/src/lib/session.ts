@@ -17,19 +17,6 @@ export const getSession = async (token: string) => {
   if (response?.ok) return result
 }
 
-export const logout = async (refreshToken: string) => {
-  try {
-    await fetch(`${process.env.BASE_URL}/api/auth/logout`, {
-      method: 'POST',
-      body: JSON.stringify({
-        refreshToken,
-      }),
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const deleteSession = async () =>
   await authCookie.serialize(null, {
     maxAge: 0,
