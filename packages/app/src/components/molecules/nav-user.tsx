@@ -18,7 +18,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { sessionStore } from '@/stores/session'
 import { getRandomLetters } from '@/lib/utils'
 
 type User = {
@@ -34,16 +33,12 @@ type NavUserProps = {
 export function NavUser({ user }: NavUserProps) {
   const fetcher = useFetcher()
   const { isMobile } = useSidebar()
-  const { session } = sessionStore()
 
   const logout = () => {
-    fetcher.submit(
-      { refreshToken: session?.refreshToken ?? '' },
-      {
-        method: 'post',
-        action: '/action/logout',
-      }
-    )
+    fetcher.submit(null, {
+      method: 'post',
+      action: '/action/logout',
+    })
   }
 
   return (

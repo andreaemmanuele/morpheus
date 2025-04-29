@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { authCookie, projectCookie } from '@/cookies.server'
 
-export const createProject = async ({ request }: ActionFunctionArgs) => {
+export const createProjectAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const icon = formData.get('icon')
   const name = formData.get('name')

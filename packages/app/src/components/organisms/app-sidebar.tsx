@@ -89,8 +89,8 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
       <SidebarFooter>
         <NavUser
           user={{
-            email: session?.email ?? '',
-            name: session?.username ?? '',
+            email: session?.user.email ?? '',
+            name: session?.user.username ?? '',
             avatar: '',
           }}
         />

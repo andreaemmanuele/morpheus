@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import type { Session } from '../types'
+import type { AccessToken, Session } from '../types'
 import React from 'react'
 import bcryptjs from 'bcryptjs'
 import { changePasswordSchema } from '@morpheus/shared/schemas'
@@ -21,7 +21,7 @@ import {
 import {
   createRefreshToken,
   findRefreshToken,
-  revokeRefreshToken,
+  findRefreshTokenByUserId,
 } from '../services/refresh-token.js'
 
 import { sendEmail } from '../emails/index.js'
@@ -32,7 +32,6 @@ import { generateRandomToken } from '../utils/tokens.js'
 import {
   loginBodySchema,
   recoveryPasswordSchema,
-  refreshTokenSchema,
   resetPasswordSchema,
   tokenRequiredSchema,
 } from '../schemas/auth.js'
@@ -103,8 +102,12 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return
       }
 
+      const existingRefreshToken = await findRefreshTokenByUserId(user.id)
+
       const [refreshToken, projects] = await Promise.all([
-        createRefreshToken(user.id),
+        !existingRefreshToken
+          ? createRefreshToken(user.id)
+          : existingRefreshToken,
         getAllProjects(user.id),
         updateLastLogin(user.id),
       ])
@@ -124,7 +127,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         user: {
           id: user.id,
           email: user.email,
-          username: user.username ?? '',
+          username: user.username,
           defaultProject,
         },
       }
@@ -133,14 +136,76 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   fastify.get('/auth/session', async (request, reply) => {
     const token = fastify.jwt.lookupToken(request)
-    const data = fastify.jwt.decode<Session>(token)
+    const data = fastify.jwt.decode<AccessToken>(token)
 
     if (!data) {
       reply.code(401).send({ error: 'Token invalid' })
       return
     }
 
-    reply.code(200).send(data)
+    const tokenExpDate = new Date(data.exp * 1000)
+    const currentDate = new Date()
+
+    if (tokenExpDate.getTime() > currentDate.getTime()) {
+      reply.code(200).send({
+        accessToken: token,
+        refreshToken: data.refreshToken,
+        user: {
+          id: data.id,
+          email: data.email,
+          username: data.username,
+          defaultProject: '', //get from user
+        },
+      })
+      return
+    }
+
+    if (!data.refreshToken) {
+      reply.code(400).send({ error: 'Refresh token is required' })
+      return
+    }
+
+    const refreshTokenData = await findRefreshToken(data.refreshToken)
+    if (!refreshTokenData) {
+      reply.code(401).send({ error: 'Invalid refresh token' })
+      return
+    }
+
+    const refreshTokenExp = new Date(refreshTokenData.expires_at)
+
+    if (
+      refreshTokenData.revoked ||
+      refreshTokenExp.getTime() <= currentDate.getTime()
+    ) {
+      reply.code(403).send({ error: 'Refresh token expired' })
+      return
+    }
+
+    const user = await findUserById(refreshTokenData.user_id)
+    if (!user) {
+      reply.code(401).send({ error: 'Cannot refresh token' })
+      return
+    }
+
+    // silent access token refresh
+    const accessToken = fastify.jwt.sign({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      defaultProject: '', // get from user
+      refreshToken: data.refreshToken,
+    })
+
+    reply.code(200).send({
+      accessToken,
+      refreshToken: data.refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        defaultProject: '', //get from user
+      },
+    })
   })
 
   fastify.post(
@@ -275,57 +340,17 @@ export default async function authRoutes(fastify: FastifyInstance) {
   )
 
   fastify.post(
-    '/auth/refresh',
-    {
-      config: {
-        rateLimit: {
-          max: 3,
-          timeWindow: '15 minutes',
-        },
-      },
-    },
-    async (request, reply) => {
-      const { refreshToken } = refreshTokenSchema.parse(request.body)
-
-      if (!refreshToken) {
-        reply.code(400).send({ error: 'Refresh token is required' })
-        return
-      }
-
-      const tokenData = await findRefreshToken(refreshToken)
-      if (!tokenData) {
-        reply.code(401).send({ error: 'Invalid refresh token' })
-        return
-      }
-
-      const user = await findUserById(tokenData.user_id)
-      if (!user) {
-        reply.code(401).send({ error: 'User not found' })
-        return
-      }
-
-      const accessToken = fastify.jwt.sign({
-        id: user.id,
-        email: user.email,
-        role: user.role_id,
-      })
-
-      return { accessToken }
-    }
-  )
-
-  fastify.post(
     '/auth/logout',
     { onRequest: [authenticate] },
     async (request, reply) => {
-      const { refreshToken } = refreshTokenSchema.parse(request.body)
+      const token = fastify.jwt.lookupToken(request)
+      const data = fastify.jwt.decode<Session>(token)
 
-      if (!refreshToken) {
+      if (!data?.refreshToken) {
         reply.code(400).send({ error: 'Refresh token is required' })
         return
       }
 
-      await revokeRefreshToken(refreshToken)
       return { message: 'Logged out successfully' }
     }
   )

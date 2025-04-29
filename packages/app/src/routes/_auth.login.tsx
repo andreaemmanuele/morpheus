@@ -2,15 +2,15 @@ import type { MetaFunction } from '@remix-run/node'
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { useActionData, useLoaderData, useNavigation } from '@remix-run/react'
-import { softRouteGuard } from '@/loaders/auth'
-import { login } from '@/actions/auth/login'
+import { softRouteGuardLoader } from '@/loaders/auth'
+import { loginAction } from '@/actions/auth/login'
 import { AlertCircle, MessageSquareText } from 'lucide-react'
 import { LoginForm } from '@/components/forms/login-form'
 import { Alert } from '@/components/atoms/alert'
 import { renderAlertMessage } from '@/lib/alert'
 
 export const loader = async (data: LoaderFunctionArgs) => {
-  const { isLoggedIn } = await softRouteGuard(data)
+  const { isLoggedIn } = await softRouteGuardLoader(data)
   if (isLoggedIn) return redirect('/')
   const url = new URL(data.request.url)
   const message = url.searchParams.get('message')
@@ -18,7 +18,7 @@ export const loader = async (data: LoaderFunctionArgs) => {
   return renderAlertMessage(message)
 }
 
-export const action = login
+export const action = loginAction
 
 export const meta: MetaFunction = () => [
   { name: 'description', content: 'Welcome to Morpheus' },

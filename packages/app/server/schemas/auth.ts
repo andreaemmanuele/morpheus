@@ -5,10 +5,6 @@ export const loginBodySchema = z.object({
   password: z.string(),
 })
 
-export const refreshTokenSchema = z.object({
-  refreshToken: z.string(),
-})
-
 export const recoveryPasswordSchema = z.object({
   email: z.string(),
 })

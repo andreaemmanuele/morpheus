@@ -1,13 +1,13 @@
 import type { MetaFunction } from '@remix-run/node'
 import { useActionData, useNavigation } from '@remix-run/react'
-import { guestRouteGuard } from '@/loaders/auth'
-import { recoverPassword } from '@/actions/auth/recover-password'
+import { guestRouteGuardLoader } from '@/loaders/auth'
+import { recoverPasswordAction } from '@/actions/auth/recover-password'
 import { MailCheck } from 'lucide-react'
 import { ForgotPasswordForm } from '@/components/forms/forgot-password-form'
 import { Alert } from '@/components/atoms/alert'
 
-export const loader = guestRouteGuard
-export const action = recoverPassword
+export const loader = guestRouteGuardLoader
+export const action = recoverPasswordAction
 
 export const meta: MetaFunction = () => [
   { name: 'description', content: 'Get your password back' },

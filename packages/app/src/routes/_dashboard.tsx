@@ -4,8 +4,8 @@ import type { Project } from '../../server/types'
 import { Outlet, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 import { redirect } from '@remix-run/server-runtime'
-import { themeCookie } from '@/cookies.server'
-import { softRouteGuard } from '@/loaders/auth'
+import { authCookie, themeCookie } from '@/cookies.server'
+import { softRouteGuardLoader } from '@/loaders/auth'
 import { sessionStore } from '@/stores/session'
 import { DashboardTemplate } from '@/components/templates/dashboard'
 import { getSession } from '@/lib/session'
@@ -16,21 +16,33 @@ export const meta: MetaFunction = () => [
 ]
 
 export const loader = async (data: LoaderFunctionArgs) => {
-  const { isLoggedIn, authCookie } = await softRouteGuard(data)
+  const { isLoggedIn, authCookie: _cookie } = await softRouteGuardLoader(data)
   if (!isLoggedIn) return redirect('/login')
 
   const headers = data.request.headers.get('Cookie')
   const theme = await themeCookie.parse(headers)
-  const [session, projects] = await Promise.allSettled([
-    getSession(authCookie),
-    getAllProjects(authCookie),
-  ])
+  const session = await getSession(_cookie)
 
-  return {
+  const newAccessTokenExists = session?.accessToken !== _cookie
+  const token = newAccessTokenExists ? session?.accessToken : _cookie
+
+  const projects = await getAllProjects(token)
+
+  const response = {
     theme,
-    session: session.status === 'fulfilled' ? session.value : null,
-    projects: projects.status === 'fulfilled' ? projects.value : null,
+    session,
+    projects,
   }
+
+  if (newAccessTokenExists) {
+    return Response.json(response, {
+      headers: {
+        'Set-Cookie': await authCookie.serialize(session?.accessToken),
+      },
+    })
+  }
+
+  return Response.json(response)
 }
 
 export default function DashboardPage() {
@@ -38,14 +50,16 @@ export default function DashboardPage() {
   const { setSession } = sessionStore()
 
   useEffect(() => {
+    if (!data.session) return
     setSession(data.session)
   }, [data.session])
 
-  const projects = data.projects.map(({ name, icon, slug }: Project) => ({
-    name,
-    logo: icon,
-    url: `/${slug}`,
-  }))
+  const projects =
+    data.projects?.map(({ name, icon, slug }: Project) => ({
+      name,
+      logo: icon,
+      url: `/${slug}`,
+    })) ?? []
 
   return (
     <DashboardTemplate projects={projects} theme={data.theme}>

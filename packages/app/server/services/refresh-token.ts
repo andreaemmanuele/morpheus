@@ -23,5 +23,13 @@ export const findRefreshToken = async (token: string) => {
   return result.rows[0]
 }
 
+export const findRefreshTokenByUserId = async (userId: number) => {
+  const result = await executeQuery<Token>(
+    queries.auth.findRefreshTokenByUserId,
+    [userId]
+  )
+  return result.rows[0]
+}
+
 export const revokeRefreshToken = async (token: string) =>
   await executeQuery(queries.auth.revokeRefreshToken, [token])

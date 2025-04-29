@@ -1,3 +1,4 @@
+import type { Session } from '../../server/types'
 import { authCookie } from '@/cookies.server'
 
 export const getSession = async (token: string) => {
@@ -12,8 +13,21 @@ export const getSession = async (token: string) => {
     console.error(error)
   }
 
-  if (response?.ok) return await response?.json()
-  return null
+  const result = (await response?.json()) as Session | null
+  if (response?.ok) return result
+}
+
+export const logout = async (refreshToken: string) => {
+  try {
+    await fetch(`${process.env.BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      body: JSON.stringify({
+        refreshToken,
+      }),
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const deleteSession = async () =>

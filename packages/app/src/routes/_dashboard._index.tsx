@@ -1,9 +1,9 @@
-import { loadDefaultProject } from '@/loaders/projects'
-import { createProject } from '@/actions/projects/create'
+import { defaultProjectLoader } from '@/loaders/projects'
+import { createProjectAction } from '@/actions/projects/create'
 import { CreateProjectForm } from '@/components/forms/create-project-form'
 
-export const loader = loadDefaultProject
-export const action = createProject
+export const loader = defaultProjectLoader
+export const action = createProjectAction
 
 export default function NewProjectPage() {
   return (

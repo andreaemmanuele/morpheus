@@ -1,7 +1,7 @@
 import { CreateProjectForm } from '@/components/forms/create-project-form'
-import { createProject } from '@/actions/projects/create'
+import { createProjectAction } from '@/actions/projects/create'
 
-export const action = createProject
+export const action = createProjectAction
 
 export default function NewProjectPage() {
   return (
