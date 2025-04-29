@@ -79,7 +79,7 @@ export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
                 >
                   <div className="flex size-6 items-center justify-center rounded-sm border">
                     <div className="size-4 shrink-0">
-                      {renderIcon(activeProject.logo)}
+                      {renderIcon(project.logo)}
                     </div>
                   </div>
                   {project.name}
