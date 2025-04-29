@@ -112,25 +112,31 @@ export default async function authRoutes(fastify: FastifyInstance) {
         updateLastLogin(user.id),
       ])
 
-      const defaultProject = projects[0]?.slug ?? null
+      const defaultProject = projects[0]?.slug ?? ''
       const accessToken = fastify.jwt.sign({
         id: user.id,
         email: user.email,
         username: user.username ?? '',
         defaultProject,
-        refreshToken,
+        refreshToken: refreshToken?.token ?? '',
       })
+
+      const currentDate = new Date()
+      const refreshTokenExpDate = new Date(refreshToken?.expires_at ?? '')
+      const isRefreshTokenExpired =
+        refreshTokenExpDate.getTime() <= currentDate.getTime()
 
       return {
         accessToken,
-        refreshToken,
+        refreshToken: refreshToken?.token ?? '',
+        refreshTokenExpired: isRefreshTokenExpired,
         user: {
           id: user.id,
           email: user.email,
-          username: user.username,
+          username: user.username ?? '',
           defaultProject,
         },
-      }
+      } satisfies Session
     }
   )
 
@@ -202,10 +208,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
       user: {
         id: user.id,
         email: user.email,
-        username: user.username,
+        username: user.username ?? '',
         defaultProject: '', //get from user
       },
-    })
+    } satisfies Session)
   })
 
   fastify.post(

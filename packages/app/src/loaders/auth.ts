@@ -38,8 +38,19 @@ export const sessionLoader = async (
 ) => {
   const headers = request.headers.get('Cookie')
   const cookie = (await authCookie.parse(headers)) as string
+  let session: Session | null | undefined
 
-  const session = await getSession(cookie)
+  try {
+    session = await getSession(cookie)
+  } catch (e) {
+    console.error(e)
+    return redirect('/login', {
+      headers: {
+        'Set-Cookie': await deleteSession(),
+      },
+    })
+  }
+
   if (session?.refreshTokenExpired) {
     return redirect('/login', {
       headers: {
