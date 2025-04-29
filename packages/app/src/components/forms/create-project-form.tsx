@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import type { FC, FormEvent } from 'react'
 import type { Icons } from '@/lib/icons'
 import { useState } from 'react'
 import { Form } from '@remix-run/react'
@@ -8,8 +8,15 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { IconSelector } from '@/components/organisms/icon-selector'
+import { LoaderCircle } from 'lucide-react'
 
-export const CreateProjectForm = () => {
+export type CreateProjectFormProps = {
+  submitting: boolean
+}
+
+export const CreateProjectForm: FC<CreateProjectFormProps> = ({
+  submitting = false,
+}) => {
   const [icon, setIcon] = useState<Icons>()
   const [slug, setSlug] = useState('')
 
@@ -53,8 +60,8 @@ export const CreateProjectForm = () => {
         />
       </div>
       <div className="flex justify-end">
-        <Button type="submit" size="lg">
-          Create
+        <Button type="submit" className="w-40">
+          {submitting ? <LoaderCircle className="animate-spin" /> : 'Create'}
         </Button>
       </div>
     </Form>

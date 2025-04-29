@@ -13,15 +13,15 @@ export const getAllProjects = async (userId: number) => {
   return result.rows
 }
 
-export const getUniqueSlug = async (slug: string) => {
+export const getUniqueSlug = async (userId: number, slug: string) => {
   const originalSlug = slug
   let counter = 1
   let slugExists = true
 
   while (slugExists) {
     const result = await executeQuery<Project>(
-      queries.project.findProjectBySlug,
-      [slug]
+      queries.project.findProjectBySlugAndUserId,
+      [userId, slug]
     )
     const project = result.rows[0]
     slugExists = !!project
