@@ -110,7 +110,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
         updateLastLogin(user.id),
       ])
 
-      const defaultProject = projects[0]?.slug ?? ''
+      const defaultProject =
+        projects.find(({ is_default }) => is_default)?.slug ?? ''
+
       const accessToken = fastify.jwt.sign({
         id: user.id,
         email: user.email,

@@ -53,6 +53,7 @@ export type Project = {
   icon: Icons
   name: string
   slug: string
+  is_default: boolean
   created_at: string
   updated_at: string
   deleted_at: string
