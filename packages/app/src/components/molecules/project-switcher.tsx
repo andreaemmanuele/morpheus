@@ -41,13 +41,13 @@ export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
   const [activeProject, setActiveProject] = React.useState(items[0] ?? null)
 
   useEffect(() => {
-    if (!active) return
+    if (!active || !items.length) return
     setActiveProject((prev) => {
-      const project = items.find(({ slug }) => slug === active)
-      if (!prev || !project) return null
+      const project = items.find(({ slug }) => slug === active) ?? items[0]
+      if (!project) return null
       return { ...prev, ...project }
     })
-  }, [active])
+  }, [active, items])
 
   return (
     <SidebarMenu>
