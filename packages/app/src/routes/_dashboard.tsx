@@ -5,9 +5,9 @@ import { Outlet, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 import { redirect } from '@remix-run/server-runtime'
 import { sessionLoader, softRouteGuardLoader } from '@/loaders/auth'
+import { themeLoader } from '@/loaders/theme'
 import { sessionStore } from '@/stores/session'
 import { DashboardTemplate } from '@/components/templates/dashboard'
-import { getTheme } from '@/lib/theme'
 import { getAllProjects } from '@/lib/projects'
 
 export const meta: MetaFunction = () => [
@@ -19,7 +19,7 @@ export const loader = async (data: LoaderFunctionArgs) => {
   if (!isLoggedIn) return redirect('/login')
 
   return await sessionLoader(data, async ({ session, token, headers }) => {
-    const theme = await getTheme(data.request)
+    const theme = await themeLoader(data)
     const projects = await getAllProjects(token)
     return Response.json(
       {

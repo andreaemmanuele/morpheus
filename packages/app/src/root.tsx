@@ -8,15 +8,19 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react'
+import 'sonner/dist/styles.css'
 import '@/assets/css/index.css'
 import { useMemo } from 'react'
-import { themeCookie } from '@/cookies.server'
+import { toastLoader } from '@/loaders/toast'
+import { themeLoader } from '@/loaders/theme'
 import { cn, getSystemPreferredTheme } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
+import { Toaster } from '@/components/ui/toaster'
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const headers = request.headers.get('Cookie')
-  const cookie = await themeCookie.parse(headers)
-  return { theme: cookie }
+export const loader = async (data: LoaderFunctionArgs) => {
+  const theme = await themeLoader(data)
+  const toast = await toastLoader(data)
+  return { theme, toast: await toast.json() }
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -26,6 +30,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     () => (!data?.theme ? getSystemPreferredTheme() : data?.theme),
     [data?.theme]
   )
+
+  useToast(data?.toast)
 
   return (
     <html lang="en">
@@ -42,6 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         })}
       >
         {children}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
