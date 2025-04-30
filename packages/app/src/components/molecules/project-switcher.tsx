@@ -22,22 +22,32 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { NavLink } from '@remix-run/react'
+import { useEffect } from 'react'
 
 export type Project = {
   name: string
+  slug: string
   logo: Icons
   url: string
 }
 
 type ProjectSwitcherProps = {
   items: Project[]
+  active: string | undefined
 }
 
-export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
+export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
   const { isMobile } = useSidebar()
-  const [activeProject, setActiveProject] = React.useState(items[0])
+  const [activeProject, setActiveProject] = React.useState(items[0] ?? null)
 
-  if (!activeProject) return null
+  useEffect(() => {
+    if (!active) return
+    setActiveProject((prev) => {
+      const project = items.find(({ slug }) => slug === active)
+      if (!prev || !project) return null
+      return { ...prev, ...project }
+    })
+  }, [active])
 
   return (
     <SidebarMenu>
@@ -49,11 +59,11 @@ export function ProjectSwitcher({ items }: ProjectSwitcherProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {renderIcon(activeProject.logo)}
+                {renderIcon(activeProject?.logo ?? 'pill')}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeProject.name}
+                  {activeProject?.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />

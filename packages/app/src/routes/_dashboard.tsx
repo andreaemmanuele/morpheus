@@ -44,6 +44,7 @@ export default function DashboardPage() {
   const projects =
     data.projects?.map(({ name, icon, slug }: Project) => ({
       name,
+      slug,
       logo: icon,
       url: `/${slug}`,
     })) ?? []

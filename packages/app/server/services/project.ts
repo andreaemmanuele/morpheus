@@ -16,7 +16,7 @@ export const getAllProjects = async (userId: number) => {
 export const getProject = async (slug: string, userId: number) => {
   const result = await executeQuery<Project>(
     queries.project.findProjectBySlugAndUserId,
-    [slug, userId]
+    [userId, slug]
   )
   return result.rows[0]
 }

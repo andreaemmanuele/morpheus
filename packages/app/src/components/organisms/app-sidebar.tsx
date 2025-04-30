@@ -23,6 +23,7 @@ import { ProjectSwitcher } from '@/components/molecules/project-switcher'
 import { NavSecondary } from '@/components/molecules/nav-secondary'
 import { NavUser } from '@/components/molecules/nav-user'
 import { sessionStore } from '@/stores/session'
+import { projectStore } from '@/stores/project'
 
 const data = {
   navMain: [
@@ -77,10 +78,12 @@ type AppSidebarProps = {
 
 export function AppSidebar({ projects, ...props }: AppSidebarProps) {
   const { session } = sessionStore()
+  const { project } = projectStore()
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <ProjectSwitcher items={projects} />
+        <ProjectSwitcher items={projects} active={project?.slug} />
       </SidebarHeader>
       <SidebarContent>
         {/*<NavMain items={data.navMain} />*/}
