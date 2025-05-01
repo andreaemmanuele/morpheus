@@ -8,9 +8,8 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react'
-import { useRouteError } from '@remix-run/react'
-import { useMemo } from 'react'
 import '@/assets/css/index.css'
+import { useMemo } from 'react'
 import { themeCookie } from '@/cookies.server'
 import { cn, getSystemPreferredTheme } from '@/lib/utils'
 
@@ -52,18 +51,4 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />
-}
-
-export function ErrorBoundary() {
-  const error = useRouteError()
-  console.error('Route error:', error)
-
-  // You can customize the error display
-  return (
-    <div className="error-container">
-      <h1>Something went wrong</h1>
-      <p>{error.message || 'Unknown error occurred'}</p>
-      {process.env.NODE_ENV === 'development' && <pre>{error.stack}</pre>}
-    </div>
-  )
 }
