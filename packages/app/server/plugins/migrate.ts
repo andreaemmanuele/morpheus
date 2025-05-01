@@ -1,12 +1,11 @@
 import fp from 'fastify-plugin'
 import { queries } from '../queries/index.js'
-import { connect } from '../utils/db.js'
 import chalk from 'chalk'
 import ora from 'ora'
 
 export default fp(async (fastify) => {
   fastify.decorate('runMigrations', async () => {
-    const { client } = await connect()
+    const client = await fastify.pg.connect()
     try {
       const loader = ora('Running migrations').start()
       loader.color = 'blue'

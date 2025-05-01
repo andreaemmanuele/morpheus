@@ -5,6 +5,7 @@ import { fastify } from 'fastify'
 import sourceMapSupport from 'source-map-support'
 import getPort, { portNumbers } from 'get-port'
 import { configDotenv } from 'dotenv'
+import database from './plugins/database'
 import migrate from './plugins/migrate.js'
 import rateLimit from './plugins/rate-limit.js'
 import jwt from './plugins/jwt.js'
@@ -17,11 +18,14 @@ sourceMapSupport.install()
 
 const app = fastify()
 
+/* plugins */
 await app.register(remixFastify)
+await app.register(database)
 app.register(migrate)
 app.register(jwt)
 app.register(rateLimit)
 
+/* routes */
 app.register(authRoutes, { prefix: '/api' })
 app.register(projectRoutes, { prefix: '/api' })
 
