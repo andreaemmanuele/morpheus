@@ -1,5 +1,5 @@
 import type { QueryResult } from 'pg'
-import { app } from '../plugins/database'
+import { app } from '../plugins/database.js'
 
 export const executeQuery = async <T extends object>(
   query: string,
