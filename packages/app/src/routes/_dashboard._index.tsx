@@ -1,10 +1,14 @@
+import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { defaultProjectLoader } from '@/loaders/projects'
 import { createProjectAction } from '@/actions/projects/create'
 import { CreateProjectForm } from '@/components/forms/create-project-form'
 import { useNavigation } from '@remix-run/react'
 
 export const loader = defaultProjectLoader
-export const action = createProjectAction
+export const action = async (data: ActionFunctionArgs) => {
+  const isFirstProject = true
+  return createProjectAction(data, isFirstProject)
+}
 
 export default function NewProjectPage() {
   const navigation = useNavigation()
