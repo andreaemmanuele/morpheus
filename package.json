@@ -25,6 +25,7 @@
     "prettier": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write",
     "dev": "pnpm app dev",
     "build": "pnpm clean-all && concurrently \"pnpm --filter=\"./packages/*\" build\"",
+    "vercel-build": "cd packages/shared && pnpm run build && cd ../app && pnpm run build",
     "start": "pnpm app start",
     "clean-all": "concurrently \"pnpm --filter=\"./packages/*\" clean\"",
     "sync-env": "./scripts/sync-env.bash"
