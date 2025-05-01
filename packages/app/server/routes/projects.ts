@@ -6,10 +6,15 @@ import {
   createProject,
   createProjectsUsersRolesRelation,
   getAllProjects,
+  getProject,
   getUniqueSlug,
   sendInvites,
-} from '../services/project'
-import { createProjectSchema, invitesSchema } from '../schemas/project'
+} from '../services/project.js'
+import {
+  createProjectSchema,
+  getProjectSchema,
+  invitesSchema,
+} from '../schemas/project.js'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -28,6 +33,28 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   )
 
+  fastify.get(
+    '/projects/:slug',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      const token = fastify.jwt.lookupToken(request)
+      const user = fastify.jwt.decode<User>(token)
+      if (!user) {
+        reply.code(400).send({ error: 'Bad Request' })
+        return
+      }
+
+      try {
+        const project = await getProject(slug, user.id)
+        reply.code(200).send(project)
+      } catch (e) {
+        console.error(e)
+        reply.code(500).send({ error: 'Internal Server Error' })
+      }
+    }
+  )
+
   fastify.post(
     '/projects/create',
     {
@@ -40,9 +67,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { icon, name, slug, invites } = createProjectSchema.parse(
-        JSON.parse(request.body as string)
-      )
+      const { icon, name, slug, invites, isDefault } =
+        createProjectSchema.parse(JSON.parse(request.body as string))
 
       const token = fastify.jwt.lookupToken(request)
       const user = fastify.jwt.decode<User>(token)
@@ -53,8 +79,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
 
       let project
       try {
-        const _slug = await getUniqueSlug(slug)
-        project = await createProject(icon, name, _slug!)
+        const _slug = await getUniqueSlug(user.id, slug)
+        project = await createProject(icon, name, _slug!, user.id, isDefault)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
           return

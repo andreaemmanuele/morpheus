@@ -11,7 +11,7 @@ import updateLastLogin from '../queries/users/update-last-login.js'
 import incrementLoginAttempts from '../queries/users/increment-login-attempts.js'
 import resetLoginAttempts from '../queries/users/reset-login-attempts.js'
 import findAllByUserId from '../queries/projects/find-all-by-user-id.js'
-import findProjectBySlug from '../queries/projects/find-project-by-slug.js'
+import findProjectBySlugAndUserId from '../queries/projects/find-project-by-slug-and-user-id.js'
 import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
 import createInvites from '../queries/projects/create-invites.js'
@@ -33,7 +33,7 @@ export const queries = {
   },
   project: {
     findAllByUserId,
-    findProjectBySlug,
+    findProjectBySlugAndUserId,
     createProject,
     createProjectsUsersRolesRelation,
     createInvites,

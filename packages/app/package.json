@@ -8,9 +8,9 @@
     "vercel-build": "cd ../shared && pnpm run build && cd ../app && pnpm run build",
     "dev": "cross-env NODE_ENV=development tsx --watch-path ./server/index.ts ./server/index.ts",
     "lint": "eslint --ignore-path .gitignore --no-error-on-unmatched-pattern --cache --cache-location node_modules/.cache/eslint --fix .",
-    "start": "cross-env NODE_ENV=production node ./server/index.js",
+    "start": "cross-env NODE_ENV=production node ./server/server/index.js",
     "typecheck": "tsc",
-    "clean": "rm -rf build && find server -name \"*.js\" -type f -delete"
+    "clean": "rm -rf build && rm -rf server/server && rm -rf server/src"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

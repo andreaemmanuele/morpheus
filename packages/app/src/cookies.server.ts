@@ -4,6 +4,10 @@ export const themeCookie = createCookie('theme', {
   path: '/',
 })
 
+export const toastCookie = createCookie('toast', {
+  path: '/',
+})
+
 export const authCookie = createCookie('auth', {
   path: '/',
   sameSite: 'lax',

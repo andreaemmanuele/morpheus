@@ -13,15 +13,23 @@ export const getAllProjects = async (userId: number) => {
   return result.rows
 }
 
-export const getUniqueSlug = async (slug: string) => {
+export const getProject = async (slug: string, userId: number) => {
+  const result = await executeQuery<Project>(
+    queries.project.findProjectBySlugAndUserId,
+    [userId, slug]
+  )
+  return result.rows[0]
+}
+
+export const getUniqueSlug = async (userId: number, slug: string) => {
   const originalSlug = slug
   let counter = 1
   let slugExists = true
 
   while (slugExists) {
     const result = await executeQuery<Project>(
-      queries.project.findProjectBySlug,
-      [slug]
+      queries.project.findProjectBySlugAndUserId,
+      [userId, slug]
     )
     const project = result.rows[0]
     slugExists = !!project
@@ -35,12 +43,16 @@ export const getUniqueSlug = async (slug: string) => {
 export const createProject = async (
   icon: string,
   name: string,
-  slug: string
+  slug: string,
+  userId: number,
+  isDefault?: boolean
 ) => {
   const result = await executeQuery<Project>(queries.project.createProject, [
     icon,
     name,
     slug,
+    isDefault,
+    userId,
   ])
   return result.rows[0]
 }
