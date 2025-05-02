@@ -28,9 +28,12 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc",
-    "publish": "npm publish --access public",
+    "publish": "npm publish",
     "clean": "rm -rf dist"
   },
   "license": "ISC",
-  "packageManager": "pnpm@10.6.1"
+  "packageManager": "pnpm@10.6.1",
+  "publishConfig": {
+    "access": "public"
+  }
 }
