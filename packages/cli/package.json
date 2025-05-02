@@ -1,0 +1,20 @@
+{
+  "name": "@morphe.us/cli",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "morpheus": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@morpheus/shared": "workspace:*",
+    "commander": "^11.0.0",
+    "postgres": "^3.4.5"
+  }
+}
