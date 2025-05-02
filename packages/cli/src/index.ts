@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
 import { createUser } from '@/src/commands/create-user'
+import { createApp } from '@/src/commands/create-app.ts'
 
 async function main() {
   const program = new Command()
@@ -9,6 +10,7 @@ async function main() {
     .version('1.0.0')
 
   program.addCommand(createUser)
+  program.addCommand(createApp)
   program.parse()
 }
 

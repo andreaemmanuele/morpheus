@@ -1,0 +1,20 @@
+import { z } from 'zod'
+
+export const loginBodySchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+})
+
+export const recoveryPasswordSchema = z.object({
+  email: z.string(),
+})
+
+export const resetPasswordSchema = z.object({
+  token: z.string(),
+  newPassword: z.string(),
+  confirmPassword: z.string(),
+})
+
+export const tokenRequiredSchema = z.object({
+  token: z.string(),
+})
