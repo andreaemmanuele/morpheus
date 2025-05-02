@@ -305,6 +305,12 @@ importers:
         specifier: ^3.4.5
         version: 3.4.5
 
+  packages/create-app:
+    dependencies:
+      commander:
+        specifier: ^11.0.0
+        version: 11.1.0
+
   packages/shared: {}
 
 packages:

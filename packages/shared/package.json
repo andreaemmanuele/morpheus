@@ -1,5 +1,5 @@
 {
-  "name": "@morpheus/shared",
+  "name": "@morphe.us/shared",
   "version": "0.1.0",
   "description": "Shared utilities among packages",
   "exports": {
@@ -28,6 +28,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc",
+    "publish": "npm publish --access public",
     "clean": "rm -rf dist"
   },
   "license": "ISC",
