@@ -1,5 +1,5 @@
 {
-  "name": "@morpheus/cli",
+  "name": "@morphe.us/cli",
   "version": "1.0.0",
   "type": "module",
   "bin": {

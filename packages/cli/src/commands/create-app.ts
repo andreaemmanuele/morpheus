@@ -1,36 +1,16 @@
-import chalk from 'chalk'
-import { Command } from 'commander'
-import readline from 'readline'
-import path from 'path'
 import fs from 'fs'
+import crypto from 'crypto'
+import chalk from 'chalk'
+import path, { dirname } from 'path'
 import { exec } from 'child_process'
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-})
-
-const prompt = (question: string) =>
-  new Promise((resolve) => {
-    rl.question(question, resolve)
-  })
-
-function copyDirectoryRecursive(source: string, destination: string) {
-  fs.mkdirSync(destination, { recursive: true })
-  const entries = fs.readdirSync(source, { withFileTypes: true })
-
-  for (const entry of entries) {
-    const sourcePath = path.join(source, entry.name)
-    const destPath = path.join(destination, entry.name)
-
-    if (entry.isDirectory()) {
-      if (entry.name === 'node_modules') continue
-      copyDirectoryRecursive(sourcePath, destPath)
-    } else {
-      fs.copyFileSync(sourcePath, destPath)
-    }
-  }
-}
+import { Command } from 'commander'
+import { fileURLToPath } from 'url'
+import {
+  rl,
+  prompt,
+  copyDirectoryRecursive,
+  createEnvFile,
+} from '@/src/utils/template.js'
 
 export const createApp = new Command()
   .name('create:app')
@@ -39,6 +19,8 @@ export const createApp = new Command()
   .action(async ({ name }: { name: string }) => {
     console.log(chalk.blue('📦 Creating a new morpheus app...'))
 
+    const dbHost =
+      (await prompt('Database username [localhost]: ')) || 'localhost'
     const dbUser =
       (await prompt('Database username [postgres]: ')) || 'postgres'
     const dbPassword =
@@ -62,12 +44,17 @@ export const createApp = new Command()
 
     try {
       fs.mkdirSync(fullPath, { recursive: true })
+
+      const __filename = fileURLToPath(import.meta.url)
+      const __dirname = dirname(__filename)
       const templateDir = path.resolve(__dirname, '../src/template')
-      copyDirectoryRecursive(templateDir, fullPath)
 
-      const envContent = `POSTGRES_USER=${dbUser}\nPOSTGRES_PASSWORD=${dbPassword}\nPOSTGRES_DB=${dbName}\nDB_PORT=${dbPort}`
-
-      fs.writeFileSync(path.join(fullPath, '.env'), envContent)
+      await copyDirectoryRecursive(templateDir, fullPath)
+      await createEnvFile(fullPath, {
+        POSTGRES_DB_URL: `postgresql://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`,
+        JWT_SECRET: crypto.randomBytes(40).toString('hex'),
+        COOKIE_SECRET_KEY: crypto.randomBytes(40).toString('hex'),
+      })
 
       const gitInit = (await prompt('Want to initialize git? (y/N)')) as string
 
@@ -92,7 +79,8 @@ export const createApp = new Command()
       console.log(chalk.green(`✅ App create successfully`))
       console.log(chalk.blue(`cd ${name}`))
       console.log(chalk.blue('pnpm install'))
-    } catch {
+    } catch (e) {
+      console.error(e)
       console.log(
         chalk.red(
           '❌ Something went wrong while creating app, operation cancelled'

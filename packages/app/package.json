@@ -1,5 +1,5 @@
 {
-  "name": "@morpheus/app",
+  "name": "@morphe.us/app",
   "private": true,
   "sideEffects": false,
   "type": "module",
