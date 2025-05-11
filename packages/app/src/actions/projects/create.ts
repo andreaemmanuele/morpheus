@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/server-runtime'
-import { authCookie, projectCookie } from '@/cookies.server'
+import { authCookie, sidebarCookie, projectCookie } from '@/cookies.server'
 import { redirectWithToast } from '@/lib/toast'
 
 export const createProjectAction = async (
@@ -35,7 +35,10 @@ export const createProjectAction = async (
     `/${result.slug}`,
     'Project created successfully.',
     isFirstProject
-      ? { 'Set-Cookie': await projectCookie.serialize(result.slug) }
+      ? [
+          ['Set-Cookie', await projectCookie.serialize(result.slug)],
+          ['Set-Cookie', await sidebarCookie.serialize(true)],
+        ]
       : {}
   )
 }

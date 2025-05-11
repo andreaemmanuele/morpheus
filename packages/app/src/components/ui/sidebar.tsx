@@ -100,6 +100,11 @@ const SidebarProvider = React.forwardRef<
     }, [isMobile, setOpen, setOpenMobile])
 
     React.useEffect(() => {
+      if (!defaultOpen) return
+      setOpen(true)
+    }, [defaultOpen])
+
+    React.useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
           event.key === SIDEBAR_KEYBOARD_SHORTCUT &&

@@ -53,7 +53,17 @@ const data = {
       icon: UsersIcon,
     },
   ],
-  navSecondary: [
+}
+
+type AppSidebarProps = {
+  projects: Project[]
+} & React.ComponentProps<typeof Sidebar>
+
+export function AppSidebar({ projects, ...props }: AppSidebarProps) {
+  const { session } = sessionStore()
+  const { project } = projectStore()
+
+  const navSecondary = [
     {
       title: 'Playground',
       url: '#',
@@ -66,19 +76,10 @@ const data = {
     },
     {
       title: 'Settings',
-      url: '#',
+      url: `/${project?.slug}/settings`,
       icon: SettingsIcon,
     },
-  ],
-}
-
-type AppSidebarProps = {
-  projects: Project[]
-} & React.ComponentProps<typeof Sidebar>
-
-export function AppSidebar({ projects, ...props }: AppSidebarProps) {
-  const { session } = sessionStore()
-  const { project } = projectStore()
+  ]
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -87,7 +88,7 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         {/*<NavMain items={data.navMain} />*/}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser

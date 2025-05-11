@@ -50,7 +50,14 @@ export const CreateProjectForm: FC<CreateProjectFormProps> = ({
           </div>
         </div>
         <Label htmlFor="slug">Slug</Label>
-        <Input id="slug" name="slug" value={slug} readOnly required />
+        <Input
+          id="slug"
+          className="pointer-events-none"
+          name="slug"
+          value={slug}
+          readOnly
+          required
+        />
         <Label htmlFor="invites">Invites members</Label>
         <Textarea
           placeholder="m@example.com, m1@example.com, ..."
