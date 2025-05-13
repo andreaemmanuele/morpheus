@@ -1,30 +1,91 @@
 import type { FC } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { TeamMember } from '@/types'
+import { MoreVerticalIcon } from 'lucide-react'
 import { DataTable } from '@/components/molecules/data-table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { clsx } from 'clsx'
+import { Checkbox } from '@/components/ui/checkbox'
 
-type TeamMember = {
-  id: string
-  email: string
-  status: 'pending' | 'active'
-  role: 'owner' | 'admin' | 'editor'
-}
-
-export const columns: ColumnDef<TeamMember>[] = [
+const columns: ColumnDef<TeamMember>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'email',
     header: 'Email',
   },
   {
+    accessorKey: 'role',
+    header: 'User Role',
+    cell: ({ row }) => (
+      <div className="w-32">
+        <Badge variant="outline" className="px-1.5 text-muted-foreground">
+          {row.original.role}
+        </Badge>
+      </div>
+    ),
+  },
+  {
     accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => (
+      <Badge
+        variant="outline"
+        className={clsx({
+          'bg-green-400 dark:bg-green-700': row.original.status === 'active',
+          'bg-gray-300 dark:bg-gray-400': row.original.status === 'pending',
+        })}
+      >
+        {row.original.status}
+      </Badge>
+    ),
   },
   {
-    accessorKey: 'role',
-    header: 'Role',
-  },
-  {
-    accessorKey: 'actions',
-    cell: () => <div>a</div>,
+    id: 'actions',
+    cell: () => (
+      <div className="flex justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">
+              <MoreVerticalIcon />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+        </DropdownMenu>
+      </div>
+    ),
   },
 ]
 
@@ -73,6 +134,4 @@ const data: TeamMember[] = [
   },
 ]
 
-export const TeamTable: FC = () => {
-  return <DataTable columns={columns} data={data} />
-}
+export const TeamTable: FC = () => <DataTable columns={columns} data={data} />
