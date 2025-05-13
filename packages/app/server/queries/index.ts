@@ -1,4 +1,4 @@
-import { queries as sharedQueries } from '@morpheus/shared/queries'
+import { queries as sharedQueries } from '@morphe.us/shared/queries'
 import createRolesTable from '../queries/migrations/create-roles-table.js'
 import createUserStatusEnum from '../queries/migrations/create-user-status-enum.js'
 import createUsersTable from '../queries/migrations/create-users-table.js'

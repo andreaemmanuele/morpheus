@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { AccessToken, Session } from '../types'
 import React from 'react'
 import bcryptjs from 'bcryptjs'
-import { changePasswordSchema } from '@morpheus/shared/schemas'
+import { changePasswordSchema } from '@morphe.us/shared/schemas'
 import {
   findUserByEmail,
   findUserById,

@@ -7,7 +7,6 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@/components/ui/alert'
-import { Fade } from '@/components/animations/fade'
 
 type Props = {
   title: string
@@ -21,11 +20,9 @@ export const Alert: FC<Props> = ({
   variant,
   icon,
 }) => (
-  <Fade>
-    <UIAlert variant={variant}>
-      {icon && icon}
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
-    </UIAlert>
-  </Fade>
+  <UIAlert className="animate-in fade-in-0 duration-300 ease" variant={variant}>
+    {icon && icon}
+    <AlertTitle>{title}</AlertTitle>
+    <AlertDescription>{description}</AlertDescription>
+  </UIAlert>
 )
