@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
-import { authCookie, projectCookie } from '@/cookies.server'
+import { authCookie, projectCookie, sidebarCookie } from '@/cookies.server'
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
@@ -32,6 +32,7 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
     headers: [
       ['Set-Cookie', await authCookie.serialize(result.accessToken)],
       ['Set-Cookie', await projectCookie.serialize(defaultProject)],
+      ['Set-Cookie', await sidebarCookie.serialize(true)],
     ],
   })
 }
