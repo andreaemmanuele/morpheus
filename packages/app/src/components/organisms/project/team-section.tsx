@@ -1,4 +1,4 @@
-import type { FCWithClassName } from '@/types'
+import type { FCWithClassName, TeamMember } from '@/types'
 import { useState } from 'react'
 import {
   Dialog,
@@ -13,7 +13,14 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { TeamTable } from '@/components/organisms/team-table'
 
-export const ProjectTeamSection: FCWithClassName = ({ className = '' }) => {
+type ProjectTeamSectionProps = {
+  members: TeamMember[]
+}
+
+export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
+  className = '',
+  members,
+}) => {
   const [emailFilter, setEmailFilter] = useState('')
   return (
     <section className={className}>
@@ -54,7 +61,7 @@ export const ProjectTeamSection: FCWithClassName = ({ className = '' }) => {
           </Dialog>
         </div>
       </header>
-      <TeamTable emailFilter={emailFilter} />
+      <TeamTable data={members} emailFilter={emailFilter} />
     </section>
   )
 }

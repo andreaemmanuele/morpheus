@@ -15,6 +15,8 @@ import findProjectBySlugAndUserId from '../queries/projects/find-project-by-slug
 import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
 import createInvites from '../queries/projects/create-invites.js'
+import getProjectTeam from '../queries/projects/get-project-team.js'
+import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
 
 export const queries = {
   user: {
@@ -37,5 +39,7 @@ export const queries = {
     createProject,
     createProjectsUsersRolesRelation,
     createInvites,
+    getProjectTeam,
+    getProjectIdBySlug,
   },
 }

@@ -7,6 +7,8 @@ import {
   createProjectsUsersRolesRelation,
   getAllProjects,
   getProject,
+  getProjectIdBySlug,
+  getProjectTeam,
   getUniqueSlug,
   sendInvites,
 } from '../services/project.js'
@@ -48,6 +50,26 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       try {
         const project = await getProject(slug, user.id)
         reply.code(200).send(project)
+      } catch (e) {
+        console.error(e)
+        reply.code(500).send({ error: 'Internal Server Error' })
+      }
+    }
+  )
+
+  fastify.get(
+    '/projects/:slug/team',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Internal Server Error' })
+          return
+        }
+        const members = await getProjectTeam(project.id)
+        reply.code(200).send(members)
       } catch (e) {
         console.error(e)
         reply.code(500).send({ error: 'Internal Server Error' })

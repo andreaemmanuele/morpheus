@@ -18,6 +18,7 @@ export type ProjectDetails = {
 export type TeamMember = {
   id: string
   email: string
+  username: string
   role: 'owner' | 'admin' | 'editor'
-  status: 'pending' | 'active'
+  status: 'pending' | 'active' | 'suspended' | 'deleted'
 }

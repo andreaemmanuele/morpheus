@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { Icons } from '@/lib/icons'
 import { useState } from 'react'
-import { Image } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -35,7 +35,7 @@ export const ProjectAvatar: FC<ProjectAvatarProps> = ({
       <Popover onOpenChange={() => setShowIcons(false)}>
         <PopoverTrigger asChild>
           <button className="absolute inset-0 opacity-0 grid group-hover:opacity-100 duration-300 transition-opacity bg-gray-400/30 rounded-full z-10 place-items-center">
-            <Image />
+            <Upload />
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-80 flex flex-col gap-y-4">

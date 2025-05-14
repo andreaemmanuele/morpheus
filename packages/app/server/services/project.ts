@@ -1,4 +1,4 @@
-import type { Project } from '../types'
+import type { Project, TeamMember } from '../types'
 import React from 'react'
 import { z } from 'zod'
 import { queries } from '../queries/index.js'
@@ -19,6 +19,22 @@ export const getProject = async (slug: string, userId: number) => {
     [userId, slug]
   )
   return result.rows[0]
+}
+
+export const getProjectIdBySlug = async (slug: string) => {
+  const result = await executeQuery<{ id: number }>(
+    queries.project.getProjectIdBySlug,
+    [slug]
+  )
+  return result.rows[0]
+}
+
+export const getProjectTeam = async (projectId: number) => {
+  const result = await executeQuery<TeamMember>(
+    queries.project.getProjectTeam,
+    [projectId]
+  )
+  return result.rows
 }
 
 export const getUniqueSlug = async (userId: number, slug: string) => {

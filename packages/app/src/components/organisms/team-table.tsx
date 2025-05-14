@@ -110,10 +110,10 @@ const columns: ColumnDef<TeamMember>[] = [
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">
-                      {row.original.email}
+                      {row.original.username}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {row.original.role}
+                      {row.original.email}
                     </span>
                   </div>
                 </div>
@@ -139,56 +139,12 @@ const columns: ColumnDef<TeamMember>[] = [
   },
 ]
 
-const data: TeamMember[] = [
-  {
-    id: '1',
-    email: 'andrea@mono.studio',
-    status: 'active',
-    role: 'owner',
-  },
-  {
-    id: '2',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'admin',
-  },
-  {
-    id: '3',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'editor',
-  },
-  {
-    id: '4',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'editor',
-  },
-  {
-    id: '5',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'editor',
-  },
-  {
-    id: '6',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'editor',
-  },
-  {
-    id: '7',
-    email: 'email@example.com',
-    status: 'pending',
-    role: 'editor',
-  },
-]
-
 type TeamTableProps = {
+  data: TeamMember[]
   emailFilter: string
 }
 
-export const TeamTable: FC<TeamTableProps> = ({ emailFilter }) => {
+export const TeamTable: FC<TeamTableProps> = ({ data = [], emailFilter }) => {
   const [rowSelection, setRowSelection] = useState({})
   const table = useReactTable({
     data,

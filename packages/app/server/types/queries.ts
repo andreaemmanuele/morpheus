@@ -1,21 +1,21 @@
 import type { Icons } from '@/lib/icons'
 
-export type AdminRole = {
+export type OwnerRole = {
   id: 1
+  type: 'owner'
+}
+
+export type AdminRole = {
+  id: 2
   type: 'admin'
 }
 
 export type EditorRole = {
-  id: 2
+  id: 3
   type: 'editor'
 }
 
-export type UserRole = {
-  id: 3
-  type: 'user'
-}
-
-export type Roles = AdminRole | EditorRole | UserRole
+export type Roles = OwnerRole | AdminRole | EditorRole
 export type UserStatus = 'active' | 'suspended' | 'pending' | 'deleted'
 
 export type User = {
@@ -57,4 +57,12 @@ export type Project = {
   created_at: string
   updated_at: string
   deleted_at: string
+}
+
+export type TeamMember = {
+  user_id: number
+  email: string
+  username: string
+  name: Roles['type']
+  status: UserStatus
 }

@@ -1,0 +1,1 @@
+export default `SELECT user_id, email, username, status, roles.name FROM projects_users_roles JOIN users ON projects_users_roles.user_id = users.id JOIN roles ON projects_users_roles.role_id = roles.id WHERE project_id = $1`
