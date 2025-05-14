@@ -14,7 +14,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return await getProject(token, projectSlug)
 }
 
-export default function NewProjectPage() {
+export default function ProjectPage() {
   const data = useLoaderData<Project>()
   const { setProject } = projectStore()
   const { setBreadcrumb } = breadcrumbStore()

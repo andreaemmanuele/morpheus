@@ -63,24 +63,6 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
   const { session } = sessionStore()
   const { project } = projectStore()
 
-  const navSecondary = [
-    {
-      title: 'Playground',
-      url: '#',
-      icon: SquareTerminal,
-    },
-    {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpen,
-    },
-    {
-      title: 'Settings',
-      url: `/${project?.slug}/settings`,
-      icon: SettingsIcon,
-    },
-  ]
-
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -88,7 +70,26 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         {/*<NavMain items={data.navMain} />*/}
-        <NavSecondary items={navSecondary} className="mt-auto" />
+        <NavSecondary
+          items={[
+            {
+              title: 'Playground',
+              url: '#',
+              icon: SquareTerminal,
+            },
+            {
+              title: 'Documentation',
+              url: '#',
+              icon: BookOpen,
+            },
+            {
+              title: 'Settings',
+              url: `/${project?.slug}/settings`,
+              icon: SettingsIcon,
+            },
+          ]}
+          className="mt-auto"
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser

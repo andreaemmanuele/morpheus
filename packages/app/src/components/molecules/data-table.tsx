@@ -1,15 +1,9 @@
 'use client'
 
-import type { ColumnDef } from '@tanstack/react-table'
-import { useState } from 'react'
+import type { ColumnDef, Table } from '@tanstack/react-table'
+import { flexRender } from '@tanstack/react-table'
 import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
-import {
-  Table,
+  Table as TableCmp,
   TableBody,
   TableCell,
   TableHead,
@@ -18,31 +12,18 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TTable, TData, TValue> {
+  table: Table<TTable>
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TTable, TData, TValue>({
+  table,
   columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = useState({})
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
-  })
-
+}: DataTableProps<TTable, TData, TValue>) {
   return (
     <div className="rounded-md border">
-      <Table>
+      <TableCmp>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -83,7 +64,7 @@ export function DataTable<TData, TValue>({
             </TableRow>
           )}
         </TableBody>
-      </Table>
+      </TableCmp>
       <div className="flex items-center justify-end space-x-2 p-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}

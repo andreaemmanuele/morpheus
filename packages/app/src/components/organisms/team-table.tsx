@@ -1,5 +1,13 @@
 import type { FC } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
 import type { TeamMember } from '@/types'
 import { MoreVerticalIcon } from 'lucide-react'
 import { DataTable } from '@/components/molecules/data-table'
@@ -32,11 +40,13 @@ const columns: ColumnDef<TeamMember>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
+        {row.original.role !== 'owner' && (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        )}
       </div>
     ),
     enableSorting: false,
@@ -74,16 +84,25 @@ const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: 'actions',
-    cell: () => (
+    enableHiding: false,
+    cell: ({ row }) => (
       <div className="flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <MoreVerticalIcon />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-        </DropdownMenu>
+        {row.original.role !== 'owner' && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreVerticalIcon />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem>
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     ),
   },
@@ -134,4 +153,27 @@ const data: TeamMember[] = [
   },
 ]
 
-export const TeamTable: FC = () => <DataTable columns={columns} data={data} />
+type TeamTableProps = {
+  emailFilter: string
+}
+
+export const TeamTable: FC<TeamTableProps> = ({ emailFilter }) => {
+  const [rowSelection, setRowSelection] = useState({})
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: {
+      rowSelection,
+    },
+  })
+
+  useEffect(() => {
+    table.getColumn('email')?.setFilterValue(emailFilter)
+  }, [emailFilter])
+
+  return <DataTable table={table} columns={columns} />
+}
