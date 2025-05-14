@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { TeamMember } from '@/types'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import {
@@ -8,20 +9,21 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import type { TeamMember } from '@/types'
-import { MoreVerticalIcon } from 'lucide-react'
+import { MoreVerticalIcon, UserX } from 'lucide-react'
 import { DataTable } from '@/components/molecules/data-table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { clsx } from 'clsx'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 const columns: ColumnDef<TeamMember>[] = [
   {
@@ -89,17 +91,46 @@ const columns: ColumnDef<TeamMember>[] = [
       <div className="flex justify-end">
         {row.original.role !== 'owner' && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="ghost">
-                <MoreVerticalIcon />
+                <MoreVerticalIcon className="size-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuItem>
-                <span>Profile</span>
-              </DropdownMenuItem>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              align="end"
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src="" alt="" />
+                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {row.original.email}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {row.original.role}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Button
+                  type="button"
+                  className="w-full"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {}}
+                >
+                  <UserX />
+                  Remove from team
+                </Button>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
