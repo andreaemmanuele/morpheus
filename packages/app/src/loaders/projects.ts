@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { authCookie, projectCookie } from '@/cookies.server'
+import { getProjectTeamMembers } from '@/lib/projects'
 
 export const defaultProjectLoader = async (data: LoaderFunctionArgs) => {
   const headers = data.request.headers.get('Cookie')
@@ -16,15 +17,5 @@ export const projectTeamLoader = async ({
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
   const { projectSlug } = params as { projectSlug: string }
-  const response = await fetch(
-    `${process.env.BASE_URL}/api/projects/${projectSlug}/team`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  )
-  if (!response.ok) return { members: [] }
-  const result = await response.json()
-  return { members: result }
+  return getProjectTeamMembers(token, projectSlug)
 }

@@ -5,6 +5,7 @@ import {
   createInvites,
   createProject,
   createProjectsUsersRolesRelation,
+  deleteProject,
   getAllProjects,
   getProject,
   getProjectIdBySlug,
@@ -160,4 +161,20 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       reply.code(200).send(`Invites sent successfully`)
     }
   )
+
+  fastify.delete('/projects/:slug', async (request, reply) => {
+    const { slug } = getProjectSchema.parse(request.params)
+    try {
+      const project = await getProjectIdBySlug(slug)
+      if (!project) {
+        reply.code(500).send({ error: 'Internal Server Error' })
+        return
+      }
+      await deleteProject(project.id)
+      reply.code(200).send('Project deleted successfully')
+    } catch (error) {
+      console.error(error)
+      reply.code(500).send({ error: 'Cannot delete project' })
+    }
+  })
 }

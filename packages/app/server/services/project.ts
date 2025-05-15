@@ -114,3 +114,6 @@ export const sendInvites = async (
 
   return emails
 }
+
+export const deleteProject = async (id: number) =>
+  await executeQuery(queries.project.deleteProject, [id])
