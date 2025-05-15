@@ -1,4 +1,8 @@
-export const getAllProjects = async (token: string) => {
+import type { Project } from '../../server/types'
+
+export const getAllProjects = async (
+  token: string
+): Promise<Project[] | null> => {
   let response
   try {
     response = await fetch(`${process.env.BASE_URL}/api/projects`, {

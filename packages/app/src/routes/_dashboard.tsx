@@ -29,7 +29,7 @@ export const loader = async (data: LoaderFunctionArgs) => {
         session,
         projects,
         sidebarOpen: sidebarState,
-        isFirstProject: !projects.length,
+        isFirstProject: !projects?.length,
       },
       { ...(headers ? { headers } : {}) }
     )
