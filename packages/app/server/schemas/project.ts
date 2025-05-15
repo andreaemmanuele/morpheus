@@ -19,6 +19,7 @@ export const createProjectSchema = z
   })
 
 export const invitesSchema = z.object({
+  slug: z.string(),
+  projectName: z.string(),
   invites: z.string(),
-  projectId: z.number(),
 })

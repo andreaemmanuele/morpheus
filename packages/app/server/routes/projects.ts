@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { User } from '../types'
+import crypto from 'crypto'
 import { authenticate } from '../utils/auth.js'
 import {
   createInvites,
@@ -14,10 +15,16 @@ import {
   sendInvites,
 } from '../services/project.js'
 import {
+  createUser,
+  updateResetTokenAndExpiration,
+  generatePasswordHash,
+} from '../services/user.js'
+import {
   createProjectSchema,
   getProjectSchema,
   invitesSchema,
 } from '../schemas/project.js'
+import { generateRandomToken } from '../utils/tokens'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -145,20 +152,56 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { invites, projectId } = invitesSchema.parse(
+      const { slug, projectName, invites } = invitesSchema.parse(
         JSON.parse(request.body as string)
-      ) // adds project name
+      )
 
       try {
-        const token = ''
-        const emails = await sendInvites(invites, '', token)
-        await createInvites(emails, Array(emails.length).fill(projectId))
+        const token = generateRandomToken()
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Internal Server Error' })
+        }
+        const emails = await sendInvites(invites, projectName, token)
+        await createInvites(emails, Array(emails.length).fill(project?.id))
+        const tempUsers: Promise<User | undefined>[] = []
+        for (const email of emails) {
+          const passwordHash = await generatePasswordHash(
+            crypto.randomBytes(15).toString('base64')
+          )
+          tempUsers.push(
+            createUser({
+              email,
+              username: null,
+              password_hash: passwordHash,
+              email_verified: false,
+              status: 'pending',
+            })
+          )
+        }
+        const result = await Promise.allSettled([...tempUsers])
+        const userIds: number[] = []
+        for (const user of result) {
+          if (user.status !== 'fulfilled') {
+            console.log(user.reason)
+            continue
+          }
+          if (user.value) userIds.push(user.value.id)
+        }
+        await Promise.allSettled([
+          userIds
+            .map((id) => [
+              updateResetTokenAndExpiration(generateRandomToken(), id),
+              createProjectsUsersRolesRelation(project?.id ?? null, id, 3),
+            ])
+            .flat(),
+        ])
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Cannot send invites' })
       }
 
-      reply.code(200).send(`Invites sent successfully`)
+      reply.code(200).send({ message: 'Invited successfully' })
     }
   )
 

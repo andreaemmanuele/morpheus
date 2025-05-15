@@ -1,4 +1,53 @@
 import type { Project } from '../../server/types'
+import type { CreateProjectData, ProjectDetails } from '@/types'
+
+export const createProject = async (
+  token: string,
+  data: CreateProjectData
+): Promise<ProjectDetails | null> => {
+  let response
+  try {
+    response = await fetch(`${process.env.BASE_URL}/api/projects/create`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    })
+  } catch (e) {
+    console.error(e)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
+
+export const inviteMembers = async (
+  token: string,
+  projectName: string,
+  slug: string,
+  emails: string
+) => {
+  let response
+  try {
+    response = await fetch(`${process.env.BASE_URL}/api/projects/invite`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        slug,
+        projectName,
+        invites: emails,
+      }),
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
 
 export const getAllProjects = async (
   token: string

@@ -3,6 +3,26 @@ import bcryptjs from 'bcryptjs'
 import { executeQuery } from '../utils/db.js'
 import { queries } from '../queries/index.js'
 
+export const createUser = async ({
+  email,
+  username,
+  password_hash,
+  email_verified,
+  status,
+}: Pick<
+  User,
+  'email' | 'username' | 'password_hash' | 'email_verified' | 'status'
+>) => {
+  const result = await executeQuery<User>(queries.auth.createUser, [
+    email,
+    username,
+    password_hash,
+    email_verified,
+    status,
+  ])
+  return result.rows[0]
+}
+
 export const findUserByEmail = async (email: string) => {
   const result = await executeQuery<User>(queries.auth.findUserByEmail, [email])
   return result.rows[0]

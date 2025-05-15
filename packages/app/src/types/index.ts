@@ -8,6 +8,13 @@ export type BreadcrumbItem = {
   url?: string
 }
 
+export type CreateProjectData = {
+  icon: Icons
+  name: string
+  slug: string
+  invites: string
+}
+
 export type ProjectDetails = {
   id: number
   icon: Icons

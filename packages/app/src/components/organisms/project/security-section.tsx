@@ -20,7 +20,7 @@ const deleteWord = 'CLEAR'
 
 export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
   const [deleteConfirmWord, setDeleteConfirmWord] = useState('')
-  const [openDelete, setOpenDelete] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const { project } = projectStore()
 
   const fetcher = useFetcher()
@@ -36,7 +36,7 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
         action: '/action/projects/delete',
       }
     )
-    setOpenDelete(false)
+    setIsDeleteDialogOpen(false)
   }
 
   return (
@@ -70,7 +70,7 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="destructive">Delete project</Button>
           </DialogTrigger>

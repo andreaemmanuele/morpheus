@@ -74,7 +74,7 @@ export const createProject = async (
 }
 
 export const createProjectsUsersRolesRelation = async (
-  project_id: number,
+  project_id: number | null,
   user_id: number,
   role_id: number
 ) =>

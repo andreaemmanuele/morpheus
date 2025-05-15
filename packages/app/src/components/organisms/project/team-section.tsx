@@ -1,5 +1,7 @@
 import type { FCWithClassName, TeamMember } from '@/types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useFetcher, useNavigation } from '@remix-run/react'
+import { LoaderCircle } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { TeamTable } from '@/components/organisms/team-table'
+import { projectStore } from '@/stores/project'
 
 type ProjectTeamSectionProps = {
   members: TeamMember[]
@@ -21,7 +24,30 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   className = '',
   members,
 }) => {
+  const [email, setEmail] = useState('')
   const [emailFilter, setEmailFilter] = useState('')
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
+  const { project } = projectStore()
+
+  const fetcher = useFetcher()
+  const isSubmitting = fetcher.state !== 'idle'
+
+  const inviteMember = () => {
+    fetcher.submit(
+      { name: project?.name ?? '', slug: project?.slug ?? '', email },
+      {
+        method: 'POST',
+        action: '/action/projects/invite-member',
+      }
+    )
+  }
+
+  useEffect(() => {
+    if (isSubmitting) return
+    setIsInviteDialogOpen(false)
+    setEmail('')
+  }, [isSubmitting])
+
   return (
     <section className={className}>
       <header className="flex items-center gap-x-4">
@@ -35,7 +61,10 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
               setEmailFilter(event.target.value)
             }}
           />
-          <Dialog>
+          <Dialog
+            open={isInviteDialogOpen}
+            onOpenChange={setIsInviteDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button variant="secondary">Add member</Button>
             </DialogTrigger>
@@ -50,12 +79,20 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
                 <Input
                   id="email"
                   type="email"
+                  value={email}
                   placeholder="m@example.com"
                   className="col-span-3"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <DialogFooter>
-                <Button type="submit">Send invite</Button>
+                <Button type="submit" onClick={inviteMember}>
+                  {isSubmitting ? (
+                    <LoaderCircle className="animate-spin" />
+                  ) : (
+                    'Send invite'
+                  )}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
