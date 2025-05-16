@@ -65,7 +65,7 @@ export const getUniqueSlug = async (userId: number, slug: string) => {
 
 export const getExistingInvites = async (emails: string[]) => {
   const result = await executeQuery<Invite>(
-    queries.project.getExistingInvites,
+    queries.invites.getExistingInvites,
     [emails]
   )
   return result.rows
@@ -104,7 +104,7 @@ export const createInvites = async (
   tokens: string[],
   projectIds: string[]
 ) =>
-  await executeQuery(queries.project.createInvites, [
+  await executeQuery(queries.invites.createInvites, [
     emails,
     tokens,
     projectIds,

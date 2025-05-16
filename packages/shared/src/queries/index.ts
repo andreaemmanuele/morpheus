@@ -14,11 +14,12 @@ import findAllByUserId from '../queries/projects/find-all-by-user-id.js'
 import findProjectBySlugAndUserId from '../queries/projects/find-project-by-slug-and-user-id.js'
 import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
-import createInvites from '../queries/projects/create-invites.js'
-import getExistingInvites from '../queries/projects/get-existing-invites.ts'
 import getProjectTeam from '../queries/projects/get-project-team.js'
 import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
 import deleteProject from '../queries/projects/delete-project.ts'
+import createInvites from '../queries/invites/create-invites.js'
+import getExistingInvites from '../queries/invites/get-existing-invites.ts'
+import findInviteByToken from '../queries/invites/find-invite-by-token.ts'
 
 export const queries = {
   user: {
@@ -40,10 +41,13 @@ export const queries = {
     findProjectBySlugAndUserId,
     createProject,
     createProjectsUsersRolesRelation,
-    createInvites,
-    getExistingInvites,
     getProjectTeam,
     getProjectIdBySlug,
     deleteProject,
+  },
+  invites: {
+    createInvites,
+    getExistingInvites,
+    findInviteByToken,
   },
 }

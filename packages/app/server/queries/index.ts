@@ -37,4 +37,7 @@ export const queries = {
   project: {
     ...sharedQueries.project,
   },
+  invites: {
+    ...sharedQueries.invites,
+  },
 }

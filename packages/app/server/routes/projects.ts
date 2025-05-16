@@ -79,6 +79,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   )
 
+  fastify.get('/projects/invites/:token', async (request, reply) => {})
+
   fastify.post(
     '/projects/create',
     {
