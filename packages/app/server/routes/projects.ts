@@ -19,7 +19,6 @@ import {
   getProjectSchema,
   invitesSchema,
 } from '../schemas/project.js'
-import { generateRandomToken } from '../utils/tokens'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -114,17 +113,25 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Cannot create project' })
+        return
       }
 
       if (!invites) return project
 
       try {
-        const token = generateRandomToken()
-        const emails = await sendInvites(invites, project?.name ?? '', token)
-        if (!emails.length) return project
+        const { validEmails, tokens } = await sendInvites(
+          invites,
+          project?.name ?? ''
+        )
+
+        if (!validEmails.length) return project
         await Promise.all([
-          createInvites(emails, Array(emails.length).fill(project?.id)),
-          createTeamMembers(project?.id, emails),
+          createInvites(
+            validEmails,
+            tokens,
+            Array(validEmails.length).fill(project?.id)
+          ),
+          createTeamMembers(project?.id, validEmails),
         ])
       } catch (error) {
         console.error(error)
@@ -155,15 +162,18 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       )
 
       try {
-        const token = generateRandomToken()
         const project = await getProjectIdBySlug(slug)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
         }
-        const emails = await sendInvites(invites, projectName, token)
+        const { validEmails, tokens } = await sendInvites(invites, projectName)
         await Promise.all([
-          createInvites(emails, Array(emails.length).fill(project?.id)),
-          createTeamMembers(project?.id, emails),
+          createInvites(
+            validEmails,
+            tokens,
+            Array(validEmails.length).fill(project?.id)
+          ),
+          createTeamMembers(project?.id, validEmails),
         ])
       } catch (error) {
         console.error(error)

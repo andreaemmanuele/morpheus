@@ -99,8 +99,16 @@ export const createProjectsUsersRolesRelation = async (
     role_id,
   ])
 
-export const createInvites = async (emails: string[], projectIds: string[]) =>
-  await executeQuery(queries.project.createInvites, [emails, projectIds])
+export const createInvites = async (
+  emails: string[],
+  tokens: string[],
+  projectIds: string[]
+) =>
+  await executeQuery(queries.project.createInvites, [
+    emails,
+    tokens,
+    projectIds,
+  ])
 
 export const createTeamMembers = async (
   projectId: number | undefined,
@@ -142,8 +150,7 @@ export const createTeamMembers = async (
 
 export const sendInvites = async (
   invites: string | undefined,
-  projectName: string,
-  token: string
+  projectName: string
 ) => {
   if (!invites) throw new Error('Invites undefined')
 
@@ -155,24 +162,32 @@ export const sendInvites = async (
     return success
   })
 
-  if (!emails.length) return []
+  if (!emails.length) return { validEmails: [], tokens: [] }
 
   const existingInvites = await getExistingInvites(emails)
   const validEmails = emails.filter(
     (email) => !existingInvites.some((invite) => invite.email === email)
   )
 
-  if (!validEmails.length) return []
+  if (!validEmails.length) return { validEmails: [], tokens: [] }
 
-  await sendEmail(
-    React.createElement(JoinProject, { name: projectName, token }),
-    {
-      subject: 'Join project',
-      to: validEmails,
-    }
+  const tokens = validEmails.map(() => generateRandomToken())
+  await Promise.allSettled(
+    validEmails.map((email, index) =>
+      sendEmail(
+        React.createElement(JoinProject, {
+          name: projectName,
+          token: tokens[index] ?? '',
+        }),
+        {
+          subject: 'Join project',
+          to: [email],
+        }
+      )
+    )
   )
 
-  return validEmails
+  return { validEmails, tokens }
 }
 
 export const deleteProject = async (id: number) =>
