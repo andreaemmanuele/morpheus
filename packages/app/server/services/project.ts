@@ -1,10 +1,17 @@
-import type { Project, TeamMember } from '../types'
+import type { Invite, Project, TeamMember, User } from '../types'
 import React from 'react'
+import crypto from 'crypto'
 import { z } from 'zod'
 import { queries } from '../queries/index.js'
 import { sendEmail } from '../emails/index.js'
 import { JoinProject } from '../emails/templates/JoinProject.js'
 import { executeQuery } from '../utils/db.js'
+import {
+  createUser,
+  generatePasswordHash,
+  updateResetTokenAndExpiration,
+} from './user'
+import { generateRandomToken } from '../utils/tokens'
 
 export const getAllProjects = async (userId: number) => {
   const result = await executeQuery<Project>(queries.project.findAllByUserId, [
@@ -56,6 +63,14 @@ export const getUniqueSlug = async (userId: number, slug: string) => {
   }
 }
 
+export const getExistingInvites = async (emails: string[]) => {
+  const result = await executeQuery<Invite>(
+    queries.project.getExistingInvites,
+    [emails]
+  )
+  return result.rows
+}
+
 export const createProject = async (
   icon: string,
   name: string,
@@ -87,6 +102,44 @@ export const createProjectsUsersRolesRelation = async (
 export const createInvites = async (emails: string[], projectIds: string[]) =>
   await executeQuery(queries.project.createInvites, [emails, projectIds])
 
+export const createTeamMembers = async (
+  projectId: number | undefined,
+  emails: string[]
+) => {
+  const tempUsers: Promise<User | undefined>[] = []
+  for (const email of emails) {
+    const passwordHash = await generatePasswordHash(
+      crypto.randomBytes(15).toString('base64')
+    )
+    tempUsers.push(
+      createUser({
+        email,
+        username: null,
+        password_hash: passwordHash,
+        email_verified: false,
+        status: 'pending',
+      })
+    )
+  }
+  const result = await Promise.allSettled([...tempUsers])
+  const userIds: number[] = []
+  for (const user of result) {
+    if (user.status !== 'fulfilled') {
+      console.log(user.reason)
+      continue
+    }
+    if (user.value) userIds.push(user.value.id)
+  }
+  await Promise.allSettled([
+    userIds
+      .map((id) => [
+        updateResetTokenAndExpiration(generateRandomToken(), id),
+        createProjectsUsersRolesRelation(projectId ?? null, id, 3),
+      ])
+      .flat(),
+  ])
+}
+
 export const sendInvites = async (
   invites: string | undefined,
   projectName: string,
@@ -104,15 +157,22 @@ export const sendInvites = async (
 
   if (!emails.length) return []
 
+  const existingInvites = await getExistingInvites(emails)
+  const validEmails = emails.filter(
+    (email) => !existingInvites.some((invite) => invite.email === email)
+  )
+
+  if (!validEmails.length) return []
+
   await sendEmail(
     React.createElement(JoinProject, { name: projectName, token }),
     {
       subject: 'Join project',
-      to: emails,
+      to: validEmails,
     }
   )
 
-  return emails
+  return validEmails
 }
 
 export const deleteProject = async (id: number) =>

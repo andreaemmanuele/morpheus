@@ -59,6 +59,10 @@ export type Project = {
   deleted_at: string
 }
 
+export type Invite = {
+  email: string
+}
+
 export type TeamMember = {
   user_id: number
   email: string

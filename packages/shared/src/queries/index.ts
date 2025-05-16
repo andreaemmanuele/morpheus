@@ -15,6 +15,7 @@ import findProjectBySlugAndUserId from '../queries/projects/find-project-by-slug
 import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
 import createInvites from '../queries/projects/create-invites.js'
+import getExistingInvites from '../queries/projects/get-existing-invites.ts'
 import getProjectTeam from '../queries/projects/get-project-team.js'
 import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
 import deleteProject from '../queries/projects/delete-project.ts'
@@ -40,6 +41,7 @@ export const queries = {
     createProject,
     createProjectsUsersRolesRelation,
     createInvites,
+    getExistingInvites,
     getProjectTeam,
     getProjectIdBySlug,
     deleteProject,
