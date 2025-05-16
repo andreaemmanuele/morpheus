@@ -1,4 +1,4 @@
-import type { TeamMember as TeamMemberServer } from '../../server/types'
+import type { TeamMember as TeamMemberServer } from '@/server/types'
 import { useEffect } from 'react'
 import { useLoaderData } from '@remix-run/react'
 import { Separator } from '@/components/ui/separator'

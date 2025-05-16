@@ -4,6 +4,7 @@ import findUserById from '../queries/users/find-user-by-id.js'
 import findUserByResetToken from '../queries/users/find-user-by-reset-token.js'
 import findUserBySuspendedToken from '../queries/users/find-user-by-suspended-token.js'
 import updateResetTokenAndExpiration from '../queries/users/update-reset-token-and-expiration.js'
+import updateUsername from '../queries/users/update-username.js'
 import updatePassword from '../queries/users/update-password.js'
 import updateStatus from '../queries/users/update-status.js'
 import updateSuspendedToken from '../queries/users/update-suspended-token.js'
@@ -20,6 +21,7 @@ import deleteProject from '../queries/projects/delete-project.ts'
 import createInvites from '../queries/invites/create-invites.js'
 import getExistingInvites from '../queries/invites/get-existing-invites.ts'
 import findInviteByToken from '../queries/invites/find-invite-by-token.ts'
+import revokeInvite from '../queries/invites/revoke-invite.ts'
 
 export const queries = {
   user: {
@@ -29,6 +31,7 @@ export const queries = {
     findUserByResetToken,
     findUserBySuspendedToken,
     updateResetTokenAndExpiration,
+    updateUsername,
     updatePassword,
     updateStatus,
     updateSuspendedToken,
@@ -49,5 +52,6 @@ export const queries = {
     createInvites,
     getExistingInvites,
     findInviteByToken,
+    revokeInvite,
   },
 }

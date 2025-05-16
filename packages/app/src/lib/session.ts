@@ -1,4 +1,4 @@
-import type { Session } from '../../server/types/index.js'
+import type { Session } from '@/server/types'
 import { authCookie } from '@/cookies.server'
 
 export const getSession = async (token: string) => {

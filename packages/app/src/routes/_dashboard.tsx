@@ -1,6 +1,6 @@
 import type { MetaFunction } from '@remix-run/node'
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
-import type { Project } from '../../server/types'
+import type { Project } from '@/server/types'
 import { useEffect } from 'react'
 import { Outlet, useLoaderData } from '@remix-run/react'
 import { redirect } from '@remix-run/server-runtime'

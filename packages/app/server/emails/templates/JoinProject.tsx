@@ -14,7 +14,7 @@ export const JoinProject: FC<JoinProjectProps> = ({ name, token = '' }) => (
       <>
         <p>{`You have been invited to be part of ${name}'s team.`}</p>
         <div style={{ paddingTop: '50px' }}>
-          <Button href={`${process.env.BASE_URL}/api/projects/invite/${token}`}>
+          <Button href={`${process.env.BASE_URL}/projects/join/${token}`}>
             Join now
           </Button>
         </div>

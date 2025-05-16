@@ -23,3 +23,10 @@ export const invitesSchema = z.object({
   projectName: z.string(),
   invites: z.string(),
 })
+
+export const joinProjectSchema = z.object({
+  token: z.string(),
+  username: z.string(),
+  password: z.string(),
+  confirmPassword: z.string(),
+})

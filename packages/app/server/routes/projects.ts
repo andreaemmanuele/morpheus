@@ -2,7 +2,6 @@ import type { FastifyInstance } from 'fastify'
 import type { User } from '../types'
 import { authenticate } from '../utils/auth.js'
 import {
-  createInvites,
   createProject,
   createProjectsUsersRolesRelation,
   createTeamMembers,
@@ -12,13 +11,27 @@ import {
   getProjectIdBySlug,
   getProjectTeam,
   getUniqueSlug,
-  sendInvites,
 } from '../services/project.js'
+import {
+  createInvites,
+  findInviteByToken,
+  sendInvites,
+  revokeInvite,
+} from '../services/invites'
 import {
   createProjectSchema,
   getProjectSchema,
   invitesSchema,
+  joinProjectSchema,
 } from '../schemas/project.js'
+import {
+  findUserByEmail,
+  updatePassword,
+  updateUsername,
+  updateUserStatus,
+} from '../services/user'
+import { changePasswordSchema } from '@morphe.us/shared/schemas'
+import bcryptjs from 'bcryptjs'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -78,8 +91,6 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       }
     }
   )
-
-  fastify.get('/projects/invites/:token', async (request, reply) => {})
 
   fastify.post(
     '/projects/create',
@@ -185,6 +196,53 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       reply.code(200).send({ message: 'Invited successfully' })
     }
   )
+
+  fastify.post('/projects/join', async (request, reply) => {
+    const { token, username, password, confirmPassword } =
+      joinProjectSchema.parse(JSON.parse(request.body as string))
+
+    const { error: validationError } = changePasswordSchema.safeParse({
+      password,
+      confirmPassword,
+    })
+
+    if (validationError) {
+      reply.code(400).send({ error: validationError.errors[0]?.message })
+    }
+
+    try {
+      const invite = await findInviteByToken(token)
+      if (!invite) {
+        reply.code(401).send({ error: 'Token expired' })
+        return
+      }
+
+      const user = await findUserByEmail(invite.email)
+      if (!user) {
+        reply.code(500).send({ error: "User doesn't exists" })
+        return
+      }
+
+      const passwordHash = await bcryptjs.hash(password, 10)
+      await Promise.all([
+        updateUsername(username, user.id),
+        updatePassword(passwordHash, user.id),
+        updateUserStatus('active', user.id),
+        revokeInvite(token),
+      ])
+      return { message: 'Project joined successfully' }
+    } catch (error) {
+      console.error(error)
+      const err = error as { constraint: string }
+      reply.code(500).send({
+        error:
+          err.constraint === 'users_username_key'
+            ? 'Username already exists'
+            : 'Internal Server Error',
+      })
+      return
+    }
+  })
 
   fastify.delete('/projects/:slug', async (request, reply) => {
     const { slug } = getProjectSchema.parse(request.params)

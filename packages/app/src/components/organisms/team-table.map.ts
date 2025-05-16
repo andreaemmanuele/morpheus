@@ -1,4 +1,4 @@
-import type { TeamMember as TeamMemberServer } from '../../../server/types'
+import type { TeamMember as TeamMemberServer } from '@/server/types'
 import type { TeamMember } from '@/types'
 
 export const mapMembers = (members: TeamMemberServer[]): TeamMember[] =>

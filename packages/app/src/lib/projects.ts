@@ -1,4 +1,4 @@
-import type { Project } from '../../server/types'
+import type { Project } from '@/server/types'
 import type { CreateProjectData, ProjectDetails } from '@/types'
 
 export const createProject = async (
@@ -47,6 +47,32 @@ export const inviteMembers = async (
 
   if (!response?.ok) return null
   return await response?.json()
+}
+
+export const joinProject = async (
+  token: string,
+  username: string,
+  password: string,
+  confirmPassword: string
+) => {
+  let response
+  try {
+    response = await fetch(`${process.env.BASE_URL}/api/projects/join`, {
+      method: 'POST',
+      body: JSON.stringify({
+        token,
+        username,
+        password,
+        confirmPassword,
+      }),
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
+  const result = await response?.json()
+  if (!response?.ok) return { error: result.error }
+  return result
 }
 
 export const getAllProjects = async (

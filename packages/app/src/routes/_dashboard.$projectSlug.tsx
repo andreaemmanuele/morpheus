@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
-import type { Project } from '../../server/types'
+import type { Project } from '@/server/types'
 import { Outlet, useLoaderData } from '@remix-run/react'
 import { getProject } from '@/lib/projects'
 import { authCookie } from '@/cookies.server'

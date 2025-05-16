@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
-import type { Session } from '../../server/types'
+import type { Session } from '@/server/types'
 import { redirect } from '@remix-run/server-runtime'
 import { authCookie } from '@/cookies.server'
 import { deleteSession, getSession } from '@/lib/session'

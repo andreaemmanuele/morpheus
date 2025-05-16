@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Session } from '../../server/types'
+import type { Session } from '@/server/types'
 
 type SessionStore = {
   session: Session | null

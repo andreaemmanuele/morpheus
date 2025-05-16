@@ -48,6 +48,9 @@ export const findUserBySuspendedToken = async (token: string) => {
   return result.rows[0]
 }
 
+export const updateUsername = async (username: string, userId: number) =>
+  await executeQuery(queries.auth.updateUsername, [username, userId])
+
 export const updateResetTokenAndExpiration = async (
   token: string | null,
   userId: number
