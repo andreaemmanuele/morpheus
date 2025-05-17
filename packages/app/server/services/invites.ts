@@ -25,11 +25,13 @@ export const findInviteByToken = async (token: string) => {
 export const createInvites = async (
   emails: string[],
   tokens: string[],
+  userIds: number[],
   projectIds: string[]
 ) =>
   await executeQuery(queries.invites.createInvites, [
     emails,
     tokens,
+    userIds,
     projectIds,
   ])
 
@@ -75,5 +77,8 @@ export const sendInvites = async (
   return { validEmails, tokens }
 }
 
-export const revokeInvite = async (token: string) =>
-  await executeQuery(queries.invites.revokeInvite, [token])
+export const revokeInviteByToken = async (token: string) =>
+  await executeQuery(queries.invites.revokeInviteByToken, [token])
+
+export const revokeInviteByUserId = async (id: number) =>
+  await executeQuery(queries.invites.revokeInviteByUserId, [id])

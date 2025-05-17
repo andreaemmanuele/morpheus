@@ -27,6 +27,8 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   const [email, setEmail] = useState('')
   const [emailFilter, setEmailFilter] = useState('')
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
+  const [isDeleteMemberDialogOpen, setIsDeleteMemberDialogOpen] =
+    useState(false)
   const { project } = projectStore()
 
   const fetcher = useFetcher()
@@ -42,8 +44,19 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
     )
   }
 
+  const deleteMember = (id: number | null) => {
+    fetcher.submit(
+      { id },
+      {
+        method: 'POST',
+        action: '/action/projects/delete-member',
+      }
+    )
+  }
+
   useEffect(() => {
     if (isSubmitting) return
+    setIsDeleteMemberDialogOpen(false)
     setIsInviteDialogOpen(false)
     setEmail('')
   }, [isSubmitting])
@@ -98,7 +111,14 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
           </Dialog>
         </div>
       </header>
-      <TeamTable data={members} emailFilter={emailFilter} />
+      <TeamTable
+        data={members}
+        emailFilter={emailFilter}
+        isDeleteMemberDialogOpen={isDeleteMemberDialogOpen}
+        isDeletingMember={isSubmitting}
+        onSetDeleteMemberDialog={setIsDeleteMemberDialogOpen}
+        onDelete={deleteMember}
+      />
     </section>
   )
 }

@@ -116,7 +116,11 @@ export const createTeamMembers = async (
       createProjectsUsersRolesRelation(projectId ?? null, id, 3)
     )
   )
+  return userIds
 }
+
+export const deleteTeamMember = async (id: number) =>
+  await executeQuery(queries.project.deleteMember, [id])
 
 export const deleteProject = async (id: number) =>
   await executeQuery(queries.project.deleteProject, [id])

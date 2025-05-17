@@ -17,11 +17,13 @@ import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
 import getProjectTeam from '../queries/projects/get-project-team.js'
 import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
-import deleteProject from '../queries/projects/delete-project.ts'
+import deleteMember from '../queries/projects/delete-member.js'
+import deleteProject from '../queries/projects/delete-project.js'
 import createInvites from '../queries/invites/create-invites.js'
-import getExistingInvites from '../queries/invites/get-existing-invites.ts'
-import findInviteByToken from '../queries/invites/find-invite-by-token.ts'
-import revokeInvite from '../queries/invites/revoke-invite.ts'
+import getExistingInvites from '../queries/invites/get-existing-invites.js'
+import findInviteByToken from '../queries/invites/find-invite-by-token.js'
+import revokeInviteByToken from '../queries/invites/revoke-invite-by-token.js'
+import revokeInviteByUserId from '../queries/invites/revoke-invite-by-user-id.js'
 
 export const queries = {
   user: {
@@ -46,12 +48,14 @@ export const queries = {
     createProjectsUsersRolesRelation,
     getProjectTeam,
     getProjectIdBySlug,
+    deleteMember,
     deleteProject,
   },
   invites: {
     createInvites,
     getExistingInvites,
     findInviteByToken,
-    revokeInvite,
+    revokeInviteByToken,
+    revokeInviteByUserId,
   },
 }

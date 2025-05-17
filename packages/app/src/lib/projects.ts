@@ -128,12 +128,39 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
   return { members: result }
 }
 
+export const deleteTeamMember = async (token: string, id: string) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/member/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
+
 export const deleteProject = async (token: string, slug: string) => {
-  const response = await fetch(`${process.env.BASE_URL}/api/projects/${slug}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  if (!response?.ok) throw new Error('Failed to delete project')
+  try {
+    const response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    if (!response?.ok) throw new Error('Failed to delete project')
+  } catch (error) {
+    console.error(error)
+  }
 }

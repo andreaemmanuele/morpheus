@@ -6,6 +6,7 @@ import {
   createProjectsUsersRolesRelation,
   createTeamMembers,
   deleteProject,
+  deleteTeamMember,
   getAllProjects,
   getProject,
   getProjectIdBySlug,
@@ -16,14 +17,16 @@ import {
   createInvites,
   findInviteByToken,
   sendInvites,
-  revokeInvite,
+  revokeInviteByToken,
+  revokeInviteByUserId,
 } from '../services/invites'
 import {
   createProjectSchema,
+  getMemberSchema,
   getProjectSchema,
-  invitesSchema,
   joinProjectSchema,
 } from '../schemas/project.js'
+import { invitesSchema } from '../schemas/invites.js'
 import {
   findUserByEmail,
   updatePassword,
@@ -138,14 +141,13 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         )
 
         if (!validEmails.length) return project
-        await Promise.all([
-          createInvites(
-            validEmails,
-            tokens,
-            Array(validEmails.length).fill(project?.id)
-          ),
-          createTeamMembers(project?.id, validEmails),
-        ])
+        const userIds = await createTeamMembers(project?.id, validEmails)
+        await createInvites(
+          validEmails,
+          tokens,
+          userIds,
+          Array(validEmails.length).fill(project?.id)
+        )
       } catch (error) {
         console.error(error)
         reply
@@ -180,14 +182,13 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           reply.code(500).send({ error: 'Internal Server Error' })
         }
         const { validEmails, tokens } = await sendInvites(invites, projectName)
-        await Promise.all([
-          createInvites(
-            validEmails,
-            tokens,
-            Array(validEmails.length).fill(project?.id)
-          ),
-          createTeamMembers(project?.id, validEmails),
-        ])
+        const userIds = await createTeamMembers(project?.id, validEmails)
+        await createInvites(
+          validEmails,
+          tokens,
+          userIds,
+          Array(validEmails.length).fill(project?.id)
+        )
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Cannot send invites' })
@@ -228,7 +229,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         updateUsername(username, user.id),
         updatePassword(passwordHash, user.id),
         updateUserStatus('active', user.id),
-        revokeInvite(token),
+        revokeInviteByToken(token),
       ])
       return { message: 'Project joined successfully' }
     } catch (error) {
@@ -244,19 +245,38 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   })
 
-  fastify.delete('/projects/:slug', async (request, reply) => {
-    const { slug } = getProjectSchema.parse(request.params)
+  fastify.delete('/projects/member/:id', async (request, reply) => {
+    const { id } = getMemberSchema.parse(request.params)
     try {
-      const project = await getProjectIdBySlug(slug)
-      if (!project) {
-        reply.code(500).send({ error: 'Internal Server Error' })
-        return
-      }
-      await deleteProject(project.id)
-      reply.code(200).send('Project deleted successfully')
+      await Promise.allSettled([
+        revokeInviteByUserId(+id),
+        deleteTeamMember(+id),
+      ])
+      reply.code(200).send({ message: 'Member deleted successfully' })
     } catch (error) {
       console.error(error)
-      reply.code(500).send({ error: 'Cannot delete project' })
+      reply.code(500).send({ error: 'Cannot delete member' })
     }
   })
+
+  fastify.delete(
+    '/projects/:slug',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      try {
+        // check if member is the owner of the project before deleting
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Internal Server Error' })
+          return
+        }
+        await deleteProject(project.id)
+        reply.code(200).send('Project deleted successfully')
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Cannot delete project' })
+      }
+    }
+  )
 }

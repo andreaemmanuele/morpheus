@@ -18,15 +18,13 @@ export const createProjectSchema = z
     path: ['slug'],
   })
 
-export const invitesSchema = z.object({
-  slug: z.string(),
-  projectName: z.string(),
-  invites: z.string(),
-})
-
 export const joinProjectSchema = z.object({
   token: z.string(),
   username: z.string(),
   password: z.string(),
   confirmPassword: z.string(),
+})
+
+export const getMemberSchema = z.object({
+  id: z.string(),
 })
