@@ -31,8 +31,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
+import { sessionStore } from '@/stores/session'
 
 type TeamTableProps = {
   data: TeamMember[]
@@ -53,6 +53,7 @@ export const TeamTable: FC<TeamTableProps> = ({
 }) => {
   const [rowSelection, setRowSelection] = useState({})
   const [userId, setUserId] = useState<number | null>(null)
+  const { session } = sessionStore()
 
   const handleDelete = (id: number) => {
     setUserId(id)
@@ -83,13 +84,14 @@ export const TeamTable: FC<TeamTableProps> = ({
       ),
       cell: ({ row }) => (
         <div className="flex items-center justify-center">
-          {row.original.role !== 'owner' && (
-            <Checkbox
-              checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              aria-label="Select row"
-            />
-          )}
+          {row.original.role !== 'owner' &&
+            +row.original.id !== session?.user.id && (
+              <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+              />
+            )}
         </div>
       ),
       enableSorting: false,
@@ -130,51 +132,54 @@ export const TeamTable: FC<TeamTableProps> = ({
       enableHiding: false,
       cell: ({ row }) => (
         <div className="flex justify-end">
-          {row.original.role !== 'owner' && (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button variant="ghost">
-                  <MoreVerticalIcon className="size-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                align="end"
-                sideOffset={4}
-              >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src="" alt="" />
-                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">
-                        {row.original.username}
-                      </span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {row.original.email}
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Button
-                    type="button"
-                    className="w-full"
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(+row.original.id)}
-                  >
-                    <UserX />
-                    Remove from team
+          {row.original.role !== 'owner' &&
+            +row.original.id !== session?.user.id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="ghost">
+                    <MoreVerticalIcon className="size-4" />
+                    <span className="sr-only">Open menu</span>
                   </Button>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  align="end"
+                  sideOffset={4}
+                >
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src="" alt="" />
+                        <AvatarFallback className="rounded-lg">
+                          CN
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">
+                          {row.original.username}
+                        </span>
+                        <span className="truncate text-xs text-muted-foreground">
+                          {row.original.email}
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Button
+                      type="button"
+                      className="w-full"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(+row.original.id)}
+                    >
+                      <UserX />
+                      Remove from team
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
         </div>
       ),
     },

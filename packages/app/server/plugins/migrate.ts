@@ -15,6 +15,7 @@ export default fp(async (fastify) => {
           async (migration: string) => await client.query(migration)
         )
       )
+      await client.query(queries.permissions.checkPermissionFn)
       await client.query('COMMIT')
       loader.stop()
       console.log(chalk.blue('Database ready 🗿'))

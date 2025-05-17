@@ -25,7 +25,7 @@ export type User = {
   password_hash: string
   password_reset_token: string | null
   password_reset_expires: string | null
-  role_id: Roles['id']
+  suspended_token: string | null
   email_verified: boolean
   status: UserStatus
   login_attempts: number
@@ -69,4 +69,8 @@ export type TeamMember = {
   username: string
   name: Roles['type']
   status: UserStatus
+}
+
+export type Permission = {
+  has_permission: boolean
 }

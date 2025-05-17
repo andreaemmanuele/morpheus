@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { User } from '../types'
-import { authenticate } from '../utils/auth.js'
+import bcryptjs from 'bcryptjs'
 import {
   createProject,
   createProjectsUsersRolesRelation,
@@ -21,20 +21,21 @@ import {
   revokeInviteByUserId,
 } from '../services/invites'
 import {
+  findUserByEmail,
+  updatePassword,
+  updateUsername,
+  updateUserStatus,
+} from '../services/user'
+import {
   createProjectSchema,
   getMemberSchema,
   getProjectSchema,
   joinProjectSchema,
 } from '../schemas/project.js'
 import { invitesSchema } from '../schemas/invites.js'
-import {
-  findUserByEmail,
-  updatePassword,
-  updateUsername,
-  updateUserStatus,
-} from '../services/user'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
-import bcryptjs from 'bcryptjs'
+import { authenticate } from '../utils/auth.js'
+import { checkPermission } from '@/server/services/permissions'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -245,19 +246,23 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   })
 
-  fastify.delete('/projects/member/:id', async (request, reply) => {
-    const { id } = getMemberSchema.parse(request.params)
-    try {
-      await Promise.allSettled([
-        revokeInviteByUserId(+id),
-        deleteTeamMember(+id),
-      ])
-      reply.code(200).send({ message: 'Member deleted successfully' })
-    } catch (error) {
-      console.error(error)
-      reply.code(500).send({ error: 'Cannot delete member' })
+  fastify.delete(
+    '/projects/member/:id',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { id } = getMemberSchema.parse(request.params)
+      try {
+        await Promise.allSettled([
+          revokeInviteByUserId(+id),
+          deleteTeamMember(+id),
+        ])
+        reply.code(200).send({ message: 'Member deleted successfully' })
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Cannot delete member' })
+      }
     }
-  })
+  )
 
   fastify.delete(
     '/projects/:slug',
@@ -265,10 +270,18 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     async (request, reply) => {
       const { slug } = getProjectSchema.parse(request.params)
       try {
-        // check if member is the owner of the project before deleting
         const project = await getProjectIdBySlug(slug)
         if (!project) {
-          reply.code(500).send({ error: 'Internal Server Error' })
+          reply.code(500).send({ error: 'Missing project id' })
+          return
+        }
+        const hasPermission = await checkPermission(
+          request.user.id,
+          project.id,
+          'project.delete'
+        )
+        if (!hasPermission) {
+          reply.code(403).send({ error: 'Forbidden' })
           return
         }
         await deleteProject(project.id)
