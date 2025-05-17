@@ -17,23 +17,23 @@ import {
   resetLoginAttempts,
   validatePassword,
 } from '../services/user.js'
-import { getAllProjects } from '../services/project.js'
+import { getAllProjects } from '@/server/services/project'
 import {
   createRefreshToken,
   findRefreshToken,
   findRefreshTokenByUserId,
-} from '../services/refresh-token.js'
-import { sendEmail } from '../emails/index.js'
-import { AccountLocked } from '../emails/templates/AccountLocked.js'
-import { RecoverPassword } from '../emails/templates/RecoverPassword.js'
-import { authenticate } from '../utils/auth.js'
-import { generateRandomToken, getIfTokenIsExpired } from '../utils/tokens.js'
+} from '@/server/services/refresh-token'
+import { sendEmail } from '@/server/emails'
+import { AccountLocked } from '@/server/emails/templates/AccountLocked'
+import { RecoverPassword } from '@/server/emails/templates/RecoverPassword'
+import { authenticate } from '@/server/utils/auth'
+import { generateRandomToken, getIfTokenIsExpired } from '@/server/utils/tokens'
 import {
   loginBodySchema,
   recoveryPasswordSchema,
   resetPasswordSchema,
   tokenRequiredSchema,
-} from '../schemas/auth.js'
+} from '@/server/schemas/auth'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(

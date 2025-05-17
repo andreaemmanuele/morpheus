@@ -1,7 +1,7 @@
-import type { LoginAttempts, User, UserStatus } from '../types'
+import type { LoginAttempts, User, UserStatus } from '@/server/types'
 import bcryptjs from 'bcryptjs'
-import { executeQuery } from '../utils/db.js'
-import { queries } from '../queries/index.js'
+import { queries } from '@/server/queries'
+import { executeQuery } from '@/server/utils/db.js'
 
 export const createUser = async ({
   email,

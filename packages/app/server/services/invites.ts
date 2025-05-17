@@ -1,11 +1,11 @@
 import type { Invite } from '../types'
 import React from 'react'
 import { z } from 'zod'
-import { queries } from '../queries'
-import { sendEmail } from '../emails'
-import { JoinProject } from '../emails/templates/JoinProject'
-import { executeQuery } from '../utils/db'
-import { generateRandomToken } from '../utils/tokens'
+import { queries } from '@/server/queries'
+import { sendEmail } from '@/server/emails'
+import { JoinProject } from '@/server/emails/templates/JoinProject'
+import { executeQuery } from '@/server/utils/db'
+import { generateRandomToken } from '@/server/utils/tokens'
 
 export const getExistingInvites = async (emails: string[]) => {
   const result = await executeQuery<Invite>(

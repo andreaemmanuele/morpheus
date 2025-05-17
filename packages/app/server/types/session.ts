@@ -7,14 +7,16 @@ export type AccessToken = {
   exp: number
 }
 
+export type UserSessionData = {
+  id: number
+  email: string
+  username: string
+  defaultProject: string
+}
+
 export type Session = {
   accessToken: string
   refreshToken: string
   refreshTokenExpired: boolean
-  user: {
-    id: number
-    email: string
-    username: string
-    defaultProject: string
-  }
+  user: UserSessionData
 }

@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import type { User } from '../types'
+import type { User } from '@/server/types'
 import bcryptjs from 'bcryptjs'
 import {
   createProject,
@@ -12,29 +12,29 @@ import {
   getProjectIdBySlug,
   getProjectTeam,
   getUniqueSlug,
-} from '../services/project.js'
+} from '@/server/services/project'
 import {
   createInvites,
   findInviteByToken,
   sendInvites,
   revokeInviteByToken,
   revokeInviteByUserId,
-} from '../services/invites'
+} from '@/server/services/invites'
 import {
   findUserByEmail,
   updatePassword,
   updateUsername,
   updateUserStatus,
-} from '../services/user'
+} from '@/server/services/user'
 import {
   createProjectSchema,
   getMemberSchema,
   getProjectSchema,
   joinProjectSchema,
-} from '../schemas/project.js'
-import { invitesSchema } from '../schemas/invites.js'
+} from '@/server/schemas/project'
+import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
-import { authenticate } from '../utils/auth.js'
+import { authenticate } from '@/server/utils/auth'
 import { checkPermission } from '@/server/services/permissions'
 
 export default async function projectRoutes(fastify: FastifyInstance) {

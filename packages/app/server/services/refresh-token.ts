@@ -1,7 +1,7 @@
-import type { Token } from '../types'
-import { queries } from '../queries/index.js'
-import { executeQuery } from '../utils/db.js'
-import { generateRandomToken } from '../utils/tokens.js'
+import type { Token } from '@/server/types'
+import { queries } from '@/server/queries'
+import { executeQuery } from '@/server/utils/db'
+import { generateRandomToken } from '@/server/utils/tokens'
 
 export const createRefreshToken = async (userId: number) => {
   const token = generateRandomToken()

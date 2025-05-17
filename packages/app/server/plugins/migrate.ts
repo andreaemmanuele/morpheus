@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { queries } from '../queries/index.js'
+import { queries } from '@/server/queries'
 import chalk from 'chalk'
 import ora from 'ora'
 

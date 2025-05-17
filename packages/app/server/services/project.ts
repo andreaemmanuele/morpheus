@@ -1,8 +1,8 @@
-import type { Project, TeamMember, User } from '../types'
+import type { Project, TeamMember, User } from '@/server/types'
 import crypto from 'crypto'
-import { queries } from '../queries/index.js'
-import { createUser, generatePasswordHash } from './user'
-import { executeQuery } from '../utils/db.js'
+import { queries } from '@/server/queries'
+import { createUser, generatePasswordHash } from '@/server/services/user'
+import { executeQuery } from '@/server/utils/db.js'
 
 export const getAllProjects = async (userId: number) => {
   const result = await executeQuery<Project>(queries.project.findAllByUserId, [
