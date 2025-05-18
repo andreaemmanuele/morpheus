@@ -37,6 +37,7 @@ export const createInvites = async (
 
 export const sendInvites = async (
   invites: string | undefined,
+  projectId: number,
   projectName: string
 ) => {
   if (!invites) throw new Error('Invites undefined')
@@ -64,6 +65,7 @@ export const sendInvites = async (
       sendEmail(
         React.createElement(JoinProject, {
           name: projectName,
+          projectId,
           token: tokens[index] ?? '',
         }),
         {

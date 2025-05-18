@@ -5,6 +5,10 @@ export const getProjectSchema = z.object({
   slug: z.string(),
 })
 
+export const getProjectIdSchema = z.object({
+  id: z.string(),
+})
+
 export const projectDetailsSchema = z.object({
   icon: z.string().optional().nullable(),
   name: z.string().optional().nullable(),
@@ -21,6 +25,11 @@ export const createProjectSchema = z
     message: "Name and slug don't match the pattern",
     path: ['slug'],
   })
+
+export const checkInviteSchema = z.object({
+  id: z.string(),
+  token: z.string(),
+})
 
 export const joinProjectSchema = z.object({
   token: z.string(),

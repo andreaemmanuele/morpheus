@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { User } from '@/server/types'
 import bcryptjs from 'bcryptjs'
 import {
+  checkIfMemberExists,
   createProject,
   createProjectsUsersRolesRelation,
   createTeamMembers,
@@ -33,6 +34,8 @@ import {
   getMemberSchema,
   getProjectSchema,
   joinProjectSchema,
+  getProjectIdSchema,
+  checkInviteSchema,
 } from '@/server/schemas/project'
 import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
@@ -141,11 +144,12 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       try {
         const { validEmails, tokens } = await sendInvites(
           invites,
+          project.id,
           project?.name ?? ''
         )
 
         if (!validEmails.length) return project
-        const userIds = await createTeamMembers(project?.id, validEmails)
+        const userIds = await createTeamMembers(validEmails)
         await createInvites(
           validEmails,
           tokens,
@@ -187,8 +191,25 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           return
         }
         await hasPermission(request, reply, 'users.invite', project.id)
-        const { validEmails, tokens } = await sendInvites(invites, projectName)
-        const userIds = await createTeamMembers(project?.id, validEmails)
+
+        const user = await findUserByEmail(invites)
+        if (!user) {
+          reply.code(500).send({ error: 'Internal Server Error' })
+          return
+        }
+
+        const alreadyExists = await checkIfMemberExists(project.id, user.id)
+        if (alreadyExists) {
+          reply.code(409).send({ error: 'User is already member' })
+          return
+        }
+
+        const { validEmails, tokens } = await sendInvites(
+          invites,
+          project.id,
+          projectName
+        )
+        const userIds = await createTeamMembers(validEmails)
         await createInvites(
           validEmails,
           tokens,
@@ -204,7 +225,31 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   )
 
-  fastify.post('/projects/join', async (request, reply) => {
+  fastify.get('/projects/:id/check-invite/:token', async (request, reply) => {
+    const { id, token } = checkInviteSchema.parse(request.params)
+    try {
+      const invite = await findInviteByToken(token)
+      if (!invite) {
+        reply.code(500).send({ error: 'Internal Server Error' })
+        return
+      }
+      const user = await findUserByEmail(invite.email)
+      if (user && user.status === 'active') {
+        await Promise.all([
+          createProjectsUsersRolesRelation(+id, user.id, 3),
+          revokeInviteByToken(token),
+        ])
+        reply.redirect('/login?message=project-joined')
+      }
+      reply.redirect(`/projects/${id}/join/${token}`)
+    } catch (error) {
+      console.error(error)
+      reply.code(500).send({ error: 'Internal Server Error' })
+    }
+  })
+
+  fastify.post('/projects/:id/join', async (request, reply) => {
+    const { id } = getProjectIdSchema.parse(request.params)
     const { token, username, password, confirmPassword } =
       joinProjectSchema.parse(JSON.parse(request.body as string))
 
@@ -236,6 +281,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         updatePassword(passwordHash, user.id),
         updateUserStatus('active', user.id),
         revokeInviteByToken(token),
+        createProjectsUsersRolesRelation(+id, user.id, 3),
       ])
       return { message: 'Project joined successfully' }
     } catch (error) {

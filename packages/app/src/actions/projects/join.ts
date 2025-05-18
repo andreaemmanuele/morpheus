@@ -12,7 +12,7 @@ export const joinProjectAction = async ({
   const username = formData.get('username') as Icons
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirm-password') as string
-  const { token } = params as { token: string }
+  const { id, token } = params as { id: string; token: string }
 
   const { error: validationError } = changePasswordSchema.safeParse({
     password,
@@ -23,7 +23,14 @@ export const joinProjectAction = async ({
     return { error: validationError.errors[0]?.message, message: null }
   }
 
-  const response = await joinProject(token, username, password, confirmPassword)
+  const response = await joinProject(
+    token,
+    id,
+    username,
+    password,
+    confirmPassword
+  )
+
   if (response.error) return { error: response.error }
   return redirect('/login?message=project-joined')
 }

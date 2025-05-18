@@ -6,7 +6,11 @@ import type {
 } from '@/server/types'
 import crypto from 'crypto'
 import { queries } from '@/server/queries'
-import { createUser, generatePasswordHash } from '@/server/services/user'
+import {
+  createUser,
+  findUserByEmail,
+  generatePasswordHash,
+} from '@/server/services/user'
 import { executeQuery } from '@/server/utils/db.js'
 
 export const getAllProjects = async (userId: number) => {
@@ -86,16 +90,19 @@ export const createProjectsUsersRolesRelation = async (
     isDefault,
   ])
 
-export const createTeamMembers = async (
-  projectId: number | undefined,
-  emails: string[]
-) => {
+export const createTeamMembers = async (emails: string[]) => {
   const tempUsers: Promise<User | undefined>[] = []
+  const existingUsersIds: number[] = []
+
   for (const email of emails) {
     const passwordHash = await generatePasswordHash(
       crypto.randomBytes(15).toString('base64')
     )
-    // add a check if user already exists and is active, then push into tempUsers
+    const user = await findUserByEmail(email)
+    if (user) {
+      existingUsersIds.push(user.id)
+      continue
+    }
     tempUsers.push(
       createUser({
         email,
@@ -106,8 +113,10 @@ export const createTeamMembers = async (
       })
     )
   }
+
   const result = await Promise.allSettled([...tempUsers])
-  const userIds: number[] = []
+  const userIds: number[] = [...existingUsersIds]
+
   for (const user of result) {
     if (user.status !== 'fulfilled') {
       console.log(user.reason)
@@ -115,12 +124,18 @@ export const createTeamMembers = async (
     }
     if (user.value) userIds.push(user.value.id)
   }
-  await Promise.allSettled(
-    userIds.map((id) =>
-      createProjectsUsersRolesRelation(projectId ?? null, id, 3)
-    )
-  )
   return userIds
+}
+
+export const checkIfMemberExists = async (
+  projectId: number,
+  userId: number
+) => {
+  const result = await executeQuery<{ user_id: number }>(
+    queries.project.checkIfMemberExists,
+    [projectId, userId]
+  )
+  return result.rows[0]
 }
 
 export const updateProject = async (

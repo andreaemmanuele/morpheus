@@ -53,21 +53,25 @@ export const inviteMembers = async (
 
 export const joinProject = async (
   token: string,
+  projectId: string,
   username: string,
   password: string,
   confirmPassword: string
 ) => {
   let response
   try {
-    response = await fetch(`${process.env.BASE_URL}/api/projects/join`, {
-      method: 'POST',
-      body: JSON.stringify({
-        token,
-        username,
-        password,
-        confirmPassword,
-      }),
-    })
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${projectId}/join`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          token,
+          username,
+          password,
+          confirmPassword,
+        }),
+      }
+    )
   } catch (error) {
     console.error(error)
   }
