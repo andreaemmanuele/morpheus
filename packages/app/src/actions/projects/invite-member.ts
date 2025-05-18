@@ -14,7 +14,10 @@ export const inviteMemberAction = async ({ request }: ActionFunctionArgs) => {
 
   const response = await inviteMembers(token, projectName, projectSlug, email)
   if (!response) {
-    return redirectWithToast(`/${projectSlug}/settings`, 'Something went wrong')
+    return redirectWithToast(
+      `/${projectSlug}/settings`,
+      'Cannot invite members'
+    )
   }
 
   return redirectWithToast(
