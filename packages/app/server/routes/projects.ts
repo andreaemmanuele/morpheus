@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import type { User } from '@/server/types'
 import bcryptjs from 'bcryptjs'
+import slugify from 'slugify'
 import {
   createProject,
   createProjectsUsersRolesRelation,
@@ -12,6 +13,7 @@ import {
   getProjectIdBySlug,
   getProjectTeam,
   getUniqueSlug,
+  updateProject,
 } from '@/server/services/project'
 import {
   createInvites,
@@ -27,6 +29,7 @@ import {
   updateUserStatus,
 } from '@/server/services/user'
 import {
+  projectDetailsSchema,
   createProjectSchema,
   getMemberSchema,
   getProjectSchema,
@@ -35,7 +38,7 @@ import {
 import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
 import { authenticate } from '@/server/utils/auth'
-import { checkPermission } from '@/server/services/permissions'
+import { hasPermission } from '@/server/utils/permission'
 
 export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.get(
@@ -163,7 +166,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
   )
 
   fastify.post(
-    '/projects/invite',
+    '/projects/:slug/invite',
     {
       onRequest: [authenticate],
       config: {
@@ -174,15 +177,17 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { slug, projectName, invites } = invitesSchema.parse(
+      const { slug } = getProjectSchema.parse(request.params)
+      const { projectName, invites } = invitesSchema.parse(
         JSON.parse(request.body as string)
       )
-
       try {
         const project = await getProjectIdBySlug(slug)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
+          return
         }
+        await hasPermission(request, reply, 'users.invite', project.id)
         const { validEmails, tokens } = await sendInvites(invites, projectName)
         const userIds = await createTeamMembers(project?.id, validEmails)
         await createInvites(
@@ -247,6 +252,51 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   })
 
+  fastify.patch(
+    'projects/:slug/update',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      const { icon, name } = projectDetailsSchema.parse(
+        JSON.parse(request.body as string)
+      )
+      try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Project not found' })
+          return
+        }
+        await hasPermission(request, reply, 'project.update', project.id)
+        const _slug = name && (await getUniqueSlug(slugify(name)))
+        await updateProject(project.id, icon, name, _slug)
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Cannot update project' })
+      }
+    }
+  )
+
+  fastify.delete(
+    '/projects/:slug/leave',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Project not found' })
+          return null
+        }
+        await hasPermission(request, reply, 'project.leave', project.id)
+        await deleteTeamMember(project.id, request.user.id)
+        reply.code(200).send({ message: 'Project left successfully' })
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Internal Server Error' })
+      }
+    }
+  )
+
   fastify.delete(
     '/projects/:slug/member/:id',
     { onRequest: [authenticate] },
@@ -256,8 +306,9 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         const project = await getProjectIdBySlug(slug)
         if (!project) {
           reply.code(500).send({ error: 'Project not found' })
-          return
+          return null
         }
+        await hasPermission(request, reply, 'users.remove', project.id)
         await Promise.allSettled([
           revokeInviteByUserId(project.id, +userId),
           deleteTeamMember(project.id, +userId),
@@ -281,15 +332,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           reply.code(500).send({ error: 'Missing project id' })
           return
         }
-        const hasPermission = await checkPermission(
-          request.user.id,
-          project.id,
-          'project.delete'
-        )
-        if (!hasPermission) {
-          reply.code(403).send({ error: 'Forbidden' })
-          return
-        }
+        await hasPermission(request, reply, 'project.delete', project.id)
         await deleteProject(project.id)
         reply.code(200).send('Project deleted successfully')
       } catch (error) {

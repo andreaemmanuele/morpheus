@@ -26,21 +26,27 @@ export const ProjectDetailsSection: FCWithClassName<
     <section className={className}>
       <div className="flex flex-1 gap-x-8 max-w-[36rem]">
         <div className="relative group">
-          <ProjectAvatar icon={icon} onSelectIcon={handleSelectIcon} />
+          <ProjectAvatar
+            icon={icon}
+            canUpdate={canUpdate}
+            onSelectIcon={handleSelectIcon}
+          />
         </div>
         <Form className="flex flex-col gap-y-2 flex-1">
           <div className="space-y-2">
             <Label htmlFor="name">Project name</Label>
             <Input defaultValue={name} required disabled={!canUpdate} />
           </div>
-          <Button
-            type="submit"
-            className="ml-auto"
-            variant="secondary"
-            size="sm"
-          >
-            Change name
-          </Button>
+          {canUpdate && (
+            <Button
+              type="submit"
+              className="ml-auto"
+              variant="secondary"
+              size="sm"
+            >
+              Change name
+            </Button>
+          )}
         </Form>
       </div>
     </section>

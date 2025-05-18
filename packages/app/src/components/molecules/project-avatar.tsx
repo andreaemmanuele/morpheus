@@ -16,11 +16,13 @@ import { cn } from '@/lib/utils'
 
 type ProjectAvatarProps = {
   icon: Icons
+  canUpdate: boolean
   onSelectIcon: (icon: Icons) => void
 }
 
 export const ProjectAvatar: FC<ProjectAvatarProps> = ({
   icon = 'pill',
+  canUpdate,
   onSelectIcon,
 }) => {
   const [showIcons, setShowIcons] = useState(false)
@@ -28,49 +30,55 @@ export const ProjectAvatar: FC<ProjectAvatarProps> = ({
     <>
       <Avatar className="w-24 h-24">
         <AvatarImage src="" alt="" />
-        <AvatarFallback className="group-hover:opacity-0 transition-opacity duration-300">
+        <AvatarFallback
+          className={cn({
+            'group-hover:opacity-0 transition-opacity duration-300': canUpdate,
+          })}
+        >
           {renderIcon(icon)}
         </AvatarFallback>
       </Avatar>
-      <Popover onOpenChange={() => setShowIcons(false)}>
-        <PopoverTrigger asChild>
-          <button className="absolute inset-0 opacity-0 grid group-hover:opacity-100 duration-300 transition-opacity bg-gray-400/30 rounded-full z-10 place-items-center">
-            <Upload />
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 flex flex-col gap-y-4">
-          {!showIcons ? (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowIcons(true)}
-              >
-                Choose icon
-              </Button>
-              <span className="mx-auto">Or</span>
-              <div className="space-y-2">
-                <Label htmlFor="picture">Upload an image</Label>
-                <Input id="picture" type="file" />
-              </div>
-            </>
-          ) : (
-            <div className="grid grid-cols-4 gap-2">
-              {(Object.keys(iconList) as Icons[]).map((iconName) => (
+      {canUpdate && (
+        <Popover onOpenChange={() => setShowIcons(false)}>
+          <PopoverTrigger asChild>
+            <button className="absolute inset-0 opacity-0 grid group-hover:opacity-100 duration-300 transition-opacity bg-gray-400/30 rounded-full z-10 place-items-center">
+              <Upload />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 flex flex-col gap-y-4">
+            {!showIcons ? (
+              <>
                 <Button
-                  key={iconName}
-                  className={cn('[&_svg]:!size-8 p-2 h-auto')}
+                  type="button"
                   variant="outline"
-                  disabled={iconName === icon}
-                  onClick={() => onSelectIcon(iconName)}
+                  onClick={() => setShowIcons(true)}
                 >
-                  {renderIcon(iconName)}
+                  Choose icon
                 </Button>
-              ))}
-            </div>
-          )}
-        </PopoverContent>
-      </Popover>
+                <span className="mx-auto">Or</span>
+                <div className="space-y-2">
+                  <Label htmlFor="picture">Upload an image</Label>
+                  <Input id="picture" type="file" />
+                </div>
+              </>
+            ) : (
+              <div className="grid grid-cols-4 gap-2">
+                {(Object.keys(iconList) as Icons[]).map((iconName) => (
+                  <Button
+                    key={iconName}
+                    className={cn('[&_svg]:!size-8 p-2 h-auto')}
+                    variant="outline"
+                    disabled={iconName === icon}
+                    onClick={() => onSelectIcon(iconName)}
+                  >
+                    {renderIcon(iconName)}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+      )}
     </>
   )
 }

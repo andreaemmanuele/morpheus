@@ -51,7 +51,7 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
   const leaveProject = () => {
     if (!canLeave) return
     fetcher.submit(
-      { slug: project?.slug ?? '', id: session?.user.id ?? '' },
+      { slug: project?.slug ?? '' },
       {
         method: 'DELETE',
         action: '/action/projects/leave',

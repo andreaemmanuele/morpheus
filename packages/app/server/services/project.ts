@@ -123,6 +123,19 @@ export const createTeamMembers = async (
   return userIds
 }
 
+export const updateProject = async (
+  projectId: number,
+  icon?: string,
+  name?: string,
+  slug?: string
+) =>
+  await executeQuery(queries.project.updateProject, [
+    icon,
+    name,
+    slug,
+    projectId,
+  ])
+
 export const deleteTeamMember = async (projectId: number, userId: number) =>
   await executeQuery(queries.project.deleteMember, [projectId, userId])
 

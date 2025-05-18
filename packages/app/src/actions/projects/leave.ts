@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from '@remix-run/server-runtime'
 import { authCookie, projectCookie, sidebarCookie } from '@/cookies.server'
-import { deleteTeamMember, getAllProjects } from '@/lib/projects'
+import { getAllProjects, leaveProject } from '@/lib/projects'
 import { redirectWithToast } from '@/lib/toast'
 import { deleteCookie } from '@/lib/cookie'
 
@@ -10,9 +10,8 @@ export const leaveProjectAction = async ({ request }: ActionFunctionArgs) => {
 
   const formData = await request.formData()
   const projectSlug = formData.get('slug') as string
-  const userId = formData.get('id') as string
 
-  const response = await deleteTeamMember(token, projectSlug, userId)
+  const response = await leaveProject(token, projectSlug)
   if (!response) {
     return redirectWithToast(
       request.headers.get('referer') as string,

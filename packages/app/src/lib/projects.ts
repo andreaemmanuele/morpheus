@@ -30,17 +30,19 @@ export const inviteMembers = async (
 ) => {
   let response
   try {
-    response = await fetch(`${process.env.BASE_URL}/api/projects/invite`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        slug,
-        projectName,
-        invites: emails,
-      }),
-    })
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/invite`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          projectName,
+          invites: emails,
+        }),
+      }
+    )
   } catch (error) {
     console.error(error)
   }
@@ -73,6 +75,26 @@ export const joinProject = async (
   const result = await response?.json()
   if (!response?.ok) return { error: result.error }
   return result
+}
+
+export const leaveProject = async (token: string, slug: string) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/leave`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
 }
 
 export const getAllProjects = async (
