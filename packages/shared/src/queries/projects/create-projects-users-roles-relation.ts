@@ -1,3 +1,8 @@
 export default `
-        INSERT INTO projects_users_roles (project_id, user_id, role_id)
-        VALUES ($1, $2, $3)`
+        INSERT INTO projects_users_roles (project_id, user_id, role_id, is_default)
+        VALUES ($1, $2, $3, COALESCE($4, NOT EXISTS(
+                                            SELECT 1
+                                            FROM projects p
+                                            JOIN projects_users_roles upr ON p.id = upr.project_id
+                                            WHERE upr.user_id = $2))
+       )`

@@ -108,8 +108,9 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { icon, name, slug, invites, isDefault } =
-        createProjectSchema.parse(JSON.parse(request.body as string))
+      const { icon, name, slug, invites } = createProjectSchema.parse(
+        JSON.parse(request.body as string)
+      )
 
       const token = fastify.jwt.lookupToken(request)
       const user = fastify.jwt.decode<User>(token)
@@ -121,7 +122,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       let project
       try {
         const _slug = await getUniqueSlug(slug)
-        project = await createProject(icon, name, _slug!, user.id, isDefault)
+        project = await createProject(icon, name, _slug!)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
           return

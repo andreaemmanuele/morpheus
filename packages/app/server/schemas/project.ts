@@ -10,7 +10,6 @@ export const createProjectSchema = z
     icon: z.string(),
     name: z.string(),
     slug: z.string(),
-    isDefault: z.boolean().optional(),
     invites: z.string().optional(),
   })
   .refine(({ name, slug }) => slugify(name, { lower: true }) === slug, {

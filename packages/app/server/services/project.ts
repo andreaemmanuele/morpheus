@@ -63,16 +63,12 @@ export const getUniqueSlug = async (slug: string) => {
 export const createProject = async (
   icon: string,
   name: string,
-  slug: string,
-  userId: number,
-  isDefault?: boolean
+  slug: string
 ) => {
   const result = await executeQuery<Project>(queries.project.createProject, [
     icon,
     name,
     slug,
-    isDefault,
-    userId,
   ])
   return result.rows[0]
 }
@@ -80,12 +76,14 @@ export const createProject = async (
 export const createProjectsUsersRolesRelation = async (
   project_id: number | null,
   user_id: number,
-  role_id: number
+  role_id: number,
+  isDefault?: boolean
 ) =>
   await executeQuery(queries.project.createProjectsUsersRolesRelation, [
     project_id,
     user_id,
     role_id,
+    isDefault,
   ])
 
 export const createTeamMembers = async (

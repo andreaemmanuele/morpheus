@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ProjectAvatar } from '@/components/molecules/project-avatar'
 import { projectStore } from '@/stores/project'
+import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 
 type ProjectDetailsSectionProps = {
   icon: Icons
@@ -15,9 +16,10 @@ type ProjectDetailsSectionProps = {
 export const ProjectDetailsSection: FCWithClassName<
   ProjectDetailsSectionProps
 > = ({ className = '', icon, name }) => {
+  const { hasPermission: canUpdate } = useUserHasPermission('project.update')
   const { project, setProject } = projectStore()
   const handleSelectIcon = (icon: Icons) => {
-    if (!project) return
+    if (!project || !canUpdate) return
     setProject({ ...project, icon }) // replace with action to change project icon in db
   }
   return (
@@ -29,7 +31,7 @@ export const ProjectDetailsSection: FCWithClassName<
         <Form className="flex flex-col gap-y-2 flex-1">
           <div className="space-y-2">
             <Label htmlFor="name">Project name</Label>
-            <Input defaultValue={name} required />
+            <Input defaultValue={name} required disabled={!canUpdate} />
           </div>
           <Button
             type="submit"
