@@ -1,6 +1,7 @@
 import type { FCWithClassName } from '@/types'
 import type { Icons } from '@/lib/icons'
-import { Form } from '@remix-run/react'
+import { useEffect, useState } from 'react'
+import { Form, useFetcher } from '@remix-run/react'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -9,19 +10,45 @@ import { projectStore } from '@/stores/project'
 import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 
 type ProjectDetailsSectionProps = {
-  icon: Icons
+  icon: Icons | undefined
   name: string
 }
 
 export const ProjectDetailsSection: FCWithClassName<
   ProjectDetailsSectionProps
 > = ({ className = '', icon, name }) => {
+  const fetcher = useFetcher()
   const { hasPermission: canUpdate } = useUserHasPermission('project.update')
-  const { project, setProject } = projectStore()
+  const [projectName, setProjectName] = useState('')
+  const { project } = projectStore()
+
   const handleSelectIcon = (icon: Icons) => {
-    if (!project || !canUpdate) return
-    setProject({ ...project, icon }) // replace with action to change project icon in db
+    if (!canUpdate) return
+    fetcher.submit(
+      { slug: project?.slug ?? '', icon },
+      {
+        method: 'PATCH',
+        action: '/action/projects/update',
+      }
+    )
   }
+
+  const changeProjectName = () => {
+    if (!canUpdate) return
+    fetcher.submit(
+      { slug: project?.slug ?? '', name: projectName },
+      {
+        method: 'PATCH',
+        action: '/action/projects/update',
+      }
+    )
+  }
+
+  useEffect(() => {
+    if (!name) return
+    setProjectName(name)
+  }, [name])
+
   return (
     <section className={className}>
       <div className="flex flex-1 gap-x-8 max-w-[36rem]">
@@ -35,7 +62,12 @@ export const ProjectDetailsSection: FCWithClassName<
         <Form className="flex flex-col gap-y-2 flex-1">
           <div className="space-y-2">
             <Label htmlFor="name">Project name</Label>
-            <Input defaultValue={name} required disabled={!canUpdate} />
+            <Input
+              value={projectName}
+              required
+              disabled={!canUpdate}
+              onChange={(e) => setProjectName(e.target.value)}
+            />
           </div>
           {canUpdate && (
             <Button
@@ -43,8 +75,9 @@ export const ProjectDetailsSection: FCWithClassName<
               className="ml-auto"
               variant="secondary"
               size="sm"
+              onClick={changeProjectName}
             >
-              Change name
+              Update
             </Button>
           )}
         </Form>

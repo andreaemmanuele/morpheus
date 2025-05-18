@@ -30,7 +30,7 @@ export default function ProjectSettingsPage() {
       <h1 className="text-3xl font-bold">Settings</h1>
       <ProjectDetailsSection
         className="space-y-8 pt-12 flex justify-end"
-        icon={project?.icon ?? 'pill'}
+        icon={project?.icon}
         name={project?.name ?? ''}
       />
       <Separator className="mt-16 mb-12" />

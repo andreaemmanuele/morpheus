@@ -1,7 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { User } from '@/server/types'
 import bcryptjs from 'bcryptjs'
-import slugify from 'slugify'
 import {
   createProject,
   createProjectsUsersRolesRelation,
@@ -253,7 +252,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
   })
 
   fastify.patch(
-    'projects/:slug/update',
+    '/projects/:slug/update',
     { onRequest: [authenticate] },
     async (request, reply) => {
       const { slug } = getProjectSchema.parse(request.params)
@@ -267,8 +266,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           return
         }
         await hasPermission(request, reply, 'project.update', project.id)
-        const _slug = name && (await getUniqueSlug(slugify(name)))
-        await updateProject(project.id, icon, name, _slug)
+        await updateProject(project.id, icon, name)
+        reply.code(200).send({ message: 'Project updated successfully' })
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Cannot update project' })

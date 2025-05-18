@@ -15,13 +15,13 @@ import { iconList, renderIcon } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 type ProjectAvatarProps = {
-  icon: Icons
+  icon: Icons | undefined
   canUpdate: boolean
   onSelectIcon: (icon: Icons) => void
 }
 
 export const ProjectAvatar: FC<ProjectAvatarProps> = ({
-  icon = 'pill',
+  icon,
   canUpdate,
   onSelectIcon,
 }) => {
@@ -35,7 +35,7 @@ export const ProjectAvatar: FC<ProjectAvatarProps> = ({
             'group-hover:opacity-0 transition-opacity duration-300': canUpdate,
           })}
         >
-          {renderIcon(icon)}
+          {icon && renderIcon(icon)}
         </AvatarFallback>
       </Avatar>
       {canUpdate && (

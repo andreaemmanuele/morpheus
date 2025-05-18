@@ -6,16 +6,17 @@ export const getProjectSchema = z.object({
 })
 
 export const projectDetailsSchema = z.object({
-  icon: z.string().optional(),
-  name: z.string().optional(),
+  icon: z.string().optional().nullable(),
+  name: z.string().optional().nullable(),
 })
 
 export const createProjectSchema = z
   .object({
+    icon: z.string(),
+    name: z.string(),
     slug: z.string(),
     invites: z.string().optional(),
   })
-  .merge(projectDetailsSchema.required())
   .refine(({ name, slug }) => slugify(name, { lower: true }) === slug, {
     message: "Name and slug don't match the pattern",
     path: ['slug'],

@@ -150,6 +150,35 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
   return { members: result }
 }
 
+export const updateProject = async (
+  token: string,
+  slug: string,
+  icon?: string,
+  name?: string
+) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/update`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          icon,
+          name,
+        }),
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
+
 export const deleteTeamMember = async (
   token: string,
   slug: string,
