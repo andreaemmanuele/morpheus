@@ -120,8 +120,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
 
       let project
       try {
-        // check for all project, not only user's one
-        const _slug = await getUniqueSlug(user.id, slug)
+        const _slug = await getUniqueSlug(slug)
         project = await createProject(icon, name, _slug!, user.id, isDefault)
         if (!project) {
           reply.code(500).send({ error: 'Internal Server Error' })
