@@ -193,12 +193,9 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         await hasPermission(request, reply, 'users.invite', project.id)
 
         const user = await findUserByEmail(invites)
-        if (!user) {
-          reply.code(500).send({ error: 'Internal Server Error' })
-          return
-        }
+        const alreadyExists =
+          user && (await checkIfMemberExists(project.id, user.id))
 
-        const alreadyExists = await checkIfMemberExists(project.id, user.id)
         if (alreadyExists) {
           reply.code(409).send({ error: 'User is already member' })
           return
