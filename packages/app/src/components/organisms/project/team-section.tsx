@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { TeamTable } from '@/components/organisms/team-table'
 import { projectStore } from '@/stores/project'
+import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 
 type ProjectTeamSectionProps = {
   members: TeamMember[]
@@ -24,6 +25,9 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   className = '',
   members,
 }) => {
+  const { hasPermission: canInvite } = useUserHasPermission('users.invite')
+  const { hasPermission: canDelete } = useUserHasPermission('users.remove')
+
   const [email, setEmail] = useState('')
   const [emailFilter, setEmailFilter] = useState('')
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
@@ -35,6 +39,7 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   const isSubmitting = fetcher.state !== 'idle'
 
   const inviteMember = () => {
+    if (!canInvite) return
     fetcher.submit(
       { name: project?.name ?? '', slug: project?.slug ?? '', email },
       {
@@ -45,10 +50,11 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   }
 
   const deleteMember = (id: number | null) => {
+    if (!project || !canDelete) return
     fetcher.submit(
-      { id },
+      { id, slug: project.slug },
       {
-        method: 'POST',
+        method: 'DELETE',
         action: '/action/projects/delete-member',
       }
     )
@@ -74,46 +80,49 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
               setEmailFilter(event.target.value)
             }}
           />
-          <Dialog
-            open={isInviteDialogOpen}
-            onOpenChange={setIsInviteDialogOpen}
-          >
-            <DialogTrigger asChild>
-              <Button variant="secondary">Add member</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Invite New Member</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  placeholder="m@example.com"
-                  className="col-span-3"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <DialogFooter>
-                <Button type="submit" onClick={inviteMember}>
-                  {isSubmitting ? (
-                    <LoaderCircle className="animate-spin" />
-                  ) : (
-                    'Send invite'
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          {canInvite && (
+            <Dialog
+              open={isInviteDialogOpen}
+              onOpenChange={setIsInviteDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button variant="secondary">Add member</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Invite New Member</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-right">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    placeholder="m@example.com"
+                    className="col-span-3"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" onClick={inviteMember}>
+                    {isSubmitting ? (
+                      <LoaderCircle className="animate-spin" />
+                    ) : (
+                      'Send invite'
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </header>
       <TeamTable
         data={members}
         emailFilter={emailFilter}
+        canDeleteMember={canDelete}
         isDeleteMemberDialogOpen={isDeleteMemberDialogOpen}
         isDeletingMember={isSubmitting}
         onSetDeleteMemberDialog={setIsDeleteMemberDialogOpen}

@@ -1,4 +1,5 @@
 import type { Icons } from '@/lib/icons'
+import type { Permissions } from '@/server/types/permissions'
 
 export type OwnerRole = {
   id: 1
@@ -59,6 +60,11 @@ export type Project = {
   deleted_at: string
 }
 
+export type ProjectWithRoleUserRelation = Project & {
+  user_id: number
+  role_id: number
+}
+
 export type Invite = {
   email: string
 }
@@ -71,6 +77,10 @@ export type TeamMember = {
   status: UserStatus
 }
 
-export type Permission = {
+export type PermissionCheck = {
   has_permission: boolean
+}
+
+export type Permission = {
+  code: Permissions
 }

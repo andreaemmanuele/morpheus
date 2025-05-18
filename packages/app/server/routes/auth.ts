@@ -34,6 +34,7 @@ import {
   resetPasswordSchema,
   tokenRequiredSchema,
 } from '@/server/schemas/auth'
+import { getPermissionCodesByRoleId } from '@/server/services/permissions'
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -113,12 +114,21 @@ export default async function authRoutes(fastify: FastifyInstance) {
       const defaultProject =
         projects.find(({ is_default }) => is_default)?.slug ?? ''
 
+      const projectsRoles = projects.reduce<Record<number, number>>(
+        (acc, project) => {
+          acc[project.id] = project.role_id
+          return acc
+        },
+        {}
+      )
+
       const accessToken = fastify.jwt.sign({
         id: user.id,
         email: user.email,
         username: user.username ?? '',
         defaultProject,
         refreshToken: refreshToken?.token ?? '',
+        projectsRoles,
       })
 
       const isRefreshTokenExpired = getIfTokenIsExpired(
@@ -134,6 +144,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
           email: user.email,
           username: user.username ?? '',
           defaultProject,
+          permissions: {},
         },
       } satisfies Session
     }
@@ -154,6 +165,32 @@ export default async function authRoutes(fastify: FastifyInstance) {
       refreshTokenData?.expires_at ?? ''
     )
 
+    const projects = await getAllProjects(data.id)
+    const projectsRoles = projects.reduce<Record<number, number>>(
+      (acc, project) => {
+        acc[project.id] = project.role_id
+        return acc
+      },
+      {}
+    )
+
+    const permissionCodes = await Promise.allSettled(
+      Object.values(projectsRoles).map((roleId) =>
+        getPermissionCodesByRoleId(roleId)
+      )
+    )
+
+    const projectsPermissions = Object.keys(projectsRoles).reduce<
+      Record<string, string[]>
+    >((acc, projectId, currentIndex) => {
+      const projectCodes = permissionCodes[currentIndex]
+      acc[projectId] =
+        projectCodes?.status === 'fulfilled'
+          ? projectCodes.value.map(({ code }) => code)
+          : []
+      return acc
+    }, {})
+
     if (!isAccessTokenExpired) {
       reply.code(200).send({
         accessToken: token,
@@ -164,6 +201,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
           email: data.email,
           username: data.username,
           defaultProject: '', //get from user
+          permissions: projectsPermissions,
         },
       } satisfies Session)
       return
@@ -191,6 +229,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         email: user?.email ?? '',
         username: user?.username ?? '',
         defaultProject: '', //get from user
+        permissions: projectsPermissions,
       },
     } satisfies Session)
   })

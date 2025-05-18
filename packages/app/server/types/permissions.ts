@@ -1,6 +1,6 @@
 type ContentOperations = 'create' | 'read' | 'update' | 'delete' | 'publish'
 type UserOperations = 'invite' | 'remove' | 'update_roles'
-type ProjectOperations = 'update' | 'delete'
+type ProjectOperations = 'update' | 'transfer' | 'leave' | 'delete'
 
 export type Permissions =
   | `content.${ContentOperations}`

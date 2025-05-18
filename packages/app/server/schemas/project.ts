@@ -27,4 +27,5 @@ export const joinProjectSchema = z.object({
 
 export const getMemberSchema = z.object({
   id: z.string(),
+  slug: z.string(),
 })

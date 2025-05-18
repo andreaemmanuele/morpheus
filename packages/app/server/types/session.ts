@@ -12,6 +12,7 @@ export type UserSessionData = {
   email: string
   username: string
   defaultProject: string
+  permissions: Record<number, string[]>
 }
 
 export type Session = {

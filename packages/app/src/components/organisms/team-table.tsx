@@ -39,6 +39,7 @@ type TeamTableProps = {
   emailFilter: string
   isDeleteMemberDialogOpen: boolean
   isDeletingMember: boolean
+  canDeleteMember: boolean
   onSetDeleteMemberDialog: (value: boolean) => void
   onDelete: (id: number | null) => void
 }
@@ -48,6 +49,7 @@ export const TeamTable: FC<TeamTableProps> = ({
   emailFilter,
   isDeleteMemberDialogOpen,
   isDeletingMember,
+  canDeleteMember,
   onSetDeleteMemberDialog,
   onDelete,
 }) => {
@@ -56,11 +58,13 @@ export const TeamTable: FC<TeamTableProps> = ({
   const { session } = sessionStore()
 
   const handleDelete = (id: number) => {
+    if (!canDeleteMember) return
     setUserId(id)
     onSetDeleteMemberDialog(true)
   }
 
   const handleDeleteDialogChange = (value: boolean) => {
+    if (!canDeleteMember) return
     setUserId(null)
     onSetDeleteMemberDialog(value)
   }
@@ -171,6 +175,7 @@ export const TeamTable: FC<TeamTableProps> = ({
                       className="w-full"
                       variant="destructive"
                       size="sm"
+                      disabled={!canDeleteMember}
                       onClick={() => handleDelete(+row.original.id)}
                     >
                       <UserX />
@@ -220,6 +225,7 @@ export const TeamTable: FC<TeamTableProps> = ({
               className="mt-2 sm:mt-0"
               variant="secondary"
               onClick={() => handleDeleteDialogChange(false)}
+              disabled={!canDeleteMember}
             >
               Cancel
             </Button>

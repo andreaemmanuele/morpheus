@@ -1,1 +1,1 @@
-export default `DELETE FROM projects_users_roles WHERE user_id = $1`
+export default `DELETE FROM projects_users_roles WHERE project_id = $1 AND user_id = $2`

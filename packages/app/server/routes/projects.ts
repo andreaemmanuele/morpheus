@@ -120,6 +120,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
 
       let project
       try {
+        // check for all project, not only user's one
         const _slug = await getUniqueSlug(user.id, slug)
         project = await createProject(icon, name, _slug!, user.id, isDefault)
         if (!project) {
@@ -247,14 +248,19 @@ export default async function projectRoutes(fastify: FastifyInstance) {
   })
 
   fastify.delete(
-    '/projects/member/:id',
+    '/projects/:slug/member/:id',
     { onRequest: [authenticate] },
     async (request, reply) => {
-      const { id } = getMemberSchema.parse(request.params)
+      const { slug, id: userId } = getMemberSchema.parse(request.params)
       try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Project not found' })
+          return
+        }
         await Promise.allSettled([
-          revokeInviteByUserId(+id),
-          deleteTeamMember(+id),
+          revokeInviteByUserId(project.id, +userId),
+          deleteTeamMember(project.id, +userId),
         ])
         reply.code(200).send({ message: 'Member deleted successfully' })
       } catch (error) {

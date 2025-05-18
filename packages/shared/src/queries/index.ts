@@ -25,6 +25,7 @@ import findInviteByToken from '../queries/invites/find-invite-by-token.js'
 import revokeInviteByToken from '../queries/invites/revoke-invite-by-token.js'
 import revokeInviteByUserId from '../queries/invites/revoke-invite-by-user-id.js'
 import checkPermission from '../queries/permissions/check-permission.js'
+import getPermissionCodesByRoleId from '../queries/permissions/get-permission-codes-by-role-id.js'
 
 export const queries = {
   user: {
@@ -61,5 +62,6 @@ export const queries = {
   },
   permissions: {
     checkPermission,
+    getPermissionCodesByRoleId,
   },
 }

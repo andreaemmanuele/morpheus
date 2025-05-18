@@ -128,11 +128,15 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
   return { members: result }
 }
 
-export const deleteTeamMember = async (token: string, id: string) => {
+export const deleteTeamMember = async (
+  token: string,
+  slug: string,
+  id: string
+) => {
   let response
   try {
     response = await fetch(
-      `${process.env.BASE_URL}/api/projects/member/${id}`,
+      `${process.env.BASE_URL}/api/projects/${slug}/member/${id}`,
       {
         method: 'DELETE',
         headers: {

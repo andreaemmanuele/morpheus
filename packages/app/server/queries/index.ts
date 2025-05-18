@@ -1,19 +1,20 @@
 import { queries as sharedQueries } from '@morphe.us/shared/queries'
-import createRolesTable from '@/server/queries/migrations/create-roles-table.js'
-import createUserStatusEnum from '@/server/queries/migrations/create-user-status-enum.js'
-import createUsersTable from '@/server/queries/migrations/create-users-table.js'
-import createPermissionsTable from '@/server/queries/migrations/create-permissions-table.js'
-import createRolesPermissionsTable from '@/server/queries/migrations/create-roles-permissions-table.js'
-import createRefreshTokensTable from '@/server/queries/migrations/create-refresh-tokens-table.js'
-import createProjectsTable from '@/server/queries/migrations/create-projects-table.js'
-import createInvitesStatusEnum from '@/server/queries/migrations/create-invites-status-enum.js'
-import createInvitesTable from '@/server/queries/migrations/create-invites-table.js'
-import createProjectsUsersRolesTable from '@/server/queries/migrations/create-projects-users-roles-table.js'
-import createRefreshToken from '@/server/queries/refresh-tokens/create-refresh-token.js'
-import findRefreshToken from '@/server/queries/refresh-tokens/find-refresh-token.js'
-import findRefreshTokenByUserId from '@/server/queries/refresh-tokens/find-refresh-token-by-user-id.js'
-import revokeRefreshToken from '@/server/queries/refresh-tokens/revoke-refresh-token.js'
-import checkPermissionFn from '@/server/queries/permissions/check-permission-fn.js'
+import createRolesTable from '@/server/queries/migrations/create-roles-table'
+import createUserStatusEnum from '@/server/queries/migrations/create-user-status-enum'
+import createUsersTable from '@/server/queries/migrations/create-users-table'
+import createPermissionsTable from '@/server/queries/migrations/create-permissions-table'
+import createRolesPermissionsTable from '@/server/queries/migrations/create-roles-permissions-table'
+import insertPermissionValues from '@/server/queries/migrations/insert-permission-values'
+import createRefreshTokensTable from '@/server/queries/migrations/create-refresh-tokens-table'
+import createProjectsTable from '@/server/queries/migrations/create-projects-table'
+import createInvitesStatusEnum from '@/server/queries/migrations/create-invites-status-enum'
+import createInvitesTable from '@/server/queries/migrations/create-invites-table'
+import createProjectsUsersRolesTable from '@/server/queries/migrations/create-projects-users-roles-table'
+import createRefreshToken from '@/server/queries/refresh-tokens/create-refresh-token'
+import findRefreshToken from '@/server/queries/refresh-tokens/find-refresh-token'
+import findRefreshTokenByUserId from '@/server/queries/refresh-tokens/find-refresh-token-by-user-id'
+import revokeRefreshToken from '@/server/queries/refresh-tokens/revoke-refresh-token'
+import checkPermissionFn from '@/server/queries/permissions/check-permission-fn'
 
 export const queries = {
   migrations: [
@@ -22,6 +23,7 @@ export const queries = {
     createUsersTable,
     createPermissionsTable,
     createRolesPermissionsTable,
+    insertPermissionValues,
     createRefreshTokensTable,
     createProjectsTable,
     createInvitesStatusEnum,

@@ -1,1 +1,1 @@
-export default `DELETE FROM invites WHERE user_id = $1`
+export default `DELETE FROM invites WHERE project_id = $1 AND user_id = $2`

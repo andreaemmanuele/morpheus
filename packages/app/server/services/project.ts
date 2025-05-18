@@ -1,13 +1,19 @@
-import type { Project, TeamMember, User } from '@/server/types'
+import type {
+  Project,
+  ProjectWithRoleUserRelation,
+  TeamMember,
+  User,
+} from '@/server/types'
 import crypto from 'crypto'
 import { queries } from '@/server/queries'
 import { createUser, generatePasswordHash } from '@/server/services/user'
 import { executeQuery } from '@/server/utils/db.js'
 
 export const getAllProjects = async (userId: number) => {
-  const result = await executeQuery<Project>(queries.project.findAllByUserId, [
-    userId,
-  ])
+  const result = await executeQuery<ProjectWithRoleUserRelation>(
+    queries.project.findAllByUserId,
+    [userId]
+  )
   return result.rows
 }
 
@@ -119,8 +125,8 @@ export const createTeamMembers = async (
   return userIds
 }
 
-export const deleteTeamMember = async (id: number) =>
-  await executeQuery(queries.project.deleteMember, [id])
+export const deleteTeamMember = async (projectId: number, userId: number) =>
+  await executeQuery(queries.project.deleteMember, [projectId, userId])
 
 export const deleteProject = async (id: number) =>
   await executeQuery(queries.project.deleteProject, [id])

@@ -80,5 +80,5 @@ export const sendInvites = async (
 export const revokeInviteByToken = async (token: string) =>
   await executeQuery(queries.invites.revokeInviteByToken, [token])
 
-export const revokeInviteByUserId = async (id: number) =>
-  await executeQuery(queries.invites.revokeInviteByUserId, [id])
+export const revokeInviteByUserId = async (projectId: number, userId: number) =>
+  await executeQuery(queries.invites.revokeInviteByUserId, [projectId, userId])

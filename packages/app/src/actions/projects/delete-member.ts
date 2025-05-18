@@ -8,9 +8,10 @@ export const deleteMemberAction = async ({ request }: ActionFunctionArgs) => {
   const token = await authCookie.parse(headers)
 
   const formData = await request.formData()
+  const projectSlug = formData.get('slug') as string
   const userId = formData.get('id') as string
 
-  const response = await deleteTeamMember(token, userId)
+  const response = await deleteTeamMember(token, projectSlug, userId)
   if (!response) {
     return redirectWithToast(
       request.headers.get('referer') as string,
