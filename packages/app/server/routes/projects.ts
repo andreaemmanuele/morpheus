@@ -13,6 +13,7 @@ import {
   getProjectIdBySlug,
   getProjectTeam,
   getUniqueSlug,
+  getUserRole,
   updateProject,
   updateUserRole,
 } from '@/server/services/project'
@@ -38,6 +39,7 @@ import {
   getProjectIdSchema,
   checkInviteSchema,
   transferProjectSchema,
+  updateMemberRoleSchema,
 } from '@/server/schemas/project'
 import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
@@ -316,6 +318,52 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Cannot update project' })
+      }
+    }
+  )
+
+  fastify.patch(
+    '/projects/:slug/update-role',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug } = getProjectSchema.parse(request.params)
+      const { roleId, userId } = updateMemberRoleSchema.parse(
+        JSON.parse(request.body as string)
+      )
+      const token = fastify.jwt.lookupToken(request)
+      const user = fastify.jwt.decode<User>(token)
+      if (!user) {
+        reply.code(400).send({ error: 'Bad Request' })
+        return
+      }
+
+      try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Project not found' })
+          return
+        }
+        await hasPermission(request, reply, 'users.update_roles', project.id)
+        const [userRole, updatedMemberRole] = await Promise.all([
+          getUserRole(project.id, user.id),
+          getUserRole(project.id, +userId),
+        ])
+        if (!userRole || !updatedMemberRole) {
+          reply.code(500).send({ error: 'Cannot find user role' })
+          return
+        }
+        if (
+          userRole.id === updatedMemberRole.id ||
+          userRole.id > updatedMemberRole.id
+        ) {
+          reply.code(403).send({ error: 'User cannot update role' })
+          return
+        }
+        await updateUserRole(+roleId, project.id, +userId)
+        reply.code(200).send({ message: 'Role updated successfully' })
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Cannot transfer project ownership' })
       }
     }
   )

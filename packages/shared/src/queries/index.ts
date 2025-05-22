@@ -21,6 +21,7 @@ import updateProject from '../queries/projects/update-project.js'
 import updateUserRole from '../queries/projects/update-user-role.js'
 import getProjectTeam from '../queries/projects/get-project-team.js'
 import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
+import getUserRole from '../queries/projects/get-user-role.js'
 import deleteMember from '../queries/projects/delete-member.js'
 import deleteProject from '../queries/projects/delete-project.js'
 import createInvites from '../queries/invites/create-invites.js'
@@ -59,6 +60,7 @@ export const queries = {
     updateUserRole,
     getProjectTeam,
     getProjectIdBySlug,
+    getUserRole,
     deleteMember,
     deleteProject,
   },

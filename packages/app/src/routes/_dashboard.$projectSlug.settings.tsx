@@ -49,7 +49,7 @@ export default function ProjectSettingsPage() {
       <ProjectTeamSection
         className="space-y-8"
         members={_members}
-        roles={roles.flatMap((role) => (role.id !== 1 ? role : []))}
+        roles={roles}
       />
       <ProjectSecuritySection
         className="space-y-8 pt-12"

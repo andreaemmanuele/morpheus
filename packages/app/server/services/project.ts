@@ -1,6 +1,7 @@
 import type {
   Project,
   ProjectWithRoleUserRelation,
+  Role,
   TeamMember,
   User,
 } from '@/server/types'
@@ -43,6 +44,14 @@ export const getProjectTeam = async (projectId: number) => {
     [projectId]
   )
   return result.rows
+}
+
+export const getUserRole = async (projectId: number, userId: number) => {
+  const result = await executeQuery<Omit<Role, 'description'>>(
+    queries.project.getUserRole,
+    [projectId, userId]
+  )
+  return result.rows[0]
 }
 
 export const getUniqueSlug = async (slug: string) => {

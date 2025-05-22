@@ -49,10 +49,11 @@ type TeamTableProps = {
   isAssignRoleDialogOpen: boolean
   isDeleteMemberDialogOpen: boolean
   canUpdateRoles: boolean
-  isDeletingMember: boolean
+  isSubmitting: boolean
   canDeleteMember: boolean
   onSetAssignRoleDialog: (value: boolean) => void
   onSetDeleteMemberDialog: (value: boolean) => void
+  onUpdateMemberRole: (roleId: string, userId: number | null) => void
   onDelete: (id: number | null) => void
 }
 
@@ -63,15 +64,29 @@ export const TeamTable: FC<TeamTableProps> = ({
   isAssignRoleDialogOpen,
   isDeleteMemberDialogOpen,
   canUpdateRoles,
-  isDeletingMember,
+  isSubmitting,
   canDeleteMember,
   onSetAssignRoleDialog,
   onSetDeleteMemberDialog,
+  onUpdateMemberRole,
   onDelete,
 }) => {
   const [rowSelection, setRowSelection] = useState({})
   const [userId, setUserId] = useState<number | null>(null)
+  const [roleId, setRoleId] = useState<string>('')
   const { session } = sessionStore()
+
+  const handleUpdateRole = (userId: number) => {
+    if (!canUpdateRoles) return
+    setUserId(userId)
+    onSetAssignRoleDialog(true)
+  }
+
+  const handleUpdateRoleDialogChange = (value: boolean) => {
+    if (!canUpdateRoles) return
+    setUserId(null)
+    onSetAssignRoleDialog(value)
+  }
 
   const handleDelete = (id: number) => {
     if (!canDeleteMember) return
@@ -192,7 +207,7 @@ export const TeamTable: FC<TeamTableProps> = ({
                       variant="outline"
                       size="sm"
                       disabled={!canUpdateRoles}
-                      onClick={() => onSetAssignRoleDialog(true)}
+                      onClick={() => handleUpdateRole(+row.original.id)}
                     >
                       <ShieldUser />
                       Assign role
@@ -240,7 +255,7 @@ export const TeamTable: FC<TeamTableProps> = ({
       <DataTable table={table} columns={columns} />
       <Dialog
         open={isAssignRoleDialogOpen}
-        onOpenChange={onSetAssignRoleDialog}
+        onOpenChange={handleUpdateRoleDialogChange}
       >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -252,19 +267,26 @@ export const TeamTable: FC<TeamTableProps> = ({
           <Label className="sr-only" htmlFor="role">
             Role
           </Label>
-          <Select>
+          <Select
+            value={roleId}
+            onValueChange={(value) => {
+              setRoleId(value)
+            }}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
             <SelectContent>
-              {roles.map(({ id, name }) => (
-                <SelectItem value={`${id}`}>{name}</SelectItem>
-              ))}
+              {roles.flatMap(({ id, name }) =>
+                id !== 1 ? (
+                  <SelectItem value={`${id}`}>{name}</SelectItem>
+                ) : null
+              )}
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button onClick={() => {}}>
-              {isDeletingMember ? (
+            <Button onClick={() => onUpdateMemberRole(roleId, userId)}>
+              {isSubmitting ? (
                 <LoaderCircle className="animate-spin" />
               ) : (
                 'Confirm'
@@ -294,7 +316,7 @@ export const TeamTable: FC<TeamTableProps> = ({
               Cancel
             </Button>
             <Button variant="destructive" onClick={() => onDelete(userId)}>
-              {isDeletingMember ? (
+              {isSubmitting ? (
                 <LoaderCircle className="animate-spin" />
               ) : (
                 'Delete'

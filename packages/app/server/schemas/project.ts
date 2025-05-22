@@ -43,6 +43,11 @@ export const getMemberSchema = z.object({
   slug: z.string(),
 })
 
+export const updateMemberRoleSchema = z.object({
+  roleId: z.string(),
+  userId: z.string(),
+})
+
 export const transferProjectSchema = z.object({
   userId: z.string(),
 })

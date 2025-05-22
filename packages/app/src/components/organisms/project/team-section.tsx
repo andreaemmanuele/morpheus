@@ -54,10 +54,21 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
     )
   }
 
-  const deleteMember = (id: number | null) => {
-    if (!project || !canDelete) return
+  const updateMemberRole = (roleId: string, userId: number | null) => {
+    if (!canUpdateRoles) return
     fetcher.submit(
-      { id, slug: project.slug },
+      { slug: project?.slug ?? '', roleId, userId },
+      {
+        method: 'POST',
+        action: '/action/projects/update-role',
+      }
+    )
+  }
+
+  const deleteMember = (id: number | null) => {
+    if (!canDelete) return
+    fetcher.submit(
+      { id, slug: project?.slug ?? '' },
       {
         method: 'DELETE',
         action: '/action/projects/delete-member',
@@ -67,8 +78,9 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
 
   useEffect(() => {
     if (isSubmitting) return
-    setIsDeleteMemberDialogOpen(false)
     setIsInviteDialogOpen(false)
+    setIsAssignRoleDialogOpen(false)
+    setIsDeleteMemberDialogOpen(false)
     setEmail('')
   }, [isSubmitting])
 
@@ -132,9 +144,10 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
         canDeleteMember={canDelete}
         isAssignRoleDialogOpen={isAssignRoleDialogOpen}
         isDeleteMemberDialogOpen={isDeleteMemberDialogOpen}
-        isDeletingMember={isSubmitting}
+        isSubmitting={isSubmitting}
         onSetAssignRoleDialog={setIsAssignRoleDialogOpen}
         onSetDeleteMemberDialog={setIsDeleteMemberDialogOpen}
+        onUpdateMemberRole={updateMemberRole}
         onDelete={deleteMember}
       />
     </section>
