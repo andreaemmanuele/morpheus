@@ -22,6 +22,7 @@ import {
   createRefreshToken,
   findRefreshToken,
   findRefreshTokenByUserId,
+  revokeRefreshToken,
 } from '@/server/services/refresh-token'
 import { sendEmail } from '@/server/emails'
 import { AccountLocked } from '@/server/emails/templates/AccountLocked'
@@ -377,6 +378,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return
       }
 
+      await revokeRefreshToken(data.refreshToken)
       return { message: 'Logged out successfully' }
     }
   )
