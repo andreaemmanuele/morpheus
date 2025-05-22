@@ -122,7 +122,10 @@ export const ProjectSecuritySection: FCWithClassName<
           onOpenChange={setIsTransferDialogOpen}
         >
           <DialogTrigger asChild>
-            <Button variant="secondary" disabled={!canTransfer}>
+            <Button
+              variant="secondary"
+              disabled={!canTransfer || !members.length}
+            >
               Transfer ownership
             </Button>
           </DialogTrigger>
