@@ -149,7 +149,9 @@ export const ProjectSecuritySection: FCWithClassName<
                 </SelectTrigger>
                 <SelectContent>
                   {members.map(({ id, email }) => (
-                    <SelectItem value={`${id}`}>{email}</SelectItem>
+                    <SelectItem key={id} value={`${id}`}>
+                      {email}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

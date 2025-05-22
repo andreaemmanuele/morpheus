@@ -85,7 +85,14 @@ export const TeamTable: FC<TeamTableProps> = ({
   const handleUpdateRoleDialogChange = (value: boolean) => {
     if (!canUpdateRoles) return
     setUserId(null)
+    setRoleId('')
     onSetAssignRoleDialog(value)
+  }
+
+  const updateRole = () => {
+    onUpdateMemberRole(roleId, userId)
+    setUserId(null)
+    setRoleId('')
   }
 
   const handleDelete = (id: number) => {
@@ -279,13 +286,15 @@ export const TeamTable: FC<TeamTableProps> = ({
             <SelectContent>
               {roles.flatMap(({ id, name }) =>
                 id !== 1 ? (
-                  <SelectItem value={`${id}`}>{name}</SelectItem>
+                  <SelectItem key={id} value={`${id}`}>
+                    {name}
+                  </SelectItem>
                 ) : null
               )}
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button onClick={() => onUpdateMemberRole(roleId, userId)}>
+            <Button disabled={!roleId} onClick={updateRole}>
               {isSubmitting ? (
                 <LoaderCircle className="animate-spin" />
               ) : (

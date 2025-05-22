@@ -31,7 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     [data?.theme]
   )
 
-  useToast(data?.toast)
+  useToast(data)
 
   return (
     <html lang="en">
