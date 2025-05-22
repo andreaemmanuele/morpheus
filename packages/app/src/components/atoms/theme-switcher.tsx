@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useFetcher } from '@remix-run/react'
 import { Button } from '@/components/ui/button'
 import { Moon } from '@/components/atoms/moon'
+import { getSystemPreferredTheme } from '@/lib/utils'
 
 type ThemeSwitcherProps = {
   current: 'light' | 'dark'
@@ -22,7 +23,6 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
   }
 
   const handleMouseMove = (e: MouseEvent) => {
-    console.log(e.clientY, e.clientX)
     setPosition((prev) => ({
       ...prev,
       x: window.innerWidth - e.clientX,
@@ -41,7 +41,11 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <Moon active={current === 'dark'} />
+      <Moon
+        active={
+          !current ? getSystemPreferredTheme() === 'dark' : current === 'dark'
+        }
+      />
       <div
         style={{ transform: `translate(-${position.x}px, ${position.y}px)` }}
         className="absolute top-0 right-2 w-8 h-8 bg-lime-100 blur-2xl transition-transform duration-100 ease-linear"
