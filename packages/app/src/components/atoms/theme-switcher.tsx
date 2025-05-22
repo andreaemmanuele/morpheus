@@ -22,10 +22,11 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
   }
 
   const handleMouseMove = (e: MouseEvent) => {
+    console.log(e.clientY, e.clientX)
     setPosition((prev) => ({
       ...prev,
-      x: Math.min(window.innerWidth - e.clientX, 15),
-      y: Math.min(e.clientY, 15),
+      x: window.innerWidth - e.clientX,
+      y: e.clientY,
     }))
   }
 
@@ -35,7 +36,7 @@ export const ThemeSwitcher: FC<ThemeSwitcherProps> = ({ current }) => {
 
   return (
     <Button
-      className="relative text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent"
+      className="relative w-[5rem] h-[5rem] text-black group dark:text-white bg-transparent shadow-none hover:bg-transparent"
       onClick={toggleTheme}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
