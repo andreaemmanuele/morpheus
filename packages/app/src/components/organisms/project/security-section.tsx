@@ -1,4 +1,4 @@
-import type { FCWithClassName } from '@/types'
+import type { FCWithClassName, TeamMember } from '@/types'
 import { useState } from 'react'
 import { useFetcher, useNavigation } from '@remix-run/react'
 import {
@@ -14,39 +14,42 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { LoaderCircle } from 'lucide-react'
-import { sessionStore } from '@/stores/session'
 import { projectStore } from '@/stores/project'
 import { useUserHasPermission } from '@/hooks/use-user-has-permission'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
+const transferWord = 'TRANSFER'
 const deleteWord = 'CLEAR'
 
-export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
+type ProjectSecuritySectionProps = {
+  members: TeamMember[]
+}
+
+export const ProjectSecuritySection: FCWithClassName<
+  ProjectSecuritySectionProps
+> = ({ className = '', members = [] }) => {
   const { hasPermission: canLeave } = useUserHasPermission('project.leave')
   const { hasPermission: canDelete } = useUserHasPermission('project.delete')
   const { hasPermission: canTransfer } =
     useUserHasPermission('project.transfer')
 
+  const [transferTo, setTransferTo] = useState('')
+  const [transferConfirmWord, setTransferConfirmWord] = useState('')
   const [deleteConfirmWord, setDeleteConfirmWord] = useState('')
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
+  const [isTransferDialogOpen, setIsTransferDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const { session } = sessionStore()
   const { project } = projectStore()
 
   const fetcher = useFetcher()
   const navigation = useNavigation()
   const isSubmitting = navigation.state === 'submitting'
-
-  const deleteProject = () => {
-    if (!canDelete) return
-    fetcher.submit(
-      { slug: project?.slug ?? '' },
-      {
-        method: 'DELETE',
-        action: '/action/projects/delete',
-      }
-    )
-    setIsDeleteDialogOpen(false)
-  }
 
   const leaveProject = () => {
     if (!canLeave) return
@@ -58,6 +61,30 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
       }
     )
     setIsLeaveDialogOpen(false)
+  }
+
+  const transferOwnership = () => {
+    if (!canTransfer) return
+    fetcher.submit(
+      { slug: project?.slug ?? '', userId: transferTo },
+      {
+        method: 'POST',
+        action: '/action/projects/transfer',
+      }
+    )
+    setIsTransferDialogOpen(false)
+  }
+
+  const deleteProject = () => {
+    if (!canDelete) return
+    fetcher.submit(
+      { slug: project?.slug ?? '' },
+      {
+        method: 'DELETE',
+        action: '/action/projects/delete',
+      }
+    )
+    setIsDeleteDialogOpen(false)
   }
 
   return (
@@ -90,7 +117,10 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Dialog>
+        <Dialog
+          open={isTransferDialogOpen}
+          onOpenChange={setIsTransferDialogOpen}
+        >
           <DialogTrigger asChild>
             <Button variant="secondary" disabled={!canTransfer}>
               Transfer ownership
@@ -102,16 +132,50 @@ export const ProjectSecuritySection: FCWithClassName = ({ className = '' }) => {
             </DialogHeader>
             <DialogDescription>
               This action is irreversible. Enter "
-              <span className="font-bold">TRANSFER</span>" to confirm.
+              <span className="font-bold">{transferWord}</span>" to confirm.
             </DialogDescription>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required />
-              <Label htmlFor="confirm-word">Confirm</Label>
-              <Input id="confirm-word" required />
+            <div className="space-y-4">
+              <Label className="sr-only" htmlFor="role">
+                Member
+              </Label>
+              <Select
+                value={transferTo}
+                onValueChange={(e) => {
+                  setTransferTo(e)
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Member" />
+                </SelectTrigger>
+                <SelectContent>
+                  {members.map(({ id, email }) => (
+                    <SelectItem value={`${id}`}>{email}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-word">Confirm</Label>
+                <Input
+                  id="confirm-word"
+                  value={transferConfirmWord}
+                  required
+                  onChange={(e) => {
+                    setTransferConfirmWord(e.target.value)
+                  }}
+                />
+              </div>
             </div>
             <DialogFooter>
-              <Button type="submit" variant="destructive">
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={
+                  !transferTo ||
+                  transferConfirmWord.toLowerCase() !==
+                    transferWord.toLowerCase()
+                }
+                onClick={transferOwnership}
+              >
                 Transfer
               </Button>
             </DialogFooter>

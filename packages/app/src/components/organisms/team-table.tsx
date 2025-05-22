@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import type { TeamMember } from '@/types'
+import type { Role, TeamMember } from '@/types'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import {
@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { LoaderCircle, MoreVerticalIcon, UserX } from 'lucide-react'
+import { LoaderCircle, MoreVerticalIcon, ShieldUser, UserX } from 'lucide-react'
 import { DataTable } from '@/components/molecules/data-table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -32,14 +32,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 import { sessionStore } from '@/stores/session'
 
 type TeamTableProps = {
   data: TeamMember[]
   emailFilter: string
+  roles: Role[]
+  isAssignRoleDialogOpen: boolean
   isDeleteMemberDialogOpen: boolean
+  canUpdateRoles: boolean
   isDeletingMember: boolean
   canDeleteMember: boolean
+  onSetAssignRoleDialog: (value: boolean) => void
   onSetDeleteMemberDialog: (value: boolean) => void
   onDelete: (id: number | null) => void
 }
@@ -47,9 +59,13 @@ type TeamTableProps = {
 export const TeamTable: FC<TeamTableProps> = ({
   data = [],
   emailFilter,
+  roles = [],
+  isAssignRoleDialogOpen,
   isDeleteMemberDialogOpen,
+  canUpdateRoles,
   isDeletingMember,
   canDeleteMember,
+  onSetAssignRoleDialog,
   onSetDeleteMemberDialog,
   onDelete,
 }) => {
@@ -169,6 +185,19 @@ export const TeamTable: FC<TeamTableProps> = ({
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem className="mb-1" asChild>
+                    <Button
+                      type="button"
+                      className="w-full"
+                      variant="outline"
+                      size="sm"
+                      disabled={!canUpdateRoles}
+                      onClick={() => onSetAssignRoleDialog(true)}
+                    >
+                      <ShieldUser />
+                      Assign role
+                    </Button>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Button
                       type="button"
@@ -209,6 +238,41 @@ export const TeamTable: FC<TeamTableProps> = ({
   return (
     <>
       <DataTable table={table} columns={columns} />
+      <Dialog
+        open={isAssignRoleDialogOpen}
+        onOpenChange={onSetAssignRoleDialog}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Assign role</DialogTitle>
+            <DialogDescription>
+              Set a new role for your team member.
+            </DialogDescription>
+          </DialogHeader>
+          <Label className="sr-only" htmlFor="role">
+            Role
+          </Label>
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+            <SelectContent>
+              {roles.map(({ id, name }) => (
+                <SelectItem value={`${id}`}>{name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <DialogFooter>
+            <Button onClick={() => {}}>
+              {isDeletingMember ? (
+                <LoaderCircle className="animate-spin" />
+              ) : (
+                'Confirm'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={isDeleteMemberDialogOpen}
         onOpenChange={handleDeleteDialogChange}

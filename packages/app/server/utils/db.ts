@@ -3,7 +3,7 @@ import { app } from '@/server/plugins/database'
 
 export const executeQuery = async <T extends object>(
   query: string,
-  values: unknown[]
+  values?: unknown[]
 ) => {
   const client = await app?.pg.connect()
   if (!client) {

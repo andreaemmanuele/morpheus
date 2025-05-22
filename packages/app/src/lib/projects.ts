@@ -183,6 +183,33 @@ export const updateProject = async (
   return await response?.json()
 }
 
+export const updateOwner = async (
+  token: string,
+  slug: string,
+  userId: string
+) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/transfer`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId,
+        }),
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
+
 export const deleteTeamMember = async (
   token: string,
   slug: string,

@@ -5,12 +5,13 @@ import { fastify } from 'fastify'
 import sourceMapSupport from 'source-map-support'
 import getPort, { portNumbers } from 'get-port'
 import { configDotenv } from 'dotenv'
-import database from '@/server/plugins/database.js'
-import migrate from '@/server/plugins/migrate.js'
-import rateLimit from '@/server/plugins/rate-limit.js'
-import jwt from '@/server/plugins/jwt.js'
-import authRoutes from '@/server/routes/auth.js'
-import projectRoutes from '@/server/routes/projects.js'
+import database from '@/server/plugins/database'
+import migrate from '@/server/plugins/migrate'
+import rateLimit from '@/server/plugins/rate-limit'
+import jwt from '@/server/plugins/jwt'
+import authRoutes from '@/server/routes/auth'
+import projectRoutes from '@/server/routes/projects'
+import rolesRoutes from '@/server/routes/roles'
 
 configDotenv()
 sourceMapSupport.install()
@@ -27,6 +28,7 @@ app.register(rateLimit)
 /* routes */
 app.register(authRoutes, { prefix: '/api' })
 app.register(projectRoutes, { prefix: '/api' })
+app.register(rolesRoutes, { prefix: '/api' })
 
 /*app.get(
   '/api/protected',

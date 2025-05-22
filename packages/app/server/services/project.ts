@@ -144,6 +144,17 @@ export const updateProject = async (
   name?: string | null
 ) => await executeQuery(queries.project.updateProject, [icon, name, projectId])
 
+export const updateUserRole = async (
+  roleId: number,
+  projectId: number,
+  userId: number
+) =>
+  await executeQuery(queries.project.updateUserRole, [
+    roleId,
+    projectId,
+    userId,
+  ])
+
 export const deleteTeamMember = async (projectId: number, userId: number) =>
   await executeQuery(queries.project.deleteMember, [projectId, userId])
 

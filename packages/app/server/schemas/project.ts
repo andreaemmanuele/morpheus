@@ -42,3 +42,7 @@ export const getMemberSchema = z.object({
   id: z.string(),
   slug: z.string(),
 })
+
+export const transferProjectSchema = z.object({
+  userId: z.string(),
+})

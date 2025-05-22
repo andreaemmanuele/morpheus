@@ -1,6 +1,6 @@
-import type { FCWithClassName, TeamMember } from '@/types'
+import type { FCWithClassName, TeamMember, Role } from '@/types'
 import { useEffect, useState } from 'react'
-import { useFetcher, useNavigation } from '@remix-run/react'
+import { useFetcher } from '@remix-run/react'
 import { LoaderCircle } from 'lucide-react'
 import {
   Dialog,
@@ -19,18 +19,23 @@ import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 
 type ProjectTeamSectionProps = {
   members: TeamMember[]
+  roles: Role[]
 }
 
 export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
   className = '',
   members,
+  roles,
 }) => {
   const { hasPermission: canInvite } = useUserHasPermission('users.invite')
   const { hasPermission: canDelete } = useUserHasPermission('users.remove')
+  const { hasPermission: canUpdateRoles } =
+    useUserHasPermission('users.update_roles')
 
   const [email, setEmail] = useState('')
   const [emailFilter, setEmailFilter] = useState('')
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
+  const [isAssignRoleDialogOpen, setIsAssignRoleDialogOpen] = useState(false)
   const [isDeleteMemberDialogOpen, setIsDeleteMemberDialogOpen] =
     useState(false)
   const { project } = projectStore()
@@ -122,9 +127,13 @@ export const ProjectTeamSection: FCWithClassName<ProjectTeamSectionProps> = ({
       <TeamTable
         data={members}
         emailFilter={emailFilter}
+        roles={roles}
+        canUpdateRoles={canUpdateRoles}
         canDeleteMember={canDelete}
+        isAssignRoleDialogOpen={isAssignRoleDialogOpen}
         isDeleteMemberDialogOpen={isDeleteMemberDialogOpen}
         isDeletingMember={isSubmitting}
+        onSetAssignRoleDialog={setIsAssignRoleDialogOpen}
         onSetDeleteMemberDialog={setIsDeleteMemberDialogOpen}
         onDelete={deleteMember}
       />

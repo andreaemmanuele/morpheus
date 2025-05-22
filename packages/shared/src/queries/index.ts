@@ -18,6 +18,7 @@ import createProject from '../queries/projects/create-project.js'
 import createProjectsUsersRolesRelation from '../queries/projects/create-projects-users-roles-relation.js'
 import checkIfMemberExists from '../queries/projects/check-if-member-exists.js'
 import updateProject from '../queries/projects/update-project.js'
+import updateUserRole from '../queries/projects/update-user-role.js'
 import getProjectTeam from '../queries/projects/get-project-team.js'
 import getProjectIdBySlug from '../queries/projects/get-project-id-from-slug.js'
 import deleteMember from '../queries/projects/delete-member.js'
@@ -29,6 +30,7 @@ import revokeInviteByToken from '../queries/invites/revoke-invite-by-token.js'
 import revokeInviteByUserId from '../queries/invites/revoke-invite-by-user-id.js'
 import checkPermission from '../queries/permissions/check-permission.js'
 import getPermissionCodesByRoleId from '../queries/permissions/get-permission-codes-by-role-id.js'
+import getAllRoles from '../queries/roles/get-all-roles.js'
 
 export const queries = {
   user: {
@@ -54,6 +56,7 @@ export const queries = {
     createProjectsUsersRolesRelation,
     checkIfMemberExists,
     updateProject,
+    updateUserRole,
     getProjectTeam,
     getProjectIdBySlug,
     deleteMember,
@@ -69,5 +72,8 @@ export const queries = {
   permissions: {
     checkPermission,
     getPermissionCodesByRoleId,
+  },
+  roles: {
+    getAllRoles,
   },
 }

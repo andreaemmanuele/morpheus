@@ -47,4 +47,7 @@ export const queries = {
     ...sharedQueries.permissions,
     checkPermissionFn,
   },
+  roles: {
+    ...sharedQueries.roles,
+  },
 }

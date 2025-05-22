@@ -84,3 +84,9 @@ export type PermissionCheck = {
 export type Permission = {
   code: Permissions
 }
+
+export type Role = {
+  id: number
+  name: string
+  description: string
+}

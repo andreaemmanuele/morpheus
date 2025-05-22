@@ -29,3 +29,8 @@ export type TeamMember = {
   role: 'owner' | 'admin' | 'editor'
   status: 'pending' | 'active' | 'suspended' | 'deleted'
 }
+
+export type Role = {
+  id: number
+  name: string
+}
