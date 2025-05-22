@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from 'react'
 import type { Project } from '@/components/molecules/project-switcher'
+import { LogOut } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import {
   SidebarInset,
@@ -9,6 +10,8 @@ import {
 import { AppSidebar } from '@/components/organisms/app-sidebar'
 import { ThemeSwitcher } from '@/components/atoms/theme-switcher'
 import { Breadcrumb } from '@/components/molecules/breadcrumb'
+import { Button } from '@/components/ui/button'
+import { useFetcher } from '@remix-run/react'
 
 type DashboardTemplateProps = {
   projects: Project[]
@@ -25,6 +28,14 @@ export const DashboardTemplate: FC<DashboardTemplateProps> = ({
   sidebarOpen = false,
   disableSidebar = false,
 }) => {
+  const fetcher = useFetcher()
+
+  const handleLogout = () => {
+    fetcher.submit(null, {
+      method: 'POST',
+      action: '/action/logout',
+    })
+  }
   return (
     <SidebarProvider defaultOpen={sidebarOpen}>
       <AppSidebar projects={projects} variant="inset" />
@@ -35,7 +46,14 @@ export const DashboardTemplate: FC<DashboardTemplateProps> = ({
             <Separator orientation="vertical" className="mr-2 !h-4" />
             <Breadcrumb />
           </div>
-          <ThemeSwitcher current={theme} />
+          <div>
+            {disableSidebar && (
+              <Button variant="ghost" onClick={handleLogout}>
+                <LogOut className="size-5" />
+              </Button>
+            )}
+            <ThemeSwitcher current={theme} />
+          </div>
         </header>
         <div className="px-4">{children}</div>
       </SidebarInset>
