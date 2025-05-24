@@ -24,6 +24,7 @@ export default function ProjectPage() {
     setProject({
       id: data.id,
       icon: data.icon,
+      picture: data.picture,
       name: data.name,
       slug: data.slug,
     })

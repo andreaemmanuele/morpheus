@@ -157,7 +157,8 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
 export const updateProject = async (
   token: string,
   slug: string,
-  icon?: string,
+  icon?: string | null,
+  picture?: string | null,
   name?: string
 ) => {
   let response
@@ -171,6 +172,7 @@ export const updateProject = async (
         },
         body: JSON.stringify({
           icon,
+          picture,
           name,
         }),
       }
@@ -228,6 +230,35 @@ export const updateOwner = async (
         },
         body: JSON.stringify({
           userId,
+        }),
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
+
+export const associateFilesToProject = async (
+  token: string,
+  slug: string,
+  fileIds: number[],
+  category: string
+) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/files`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          fileIds,
+          category,
         }),
       }
     )

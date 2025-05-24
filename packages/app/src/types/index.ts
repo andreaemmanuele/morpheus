@@ -18,6 +18,7 @@ export type CreateProjectData = {
 export type ProjectDetails = {
   id: number
   icon: Icons
+  picture: string
   name: string
   slug: string
 }

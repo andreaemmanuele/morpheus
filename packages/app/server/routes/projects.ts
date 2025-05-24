@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { User } from '@/server/types'
 import bcryptjs from 'bcryptjs'
 import {
+  associateFilesToProject,
   checkIfMemberExists,
   createProject,
   createProjectsUsersRolesRelation,
@@ -40,6 +41,7 @@ import {
   checkInviteSchema,
   transferProjectSchema,
   updateMemberRoleSchema,
+  filesProjectSchema,
 } from '@/server/schemas/project'
 import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
@@ -298,12 +300,39 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     }
   })
 
+  fastify.post(
+    '/projects/:slug/files',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      try {
+        const { slug } = getProjectSchema.parse(request.params)
+        const { fileIds, category } = filesProjectSchema.parse(
+          JSON.parse(request.body as string)
+        )
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Project not found' })
+          return
+        }
+        await associateFilesToProject(
+          Array(fileIds.length).fill(project.id),
+          fileIds,
+          category
+        )
+        reply.code(200).send({ message: 'Files associated successfully' })
+      } catch (error) {
+        console.error(error)
+        reply.code(500).send({ error: 'Internal Server Error' })
+      }
+    }
+  )
+
   fastify.patch(
     '/projects/:slug/update',
     { onRequest: [authenticate] },
     async (request, reply) => {
       const { slug } = getProjectSchema.parse(request.params)
-      const { icon, name } = projectDetailsSchema.parse(
+      const { icon, picture, name } = projectDetailsSchema.parse(
         JSON.parse(request.body as string)
       )
       try {
@@ -313,7 +342,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           return
         }
         await hasPermission(request, reply, 'project.update', project.id)
-        await updateProject(project.id, icon, name)
+        await updateProject(project.id, icon, picture, name)
         reply.code(200).send({ message: 'Project updated successfully' })
       } catch (error) {
         console.error(error)

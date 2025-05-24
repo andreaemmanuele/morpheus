@@ -2,6 +2,7 @@ export default `
     UPDATE projects
     SET
     icon = COALESCE($1, icon),
-    name = COALESCE($2, name)
-    WHERE id = $3;
+    picture = COALESCE($2, picture),
+    name = COALESCE($3, name)
+    WHERE id = $4;
 `

@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import type { ChangeEvent, FC } from 'react'
 import type { Icons } from '@/lib/icons'
 import { useState } from 'react'
 import { Upload } from 'lucide-react'
@@ -13,23 +13,47 @@ import {
 } from '@/components/ui/popover'
 import { iconList, renderIcon } from '@/lib/icons'
 import { cn } from '@/lib/utils'
+import { useFetcher } from '@remix-run/react'
+import { projectStore } from '@/stores/project'
 
 type ProjectAvatarProps = {
   icon: Icons | undefined
+  picture: string
   canUpdate: boolean
   onSelectIcon: (icon: Icons) => void
 }
 
 export const ProjectAvatar: FC<ProjectAvatarProps> = ({
   icon,
+  picture,
   canUpdate,
   onSelectIcon,
 }) => {
   const [showIcons, setShowIcons] = useState(false)
+  const { project } = projectStore()
+  const fetcher = useFetcher()
+
+  const handleUploadPicture = (event: ChangeEvent<HTMLInputElement>) => {
+    const formData = new FormData()
+    const picture = event.target.files?.[0]
+    if (!picture) return
+    formData.append('files', picture)
+    formData.append('slug', project?.slug ?? '')
+    fetcher.submit(formData, {
+      method: 'POST',
+      action: '/action/projects/upload',
+      encType: 'multipart/form-data',
+    })
+  }
+
   return (
     <>
       <Avatar className="w-24 h-24">
-        <AvatarImage src="" alt="" />
+        <AvatarImage
+          className="object-cover object-center"
+          src={picture}
+          alt=""
+        />
         <AvatarFallback
           className={cn({
             'group-hover:opacity-0 transition-opacity duration-300': canUpdate,
@@ -58,7 +82,11 @@ export const ProjectAvatar: FC<ProjectAvatarProps> = ({
                 <span className="mx-auto">Or</span>
                 <div className="space-y-2">
                   <Label htmlFor="picture">Upload an image</Label>
-                  <Input id="picture" type="file" />
+                  <Input
+                    id="picture"
+                    type="file"
+                    onChange={handleUploadPicture}
+                  />
                 </div>
               </>
             ) : (

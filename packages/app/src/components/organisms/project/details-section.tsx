@@ -11,12 +11,13 @@ import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 
 type ProjectDetailsSectionProps = {
   icon: Icons | undefined
+  picture: string
   name: string
 }
 
 export const ProjectDetailsSection: FCWithClassName<
   ProjectDetailsSectionProps
-> = ({ className = '', icon, name }) => {
+> = ({ className = '', icon, picture, name }) => {
   const fetcher = useFetcher()
   const { hasPermission: canUpdate } = useUserHasPermission('project.update')
   const [projectName, setProjectName] = useState('')
@@ -55,6 +56,7 @@ export const ProjectDetailsSection: FCWithClassName<
         <div className="relative group">
           <ProjectAvatar
             icon={icon}
+            picture={picture}
             canUpdate={canUpdate}
             onSelectIcon={handleSelectIcon}
           />

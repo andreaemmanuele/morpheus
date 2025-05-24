@@ -147,11 +147,29 @@ export const checkIfMemberExists = async (
   return result.rows[0]
 }
 
+export const associateFilesToProject = async (
+  projectIds: string[],
+  fileIds: number[],
+  category: string
+) =>
+  await executeQuery(queries.project.associateFiles, [
+    projectIds,
+    fileIds,
+    category,
+  ])
+
 export const updateProject = async (
   projectId: number,
   icon?: string | null,
+  picture?: string | null,
   name?: string | null
-) => await executeQuery(queries.project.updateProject, [icon, name, projectId])
+) =>
+  await executeQuery(queries.project.updateProject, [
+    icon,
+    picture,
+    name,
+    projectId,
+  ])
 
 export const updateUserRole = async (
   roleId: number,

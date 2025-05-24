@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "description": "Shared utilities among packages",
   "exports": {
+    "./chore": {
+      "types": "./dist/chore/index.d.ts",
+      "import": "./dist/chore/index.mjs",
+      "require": "./dist/chore/index.js",
+      "default": "./dist/chore/index.js"
+    },
     "./queries": {
       "types": "./dist/queries/index.d.ts",
       "import": "./dist/queries/index.mjs",

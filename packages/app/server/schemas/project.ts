@@ -11,6 +11,7 @@ export const getProjectIdSchema = z.object({
 
 export const projectDetailsSchema = z.object({
   icon: z.string().optional().nullable(),
+  picture: z.string().optional().nullable(),
   name: z.string().optional().nullable(),
 })
 
@@ -50,4 +51,9 @@ export const updateMemberRoleSchema = z.object({
 
 export const transferProjectSchema = z.object({
   userId: z.string(),
+})
+
+export const filesProjectSchema = z.object({
+  fileIds: z.array(z.number()),
+  category: z.string(),
 })

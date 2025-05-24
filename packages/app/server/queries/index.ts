@@ -15,9 +15,14 @@ import findRefreshToken from '@/server/queries/refresh-tokens/find-refresh-token
 import findRefreshTokenByUserId from '@/server/queries/refresh-tokens/find-refresh-token-by-user-id'
 import revokeRefreshToken from '@/server/queries/refresh-tokens/revoke-refresh-token'
 import checkPermissionFn from '@/server/queries/permissions/check-permission-fn'
+import createFilesTable from '@/server/queries/migrations/create-files-table'
+import createProjectsFilesTable from '@/server/queries/migrations/create-projects-files-table'
+import saveFile from '@/server/queries/files/save-file'
+import associateFiles from '@/server/queries/projects/associate-files'
 
 export const queries = {
   migrations: [
+    createFilesTable,
     createRolesTable,
     createUserStatusEnum,
     createUsersTable,
@@ -26,6 +31,7 @@ export const queries = {
     insertPermissionValues,
     createRefreshTokensTable,
     createProjectsTable,
+    createProjectsFilesTable,
     createInvitesStatusEnum,
     createInvitesTable,
     createProjectsUsersRolesTable,
@@ -39,6 +45,7 @@ export const queries = {
   },
   project: {
     ...sharedQueries.project,
+    associateFiles,
   },
   invites: {
     ...sharedQueries.invites,
@@ -49,5 +56,8 @@ export const queries = {
   },
   roles: {
     ...sharedQueries.roles,
+  },
+  files: {
+    saveFile,
   },
 }

@@ -52,6 +52,7 @@ export type Token = {
 export type Project = {
   id: number
   icon: Icons
+  picture: string
   name: string
   slug: string
   is_default: boolean
@@ -89,4 +90,20 @@ export type Role = {
   id: number
   name: string
   description: string
+}
+
+export type File = {
+  id: number
+  filename: string
+  original_name: string
+  path: string
+  storage_adapter: string
+  size: number
+  mime_type: string
+  file_type: string
+  metadata: string
+  alt_text: string
+  created_at: Date
+  updated_at: Date
+  url: string
 }

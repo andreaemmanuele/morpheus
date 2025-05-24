@@ -41,10 +41,11 @@ export default function DashboardPage() {
   const { setSession } = sessionStore()
 
   const projects =
-    data.projects?.map(({ name, icon, slug }: Project) => ({
+    data.projects?.map(({ name, icon, picture, slug }: Project) => ({
       name,
       slug,
       logo: icon,
+      picture,
       url: `/${slug}`,
     })) ?? []
 

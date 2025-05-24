@@ -9,9 +9,11 @@ import database from '@/server/plugins/database'
 import migrate from '@/server/plugins/migrate'
 import rateLimit from '@/server/plugins/rate-limit'
 import jwt from '@/server/plugins/jwt'
+import files from '@/server/plugins/files'
 import authRoutes from '@/server/routes/auth'
 import projectRoutes from '@/server/routes/projects'
 import rolesRoutes from '@/server/routes/roles'
+import filesRoutes from '@/server/routes/files'
 
 configDotenv()
 sourceMapSupport.install()
@@ -24,31 +26,13 @@ await app.register(database)
 app.register(migrate)
 app.register(jwt)
 app.register(rateLimit)
+app.register(files)
 
 /* routes */
 app.register(authRoutes, { prefix: '/api' })
 app.register(projectRoutes, { prefix: '/api' })
 app.register(rolesRoutes, { prefix: '/api' })
-
-/*app.get(
-  '/api/protected',
-  {
-    onRequest: [authenticate],
-  },
-  async (request) => {
-    return { message: 'This is a protected route', user: request.user }
-  }
-)
-
-app.get(
-  '/api/admin/protected',
-  {
-    onRequest: [isAdmin],
-  },
-  async (request) => {
-    return { message: 'This is a admin protected route', user: request.user }
-  }
-)*/
+app.register(filesRoutes, { prefix: '/api' })
 
 app.ready(async () => {
   try {

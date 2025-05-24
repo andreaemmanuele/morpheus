@@ -43,6 +43,7 @@ export default function ProjectSettingsPage() {
       <ProjectDetailsSection
         className="space-y-8 pt-12 flex justify-end"
         icon={project?.icon}
+        picture={project?.picture ?? ''}
         name={project?.name ?? ''}
       />
       <Separator className="mt-16 mb-12" />
