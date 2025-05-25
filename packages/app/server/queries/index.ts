@@ -19,6 +19,7 @@ import createFilesTable from '@/server/queries/migrations/create-files-table'
 import createProjectsFilesTable from '@/server/queries/migrations/create-projects-files-table'
 import saveFile from '@/server/queries/files/save-file'
 import associateFiles from '@/server/queries/projects/associate-files'
+import getFilesByCategory from '@/server/queries/projects/get-files-by-category'
 
 export const queries = {
   migrations: [
@@ -46,6 +47,7 @@ export const queries = {
   project: {
     ...sharedQueries.project,
     associateFiles,
+    getFilesByCategory,
   },
   invites: {
     ...sharedQueries.invites,

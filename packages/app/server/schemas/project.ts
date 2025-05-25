@@ -57,3 +57,8 @@ export const filesProjectSchema = z.object({
   fileIds: z.array(z.number()),
   category: z.string(),
 })
+
+export const getProjectFilesSchema = z.object({
+  slug: z.string(),
+  category: z.string(),
+})

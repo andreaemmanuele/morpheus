@@ -1,8 +1,8 @@
 import type { LoaderFunctionArgs } from '@remix-run/server-runtime'
-import type { Role, TeamMember as TeamMemberServer } from '@/server/types'
+import type { File, Role, TeamMember as TeamMemberServer } from '@/server/types'
 import { useEffect } from 'react'
 import { useLoaderData } from '@remix-run/react'
-import { projectTeamLoader } from '@/loaders/projects'
+import { projectTeamLoader, projectPicturesLoader } from '@/loaders/projects'
 import { getRoles } from '@/loaders/roles'
 import { Separator } from '@/components/ui/separator'
 import { ProjectSecuritySection } from '@/components/organisms/project/security-section'
@@ -15,13 +15,15 @@ import { mapMembers } from '@/components/organisms/team-table.map'
 export const loader = async (data: LoaderFunctionArgs) => {
   const { members } = await projectTeamLoader(data)
   const roles = await getRoles(data)
-  return { members, roles }
+  const pictures = await projectPicturesLoader(data)
+  return { members, roles, pictures }
 }
 
 export default function ProjectSettingsPage() {
-  const { members, roles } = useLoaderData<{
+  const { members, roles, pictures } = useLoaderData<{
     members: TeamMemberServer[]
     roles: Role[]
+    pictures: File[]
   }>()
 
   const { project } = projectStore()
@@ -44,6 +46,7 @@ export default function ProjectSettingsPage() {
         className="space-y-8 pt-12 flex justify-end"
         icon={project?.icon}
         picture={project?.picture ?? ''}
+        pictures={pictures}
         name={project?.name ?? ''}
       />
       <Separator className="mt-16 mb-12" />

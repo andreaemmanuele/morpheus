@@ -1,4 +1,5 @@
 import type {
+  File,
   Project,
   ProjectWithRoleUserRelation,
   Role,
@@ -157,6 +158,17 @@ export const associateFilesToProject = async (
     fileIds,
     category,
   ])
+
+export const getFilesByCategory = async (
+  projectId: number,
+  category: string
+) => {
+  const result = await executeQuery<File>(queries.project.getFilesByCategory, [
+    projectId,
+    category,
+  ])
+  return result.rows
+}
 
 export const updateProject = async (
   projectId: number,

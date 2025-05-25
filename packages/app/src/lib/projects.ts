@@ -154,6 +154,25 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
   return { members: result }
 }
 
+export const getProjectPictures = async (token: string, slug: string) => {
+  let response
+  try {
+    response = await fetch(
+      `${process.env.BASE_URL}/api/projects/${slug}/files/pictures`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return []
+  return await response?.json()
+}
+
 export const updateProject = async (
   token: string,
   slug: string,

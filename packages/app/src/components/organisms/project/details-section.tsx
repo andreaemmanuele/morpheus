@@ -1,4 +1,5 @@
 import type { FCWithClassName } from '@/types'
+import type { File } from '@/server/types'
 import type { Icons } from '@/lib/icons'
 import { useEffect, useState } from 'react'
 import { Form, useFetcher } from '@remix-run/react'
@@ -12,12 +13,13 @@ import { useUserHasPermission } from '@/hooks/use-user-has-permission'
 type ProjectDetailsSectionProps = {
   icon: Icons | undefined
   picture: string
+  pictures: File[]
   name: string
 }
 
 export const ProjectDetailsSection: FCWithClassName<
   ProjectDetailsSectionProps
-> = ({ className = '', icon, picture, name }) => {
+> = ({ className = '', icon, picture, pictures, name }) => {
   const fetcher = useFetcher()
   const { hasPermission: canUpdate } = useUserHasPermission('project.update')
   const [projectName, setProjectName] = useState('')
@@ -57,6 +59,7 @@ export const ProjectDetailsSection: FCWithClassName<
           <ProjectAvatar
             icon={icon}
             picture={picture}
+            pictures={pictures}
             canUpdate={canUpdate}
             onSelectIcon={handleSelectIcon}
           />

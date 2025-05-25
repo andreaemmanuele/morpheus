@@ -9,9 +9,10 @@ export const updateProjectAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const slug = formData.get('slug') as string
   const icon = formData.get('icon') as string
+  const picture = formData.get('picture') as string
   const name = formData.get('name') as string
 
-  const response = await updateProject(token, slug, icon, name)
+  const response = await updateProject(token, slug, icon, picture, name)
   return Response.json(response, {
     headers: {
       'Set-Cookie': await toastCookie.serialize(

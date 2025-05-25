@@ -60,11 +60,11 @@ export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square overflow-hidden size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {activeProject?.picture && (
+                {activeProject?.picture ? (
                   <img src={activeProject.picture} alt={activeProject?.name} />
+                ) : (
+                  renderIcon(activeProject?.logo ?? 'pill')
                 )}
-                {!activeProject?.picture &&
-                  renderIcon(activeProject?.logo ?? 'pill')}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
@@ -92,11 +92,21 @@ export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
                   className="flex items-center gap-2 p-2 w-full"
                   to={project.url}
                 >
-                  <div className="flex size-6 items-center justify-center rounded-sm border">
-                    <div className="size-4 shrink-0">
-                      {renderIcon(project.logo)}
+                  {project.picture ? (
+                    <div className="h-6 w-6 rounded-sm border">
+                      <img
+                        src={project.picture}
+                        alt={project.name}
+                        className="w-full h-full object-cover object-center"
+                      />
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex size-6 items-center justify-center rounded-sm border">
+                      <div className="size-4 shrink-0">
+                        {renderIcon(project.logo)}
+                      </div>
+                    </div>
+                  )}
                   {project.name}
                   <DropdownMenuShortcut className="ml-auto">
                     ⌘{index + 1}

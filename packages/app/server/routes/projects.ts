@@ -10,6 +10,7 @@ import {
   deleteProject,
   deleteTeamMember,
   getAllProjects,
+  getFilesByCategory,
   getProject,
   getProjectIdBySlug,
   getProjectTeam,
@@ -42,6 +43,7 @@ import {
   transferProjectSchema,
   updateMemberRoleSchema,
   filesProjectSchema,
+  getProjectFilesSchema,
 } from '@/server/schemas/project'
 import { invitesSchema } from '@/server/schemas/invites'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
@@ -102,6 +104,50 @@ export default async function projectRoutes(fastify: FastifyInstance) {
         reply.code(200).send(members)
       } catch (e) {
         console.error(e)
+        reply.code(500).send({ error: 'Internal Server Error' })
+      }
+    }
+  )
+
+  fastify.get('/projects/:id/check-invite/:token', async (request, reply) => {
+    const { id, token } = checkInviteSchema.parse(request.params)
+    try {
+      const invite = await findInviteByToken(token)
+      if (!invite) {
+        reply.code(500).send({ error: 'Internal Server Error' })
+        return
+      }
+      const user = await findUserByEmail(invite.email)
+      if (user && user.status === 'active') {
+        await Promise.all([
+          createProjectsUsersRolesRelation(+id, user.id, 3),
+          revokeInviteByToken(token),
+        ])
+        reply.redirect('/login?message=project-joined')
+      }
+      reply.redirect(`/projects/${id}/join/${token}`)
+    } catch (error) {
+      console.error(error)
+      reply.code(500).send({ error: 'Internal Server Error' })
+    }
+  })
+
+  fastify.get(
+    '/projects/:slug/files/:category',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { slug, category } = getProjectFilesSchema.parse(request.params)
+
+      try {
+        const project = await getProjectIdBySlug(slug)
+        if (!project) {
+          reply.code(500).send({ error: 'Internal Server Error' })
+          return
+        }
+        const files = await getFilesByCategory(project.id, category)
+        reply.code(200).send(files)
+      } catch (error) {
+        console.error(error)
         reply.code(500).send({ error: 'Internal Server Error' })
       }
     }
@@ -227,29 +273,6 @@ export default async function projectRoutes(fastify: FastifyInstance) {
       reply.code(200).send({ message: 'Invited successfully' })
     }
   )
-
-  fastify.get('/projects/:id/check-invite/:token', async (request, reply) => {
-    const { id, token } = checkInviteSchema.parse(request.params)
-    try {
-      const invite = await findInviteByToken(token)
-      if (!invite) {
-        reply.code(500).send({ error: 'Internal Server Error' })
-        return
-      }
-      const user = await findUserByEmail(invite.email)
-      if (user && user.status === 'active') {
-        await Promise.all([
-          createProjectsUsersRolesRelation(+id, user.id, 3),
-          revokeInviteByToken(token),
-        ])
-        reply.redirect('/login?message=project-joined')
-      }
-      reply.redirect(`/projects/${id}/join/${token}`)
-    } catch (error) {
-      console.error(error)
-      reply.code(500).send({ error: 'Internal Server Error' })
-    }
-  })
 
   fastify.post('/projects/:id/join', async (request, reply) => {
     const { id } = getProjectIdSchema.parse(request.params)
