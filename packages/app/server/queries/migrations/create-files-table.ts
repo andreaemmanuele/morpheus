@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS files (
     filename VARCHAR(255) NOT NULL,
     original_name VARCHAR(255) NOT NULL,
     path TEXT NOT NULL,
+    url TEXT NOT NULL,
     storage_adapter VARCHAR(50) NOT NULL,
     size INTEGER NOT NULL,
     mime_type VARCHAR(100) NOT NULL,

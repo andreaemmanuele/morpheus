@@ -8,8 +8,9 @@ import {
   getSubDirectory,
   UPLOAD_DIR,
 } from '@/server/utils/file-system'
-import { uploadFile } from '@/server/services/files'
+import { deleteFiles, getFilesByIds, uploadFile } from '@/server/services/files'
 import { authenticate } from '@/server/utils/auth'
+import { getFilesIdsSchema } from '@/server/schemas/files'
 
 export default async function filesRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -43,6 +44,7 @@ export default async function filesRoutes(fastify: FastifyInstance) {
             await pipeline(part.file, writeStream)
 
             let uploadedFile
+            const url = `/uploads/${relativePath}`
             try {
               uploadedFile = await uploadFile(
                 uniqueFileName,
@@ -51,6 +53,7 @@ export default async function filesRoutes(fastify: FastifyInstance) {
                 fileType,
                 (await fs.promises.stat(filePath)).size,
                 relativePath,
+                url,
                 'local',
                 JSON.stringify(metadata),
                 (formData['alt_text'] as string) || ''
@@ -62,7 +65,6 @@ export default async function filesRoutes(fastify: FastifyInstance) {
 
             uploadedFiles.push({
               ...uploadedFile,
-              url: `/uploads/${relativePath}`,
             })
 
             reply.code(200).send(uploadedFiles)
@@ -71,6 +73,32 @@ export default async function filesRoutes(fastify: FastifyInstance) {
       } catch (error) {
         console.error(error)
         reply.status(500).send({ message: 'File uploaded failed', error })
+      }
+    }
+  )
+
+  fastify.delete(
+    '/files',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const { fileIds } = getFilesIdsSchema.parse(
+        JSON.parse(request.body as string)
+      )
+
+      try {
+        const files = await getFilesByIds(fileIds)
+        for (const file of files) {
+          const filePath = path.join(process.cwd(), file.url)
+          if (!fs.existsSync(filePath)) {
+            throw new Error(`file ${filePath} does not exist`)
+          }
+          fs.rmSync(filePath)
+        }
+        await deleteFiles(fileIds)
+        reply.status(200).send({ message: 'File deleted successfully' })
+      } catch (error) {
+        console.error(error)
+        reply.status(500).send({ message: 'Internal Server Error' })
       }
     }
   )

@@ -14,12 +14,14 @@ import createRefreshToken from '@/server/queries/refresh-tokens/create-refresh-t
 import findRefreshToken from '@/server/queries/refresh-tokens/find-refresh-token'
 import findRefreshTokenByUserId from '@/server/queries/refresh-tokens/find-refresh-token-by-user-id'
 import revokeRefreshToken from '@/server/queries/refresh-tokens/revoke-refresh-token'
+import associateFiles from '@/server/queries/projects/associate-files'
+import getFilesByCategory from '@/server/queries/projects/get-files-by-category'
 import checkPermissionFn from '@/server/queries/permissions/check-permission-fn'
 import createFilesTable from '@/server/queries/migrations/create-files-table'
 import createProjectsFilesTable from '@/server/queries/migrations/create-projects-files-table'
 import saveFile from '@/server/queries/files/save-file'
-import associateFiles from '@/server/queries/projects/associate-files'
-import getFilesByCategory from '@/server/queries/projects/get-files-by-category'
+import getFilesByIds from '@/server/queries/files/get-files-by-ids'
+import deleteFiles from '@/server/queries/files/delete-files'
 
 export const queries = {
   migrations: [
@@ -61,5 +63,7 @@ export const queries = {
   },
   files: {
     saveFile,
+    getFilesByIds,
+    deleteFiles,
   },
 }

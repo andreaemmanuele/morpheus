@@ -9,6 +9,7 @@ export const uploadFile = async (
   file_type: string,
   size: number,
   path: string,
+  url: string,
   storage_adapter: 'local' | 's3' | 'cloudinary',
   metadata?: string,
   alt_text?: string
@@ -20,9 +21,18 @@ export const uploadFile = async (
     file_type,
     size,
     path,
+    url,
     storage_adapter,
     metadata,
     alt_text,
   ])
   return result.rows[0]
 }
+
+export const getFilesByIds = async (ids: string[]) => {
+  const result = await executeQuery<File>(queries.files.getFilesByIds, [ids])
+  return result.rows
+}
+
+export const deleteFiles = async (ids: string[]) =>
+  await executeQuery(queries.files.deleteFiles, [ids])

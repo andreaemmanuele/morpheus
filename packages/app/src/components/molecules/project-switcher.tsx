@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/sidebar'
 import { NavLink } from '@remix-run/react'
 import { useEffect } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export type Project = {
   name: string
@@ -59,13 +60,16 @@ export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square overflow-hidden size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {activeProject?.picture ? (
-                  <img src={activeProject.picture} alt={activeProject?.name} />
-                ) : (
-                  renderIcon(activeProject?.logo ?? 'pill')
-                )}
-              </div>
+              <Avatar className="aspect-square size-10 rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <AvatarImage
+                  className="object-cover object-center bg-transparent"
+                  src={activeProject?.picture}
+                  alt={activeProject?.name}
+                />
+                <AvatarFallback className="bg-transparent">
+                  {renderIcon(activeProject?.logo ?? 'pill')}
+                </AvatarFallback>
+              </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {activeProject?.name}
@@ -92,21 +96,16 @@ export function ProjectSwitcher({ items, active }: ProjectSwitcherProps) {
                   className="flex items-center gap-2 p-2 w-full"
                   to={project.url}
                 >
-                  {project.picture ? (
-                    <div className="h-6 w-6 rounded-sm border">
-                      <img
-                        src={project.picture}
-                        alt={project.name}
-                        className="w-full h-full object-cover object-center"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex size-6 items-center justify-center rounded-sm border">
-                      <div className="size-4 shrink-0">
-                        {renderIcon(project.logo)}
-                      </div>
-                    </div>
-                  )}
+                  <Avatar className="h-6 w-6 rounded-sm border">
+                    <AvatarImage
+                      className="object-cover object-center bg-transparent"
+                      src={project.picture}
+                      alt={project.name}
+                    />
+                    <AvatarFallback className="bg-transparent">
+                      {renderIcon(project.logo)}
+                    </AvatarFallback>
+                  </Avatar>
                   {project.name}
                   <DropdownMenuShortcut className="ml-auto">
                     ⌘{index + 1}

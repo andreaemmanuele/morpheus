@@ -91,6 +91,16 @@ export const ProjectDetailsSection: FCWithClassName<
     setIsPicturesLibraryDialogOpen(false)
   }
 
+  const deletePicture = (id: number) => {
+    fetcher.submit(
+      { fileIds: [id] },
+      {
+        method: 'DELETE',
+        action: '/action/projects/delete-files',
+      }
+    )
+  }
+
   useEffect(() => {
     if (!name) return
     setProjectName(name)
@@ -148,6 +158,7 @@ export const ProjectDetailsSection: FCWithClassName<
                     <Button
                       variant="destructive"
                       className="hidden group-hover:flex items-center justify-center h-6 w-4 absolute top-0 right-0"
+                      onClick={() => deletePicture(id)}
                     >
                       <Trash2 className="size-4" />
                     </Button>
@@ -173,7 +184,9 @@ export const ProjectDetailsSection: FCWithClassName<
             </div>
           )}
           <DialogFooter>
-            <Button onClick={handleSavePicture}>Salva</Button>
+            <Button disabled={!selectedPicture} onClick={handleSavePicture}>
+              Salva
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

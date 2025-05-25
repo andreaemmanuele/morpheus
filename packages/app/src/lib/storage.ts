@@ -25,3 +25,22 @@ export const uploadFiles = async (
   if (!response?.ok) return null
   return result
 }
+
+export const deleteFiles = async (
+  token: string,
+  fileIds: string[]
+): Promise<StorageFile[] | null> => {
+  let response
+  try {
+    response = await fetch(`${process.env.BASE_URL}/api/files`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ fileIds }),
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
+  if (!response?.ok) return null
+  return await response?.json()
+}
