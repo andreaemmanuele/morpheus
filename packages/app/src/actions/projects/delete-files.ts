@@ -7,8 +7,8 @@ export const deleteFilesAction = async ({ request }: ActionFunctionArgs) => {
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
   const formData = await request.formData()
-  const fileIds = formData.getAll('fileIds') as string[]
-  const response = await deleteFiles(token, fileIds)
+  const fileIds = formData.get('fileIds') as string
+  const response = await deleteFiles(token, fileIds.split(','))
   if (!response) {
     return redirectWithToast(
       request.headers.get('referer') as string,

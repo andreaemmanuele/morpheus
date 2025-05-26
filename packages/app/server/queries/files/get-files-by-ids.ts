@@ -1,1 +1,1 @@
-export default `SELECT * FROM files WHERE id = ANY($1::integer[])`
+export default `SELECT * FROM files WHERE id = ANY($1)`

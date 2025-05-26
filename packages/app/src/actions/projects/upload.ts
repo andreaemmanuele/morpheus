@@ -7,7 +7,7 @@ import {
 import { authCookie } from '@/cookies.server'
 import { redirectWithToast } from '@/lib/toast'
 import { uploadFiles } from '@/lib/storage'
-import { associateFilesToProject, updateProject } from '@/lib/projects'
+import { associateFilesToProject } from '@/lib/projects'
 
 export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
   const headers = request.headers.get('Cookie')
@@ -27,7 +27,6 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
     )
   }
 
-  const picture = response[0]?.url
   const slug = formData.get('slug') as string
 
   if (!slug) {
@@ -45,14 +44,6 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
     return redirectWithToast(
       request.headers.get('referer') as string,
       'Failed to associate files to project'
-    )
-  }
-
-  response = await updateProject(token, slug, null, picture)
-  if (!response) {
-    return redirectWithToast(
-      request.headers.get('referer') as string,
-      'Cannot update project picture'
     )
   }
 

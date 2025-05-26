@@ -79,7 +79,7 @@ export const ProjectDetailsSection: FCWithClassName<
     formData.append('category', 'pictures')
     fetcher.submit(formData, {
       method: 'POST',
-      action: '/action/projects/upload',
+      action: '/action/projects/upload-picture',
       encType: 'multipart/form-data',
     })
   }

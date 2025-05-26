@@ -6,10 +6,12 @@ import {
 } from '@remix-run/node'
 import { authCookie } from '@/cookies.server'
 import { redirectWithToast } from '@/lib/toast'
-import { associateFilesToProject } from '@/lib/projects'
+import { associateFilesToProject, updateProject } from '@/lib/projects'
 import { uploadFiles } from '@/lib/storage'
 
-export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
+export const projectUploadPictureAction = async ({
+  request,
+}: ActionFunctionArgs) => {
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
 
@@ -27,6 +29,7 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
     )
   }
 
+  const picture = response[0]?.url
   const slug = formData.get('slug') as string
   if (!slug) {
     return redirectWithToast(
@@ -46,6 +49,14 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
     return redirectWithToast(
       request.headers.get('referer') as string,
       'Failed to associate picture to project'
+    )
+  }
+
+  response = await updateProject(token, slug, null, picture)
+  if (!response) {
+    return redirectWithToast(
+      request.headers.get('referer') as string,
+      'Cannot update project picture'
     )
   }
 

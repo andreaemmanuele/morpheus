@@ -85,6 +85,7 @@ export default async function filesRoutes(fastify: FastifyInstance) {
       )
 
       try {
+        console.log({ fileIds })
         const files = await getFilesByIds(fileIds)
         for (const file of files) {
           const filePath = path.join(process.cwd(), file.url)

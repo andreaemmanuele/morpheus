@@ -3,7 +3,7 @@ import { redirect } from '@remix-run/server-runtime'
 import { authCookie, projectCookie, sidebarCookie } from '@/cookies.server'
 import {
   getAllProjects,
-  getProjectPictures,
+  getPerCategoryProjectFiles,
   getProjectTeamMembers,
 } from '@/lib/projects'
 
@@ -43,5 +43,15 @@ export const projectPicturesLoader = async ({
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
   const { projectSlug } = params as { projectSlug: string }
-  return getProjectPictures(token, projectSlug)
+  return getPerCategoryProjectFiles(token, projectSlug, 'pictures')
+}
+
+export const projectMediaLoader = async ({
+  request,
+  params,
+}: LoaderFunctionArgs) => {
+  const headers = request.headers.get('Cookie')
+  const token = await authCookie.parse(headers)
+  const { projectSlug } = params as { projectSlug: string }
+  return getPerCategoryProjectFiles(token, projectSlug, 'media')
 }
