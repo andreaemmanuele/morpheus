@@ -14,6 +14,7 @@ export default `
             ('project.leave', 'Leave project if user is not the owner', 'project'),
             ('project.update', 'Update project settings', 'project'),
             ('project.transfer', 'Transfer project to another member', 'project'),
+            ('project.files', 'Manage files', 'project'),
             ('project.delete', 'Delete project', 'project');
             
             -- Assign permissions to roles
@@ -27,7 +28,7 @@ export default `
             
             -- Editor role 
             INSERT INTO roles_permissions (role_id, permission_id)
-            SELECT 3, id FROM permissions WHERE category = 'content' OR code = 'project.leave';
+            SELECT 3, id FROM permissions WHERE category = 'content' OR code = 'project.leave' OR code = 'project.files';
         END IF;
     END
     $$;

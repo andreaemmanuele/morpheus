@@ -2,17 +2,7 @@
 
 import type { Project } from '@/components/molecules/project-switcher'
 import * as React from 'react'
-import {
-  BarChartIcon,
-  FolderIcon,
-  LayoutDashboardIcon,
-  ListIcon,
-  SettingsIcon,
-  UsersIcon,
-  BookOpen,
-  SquareTerminal,
-} from 'lucide-react'
-
+import { SettingsIcon, BookOpen, SquareTerminal, Files } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -24,36 +14,7 @@ import { NavSecondary } from '@/components/molecules/nav-secondary'
 import { NavUser } from '@/components/molecules/nav-user'
 import { sessionStore } from '@/stores/session'
 import { projectStore } from '@/stores/project'
-
-const data = {
-  navMain: [
-    {
-      title: 'Dashboard',
-      url: '#',
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: 'Lifecycle',
-      url: '#',
-      icon: ListIcon,
-    },
-    {
-      title: 'Analytics',
-      url: '#',
-      icon: BarChartIcon,
-    },
-    {
-      title: 'Projects',
-      url: '#',
-      icon: FolderIcon,
-    },
-    {
-      title: 'Team',
-      url: '#',
-      icon: UsersIcon,
-    },
-  ],
-}
+import { NavMain } from '@/components/molecules/nav-main'
 
 type AppSidebarProps = {
   projects: Project[]
@@ -69,7 +30,15 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
         <ProjectSwitcher items={projects} active={project?.slug} />
       </SidebarHeader>
       <SidebarContent>
-        {/*<NavMain items={data.navMain} />*/}
+        <NavMain
+          items={[
+            {
+              title: 'Media',
+              url: `/${project?.slug}/media`,
+              icon: Files,
+            },
+          ]}
+        />
         <NavSecondary
           items={[
             {

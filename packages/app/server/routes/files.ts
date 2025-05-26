@@ -66,10 +66,9 @@ export default async function filesRoutes(fastify: FastifyInstance) {
             uploadedFiles.push({
               ...uploadedFile,
             })
-
-            reply.code(200).send(uploadedFiles)
           }
         }
+        reply.code(200).send(uploadedFiles)
       } catch (error) {
         console.error(error)
         reply.status(500).send({ message: 'File uploaded failed', error })

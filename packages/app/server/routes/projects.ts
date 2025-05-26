@@ -144,6 +144,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           reply.code(500).send({ error: 'Internal Server Error' })
           return
         }
+        await hasPermission(request, reply, 'project.files', project.id)
         const files = await getFilesByCategory(project.id, category)
         reply.code(200).send(files)
       } catch (error) {
@@ -337,6 +338,7 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           reply.code(500).send({ error: 'Project not found' })
           return
         }
+        await hasPermission(request, reply, 'project.files', project.id)
         await associateFilesToProject(
           Array(fileIds.length).fill(project.id),
           fileIds,

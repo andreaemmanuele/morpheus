@@ -28,6 +28,9 @@ export const ProjectDetailsSection: FCWithClassName<
   ProjectDetailsSectionProps
 > = ({ className = '', icon, picture, pictures, name }) => {
   const { hasPermission: canUpdate } = useUserHasPermission('project.update')
+  const { hasPermission: canManageFiles } =
+    useUserHasPermission('project.files')
+
   const [projectName, setProjectName] = useState('')
   const [selectedPicture, setSelectedPicture] = useState<StorageFile | null>(
     null
@@ -68,10 +71,12 @@ export const ProjectDetailsSection: FCWithClassName<
   }
 
   const handleUploadPicture = (picture: File | undefined) => {
+    if (!canManageFiles) return
     const formData = new FormData()
     if (!picture) return
     formData.append('files', picture)
     formData.append('slug', project?.slug ?? '')
+    formData.append('category', 'pictures')
     fetcher.submit(formData, {
       method: 'POST',
       action: '/action/projects/upload',
@@ -92,6 +97,7 @@ export const ProjectDetailsSection: FCWithClassName<
   }
 
   const deletePicture = (id: number) => {
+    if (!canManageFiles) return
     fetcher.submit(
       { fileIds: [id] },
       {

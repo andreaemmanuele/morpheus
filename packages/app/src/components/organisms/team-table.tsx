@@ -71,7 +71,6 @@ export const TeamTable: FC<TeamTableProps> = ({
   onUpdateMemberRole,
   onDelete,
 }) => {
-  const [rowSelection, setRowSelection] = useState({})
   const [userId, setUserId] = useState<number | null>(null)
   const [roleId, setRoleId] = useState<string>('')
   const { session } = sessionStore()
@@ -108,37 +107,6 @@ export const TeamTable: FC<TeamTableProps> = ({
   }
 
   const columns: ColumnDef<TeamMember>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <div className="flex items-center justify-center">
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-          />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="flex items-center justify-center">
-          {row.original.role !== 'owner' &&
-            +row.original.id !== session?.user.id && (
-              <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-              />
-            )}
-        </div>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: 'email',
       header: 'Email',
@@ -247,10 +215,6 @@ export const TeamTable: FC<TeamTableProps> = ({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
   })
 
   useEffect(() => {

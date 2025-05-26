@@ -37,12 +37,9 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
     )
   }
 
-  response = await associateFilesToProject(
-    token,
-    slug,
-    response.map((file) => file.id),
-    'pictures'
-  )
+  const category = formData.get('category') as string
+  const fileIds = response.map((file) => file.id)
+  response = await associateFilesToProject(token, slug, fileIds, category)
 
   if (!response) {
     return redirectWithToast(
