@@ -164,7 +164,7 @@ export const getPerCategoryProjectFiles = async (
   let response
   try {
     response = await fetch(
-      `${process.env.BASE_URL}/api/projects/${slug}/files/${category}?page=${page}&limit=${limit}}`,
+      `${process.env.BASE_URL}/api/projects/${slug}/files/${category}?page=${page}&limit=${limit}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
