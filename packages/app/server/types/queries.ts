@@ -107,3 +107,17 @@ export type File = {
   updated_at: string
   url: string
 }
+
+export type Pagination = {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNext: boolean
+  hasPrevious: boolean
+}
+
+export type PaginatedFiles = {
+  data: File[]
+  pagination: Pagination
+}

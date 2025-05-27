@@ -46,11 +46,30 @@ export const getFileType = (mimeType: string) => {
   if (mimeType.startsWith('image/')) return 'image'
   if (mimeType.startsWith('video/')) return 'video'
   if (mimeType.startsWith('audio/')) return 'audio'
-  if (mimeType.includes('pdf')) return 'pdf'
-  if (mimeType.includes('text') || mimeType.includes('document'))
+  if (mimeType.includes('application/pdf')) return 'pdf'
+  if (
+    [
+      'text/plain',
+      'text/csv',
+      'text/html',
+      'text/css',
+      'text/javascript',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/rtf',
+      'text/rtf',
+      'application/vnd.oasis.opendocument.text',
+    ].includes(mimeType)
+  )
     return 'document'
-  if (mimeType.includes('spreadsheet') || mimeType.includes('excel'))
-    return 'spreadsheet'
-  if (['zip', 'rar', 'tar'].includes(mimeType)) return 'archive'
+  if (['spreadsheet', 'excel'].includes(mimeType)) return 'spreadsheet'
+  if (
+    [
+      'application/zip',
+      'application/x-rar-compressed',
+      'application/x-tar',
+    ].includes(mimeType)
+  )
+    return 'archive'
   return 'other'
 }

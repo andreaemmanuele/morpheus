@@ -43,7 +43,7 @@ export const projectPicturesLoader = async ({
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
   const { projectSlug } = params as { projectSlug: string }
-  return getPerCategoryProjectFiles(token, projectSlug, 'pictures')
+  return getPerCategoryProjectFiles(token, projectSlug, 'pictures', '0', '100')
 }
 
 export const projectMediaLoader = async ({
@@ -52,6 +52,9 @@ export const projectMediaLoader = async ({
 }: LoaderFunctionArgs) => {
   const headers = request.headers.get('Cookie')
   const token = await authCookie.parse(headers)
+  const url = new URL(request.url)
+  const page = url.searchParams.get('page') as string
+  const limit = url.searchParams.get('limit') as string
   const { projectSlug } = params as { projectSlug: string }
-  return getPerCategoryProjectFiles(token, projectSlug, 'media')
+  return getPerCategoryProjectFiles(token, projectSlug, 'media', page, limit)
 }

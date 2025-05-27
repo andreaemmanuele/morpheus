@@ -161,13 +161,18 @@ export const associateFilesToProject = async (
 
 export const getFilesByCategory = async (
   projectId: number,
-  category: string
+  category: string,
+  limit: number,
+  offset: number
 ) => {
-  const result = await executeQuery<File>(queries.project.getFilesByCategory, [
-    projectId,
-    category,
-  ])
-  return result.rows
+  const result = await executeQuery<File & { total_count: number }>(
+    queries.project.getFilesByCategory,
+    [projectId, category, limit, offset]
+  )
+  return {
+    rows: result.rows.map(({ total_count, ...file }) => file),
+    totalCount: result.rows.length ? result.rows[0]?.total_count : 0,
+  }
 }
 
 export const updateProject = async (

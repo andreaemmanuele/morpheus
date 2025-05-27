@@ -34,7 +34,7 @@ export function AppSidebar({ projects, ...props }: AppSidebarProps) {
           items={[
             {
               title: 'Media',
-              url: `/${project?.slug}/media`,
+              url: `/${project?.slug}/media?page=1&limit=25`,
               icon: Files,
             },
           ]}

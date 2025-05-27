@@ -46,6 +46,7 @@ import {
   getProjectFilesSchema,
 } from '@/server/schemas/project'
 import { invitesSchema } from '@/server/schemas/invites'
+import { paginationSchema } from '@/server/schemas'
 import { changePasswordSchema } from '@morphe.us/shared/schemas'
 import { authenticate } from '@/server/utils/auth'
 import { hasPermission } from '@/server/utils/permission'
@@ -137,6 +138,8 @@ export default async function projectRoutes(fastify: FastifyInstance) {
     { onRequest: [authenticate] },
     async (request, reply) => {
       const { slug, category } = getProjectFilesSchema.parse(request.params)
+      const { page = '1', limit = '25' } = paginationSchema.parse(request.query)
+      const offset = (parseInt(page) - 1) * parseInt(limit)
 
       try {
         const project = await getProjectIdBySlug(slug)
@@ -145,8 +148,25 @@ export default async function projectRoutes(fastify: FastifyInstance) {
           return
         }
         await hasPermission(request, reply, 'project.files', project.id)
-        const files = await getFilesByCategory(project.id, category)
-        reply.code(200).send(files)
+        const { rows: files, totalCount } = await getFilesByCategory(
+          project.id,
+          category,
+          parseInt(limit),
+          offset
+        )
+
+        const totalPages = Math.ceil((totalCount ?? 0) / parseInt(limit))
+        reply.code(200).send({
+          data: files,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total: totalCount,
+            totalPages,
+            hasNext: parseInt(page) < totalPages,
+            hasPrevious: parseInt(page) > 1,
+          },
+        })
       } catch (error) {
         console.error(error)
         reply.code(500).send({ error: 'Internal Server Error' })

@@ -157,12 +157,14 @@ export const getProjectTeamMembers = async (token: string, slug: string) => {
 export const getPerCategoryProjectFiles = async (
   token: string,
   slug: string,
-  category: string
+  category: string,
+  page: string,
+  limit: string
 ) => {
   let response
   try {
     response = await fetch(
-      `${process.env.BASE_URL}/api/projects/${slug}/files/${category}`,
+      `${process.env.BASE_URL}/api/projects/${slug}/files/${category}?page=${page}&limit=${limit}}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
