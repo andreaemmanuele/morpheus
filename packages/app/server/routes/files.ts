@@ -10,7 +10,7 @@ import {
 } from '@/server/utils/file-system'
 import { deleteFiles, getFilesByIds, uploadFile } from '@/server/services/files'
 import { authenticate } from '@/server/utils/auth'
-import { getFilesIdsSchema } from '@/server/schemas/files'
+import { fileSchema, getFilesIdsSchema } from '@/server/schemas/files'
 
 export default async function filesRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -33,6 +33,14 @@ export default async function filesRoutes(fastify: FastifyInstance) {
             const filePath = path.join(UPLOAD_DIR, subDir, uniqueFileName)
             const relativePath = path.relative(subDir, filePath)
 
+            const chunks: Buffer[] = []
+            for await (const chunk of part.file) {
+              chunks.push(chunk)
+            }
+            const buffer = Buffer.concat(chunks)
+            const fileSize = buffer.length
+            fileSchema.parse({ type: fileType, size: fileSize })
+
             const metadata = {
               uploadedAt: new Date().toISOString(),
               fileExtension: fileExtension,
@@ -40,8 +48,7 @@ export default async function filesRoutes(fastify: FastifyInstance) {
               originalPath: part.filename,
             }
 
-            const writeStream = fs.createWriteStream(filePath)
-            await pipeline(part.file, writeStream)
+            await fs.promises.writeFile(filePath, buffer)
 
             let uploadedFile
             const url = `/uploads/${relativePath}`
@@ -51,7 +58,7 @@ export default async function filesRoutes(fastify: FastifyInstance) {
                 part.filename,
                 part.mimetype,
                 fileType,
-                (await fs.promises.stat(filePath)).size,
+                fileSize,
                 relativePath,
                 url,
                 'local',
