@@ -8,6 +8,7 @@ import { authCookie } from '@/cookies.server'
 import { redirectWithToast } from '@/lib/toast'
 import { associateFilesToProject, updateProject } from '@/lib/projects'
 import { uploadFiles } from '@/lib/storage'
+import { imageSchema } from '@/server/schemas/files'
 
 export const projectUploadPictureAction = async ({
   request,
@@ -20,6 +21,15 @@ export const projectUploadPictureAction = async ({
   )
 
   const formData = await unstable_parseMultipartFormData(request, uploadHandler)
+  const { success, error } = imageSchema.safeParse(formData.get('files'))
+
+  if (!success) {
+    return redirectWithToast(
+      request.headers.get('referer') as string,
+      JSON.parse(error?.message ?? '')[0].message
+    )
+  }
+
   let response = await uploadFiles(token, formData)
 
   if (!response) {

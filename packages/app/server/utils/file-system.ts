@@ -10,6 +10,17 @@ export const UPLOAD_DIR = path.join(
   cleanDoubleSlashes(`/server/${config?.storage.publicPath}`)
 )
 
+export const SIZE_LIMITS = {
+  image: 10 * 1024 * 1024, // 10MB
+  video: 100 * 1024 * 1024, // 100MB
+  audio: 50 * 1024 * 1024, // 50MB
+  pdf: 20 * 1024 * 1024, // 20MB
+  document: 15 * 1024 * 1024, // 15MB
+  spreadsheet: 15 * 1024 * 1024, // 15MB
+  archive: 50 * 1024 * 1024, // 50MB
+  other: 10 * 1024 * 1024, // 10MB
+} as const
+
 export const setupUploadDirectories = () => {
   const directories = [
     UPLOAD_DIR,

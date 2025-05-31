@@ -8,6 +8,8 @@ import { authCookie } from '@/cookies.server'
 import { redirectWithToast } from '@/lib/toast'
 import { uploadFiles } from '@/lib/storage'
 import { associateFilesToProject } from '@/lib/projects'
+import { fileSchema } from '@/server/schemas/files'
+import { z } from 'zod'
 
 export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
   const headers = request.headers.get('Cookie')
@@ -18,6 +20,17 @@ export const projectUploadAction = async ({ request }: ActionFunctionArgs) => {
   )
 
   const formData = await unstable_parseMultipartFormData(request, uploadHandler)
+  const { success, error } = z
+    .array(fileSchema)
+    .safeParse(formData.getAll('files'))
+
+  if (!success) {
+    return redirectWithToast(
+      request.headers.get('referer') as string,
+      error.message
+    )
+  }
+
   let response = await uploadFiles(token, formData)
 
   if (!response) {
